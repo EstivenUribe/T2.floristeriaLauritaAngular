@@ -1,23 +1,27 @@
 const express = require('express');
 const mongoose = require('mongoose');
+const cors = require('cors');
 const path = require('path');
-const app = express();
-const port = 3000;
 const { spawn } = require('child_process');
 
-// Middleware para parsear JSON en las peticiones POST/PUT
-app.use(express.json()); 
+const app = express();
+const port = process.env.PORT || 3000;
 
-// Middleware para CORS
-const cors = require('cors');
+// Middleware
 app.use(cors());
+app.use(express.json());
 
-// Importación de modelos
-const Product = require('./backend/models/product');
-const CompanyInfo = require('./backend/models/companyInfo');
-const User = require('./backend/models/user');
-const Review = require('./backend/models/review');
-const Cart = require('./backend/models/cart');
+// Debug middleware for API errors
+app.use((req, res, next) => {
+  const originalSend = res.send;
+  res.send = function(data) {
+    if (res.statusCode >= 400) {
+      console.error(`ERROR ${res.statusCode} on ${req.method} ${req.originalUrl}:`, data);
+    }
+    return originalSend.call(this, data);
+  };
+  next();
+});
 
 // Importación de rutas
 const productRoutes = require('./backend/routes/products');
@@ -25,21 +29,19 @@ const companyInfoRoutes = require('./backend/routes/companyInfo');
 const authRoutes = require('./backend/routes/auth');
 const reviewRoutes = require('./backend/routes/reviews');
 const cartRoutes = require('./backend/routes/cart');
-const uploadsRoutes = require('./backend/routes/uploads');
+const uploadRoutes = require('./backend/routes/uploads');
 const teamRoutes = require('./backend/routes/team');
-const bannersRoutes = require('./backend/routes/banners');
+const bannerRoutes = require('./backend/routes/banners');
 
-// --- Rutas API ---
-
-// Usar las rutas importadas con prefijos de API
+// Rutas API
 app.use('/api/productos', productRoutes);
 app.use('/api/company-info', companyInfoRoutes);
 app.use('/api/auth', authRoutes);
 app.use('/api/reviews', reviewRoutes);
 app.use('/api/cart', cartRoutes);
-app.use('/api/uploads', uploadsRoutes);
+app.use('/api/uploads', uploadRoutes);
 app.use('/api/team', teamRoutes);
-app.use('/api/banners', bannersRoutes);
+app.use('/api/banners', bannerRoutes);
 
 // Configuración para servir archivos estáticos
 // Archivos de uploads
@@ -63,7 +65,6 @@ let angularProcess = null;
 function startAngular() {
     console.log('Iniciando la aplicación de Angular...');
     
-    // Usar spawn para iniciar un proceso hijo
     angularProcess = spawn('npm', ['start'], {
         cwd: path.join(__dirname, 'angular-frontend'),
         stdio: 'inherit',
@@ -87,8 +88,12 @@ process.on('SIGINT', () => {
     process.exit(0);
 });
 
-// Conectar a MongoDB primero, luego iniciar el servidor Express
-mongoose.connect('mongodb+srv://MongodbPrueba:asdfqwer1234@parcial.a6gbmrh.mongodb.net/?retryWrites=true&w=majority&appName=Parcial')
+// Usar configuración de base de datos
+const dbConfig = require('./backend/config/db');
+const dbUrl = process.env.MONGODB_URI || dbConfig.url;
+
+// Conectar a MongoDB y luego iniciar el servidor Express
+mongoose.connect(dbUrl)
     .then(() => {
         console.log('🟢 Conexión a MongoDB establecida');
         
@@ -96,7 +101,7 @@ mongoose.connect('mongodb+srv://MongodbPrueba:asdfqwer1234@parcial.a6gbmrh.mongo
         app.listen(port, () => {
             console.log(`🚀 Servidor de API escuchando en http://localhost:${port}`);
             
-            // Solo cuando estamos en modo desarrollo y no se inició con npm run dev
+            // Solo cuando estamos en modo desarrollo
             if (process.env.NODE_ENV === 'development' && process.env.STANDALONE === 'true') {
                 startAngular();
             }

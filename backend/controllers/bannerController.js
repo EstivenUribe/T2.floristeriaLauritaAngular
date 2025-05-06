@@ -254,7 +254,7 @@ exports.deleteBanner = async (req, res) => {
       });
     }
     
-    await banner.remove();
+    await Banner.deleteOne({ _id: banner._id });
     
     res.status(200).json({
       success: true,
