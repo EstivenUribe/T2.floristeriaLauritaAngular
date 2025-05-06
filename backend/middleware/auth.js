@@ -3,8 +3,8 @@ const jwt = require('jsonwebtoken');
 // Clave secreta para JWT (en producción usar variables de entorno)
 const JWT_SECRET = 'floristeria_laurita_secret_key';
 
-// Verificar token JWT
-exports.verifyToken = (req, res, next) => {
+// Proteger rutas (verificar token JWT)
+exports.protect = (req, res, next) => {
   // Obtener token del encabezado Authorization
   const authHeader = req.headers['authorization'];
   const token = authHeader && authHeader.split(' ')[1]; // formato: "Bearer TOKEN"
@@ -29,15 +29,19 @@ exports.verifyToken = (req, res, next) => {
 };
 
 // Verificar si el usuario es administrador
-exports.isAdmin = (req, res, next) => {
+exports.admin = (req, res, next) => {
   if (req.userRole !== 'admin') {
     return res.status(403).json({ message: 'Acceso denegado. Se requieren permisos de administrador' });
   }
   next();
 };
 
+// Alias para compatibilidad con código existente
+exports.verifyToken = exports.protect;
+exports.isAdmin = exports.admin;
+
 // Middleware que combina verificación de token y rol admin
 exports.verifyAdmin = [
-  exports.verifyToken,
-  exports.isAdmin
+  exports.protect,
+  exports.admin
 ];

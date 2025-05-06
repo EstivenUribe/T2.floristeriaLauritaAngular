@@ -7,6 +7,8 @@ const path = require('path');
 const productRoutes = require('./routes/products');
 const companyInfoRoutes = require('./routes/companyInfo');
 const uploadRoutes = require('./routes/uploads');
+const teamRoutes = require('./routes/team');
+const bannerRoutes = require('./routes/banners');
 
 const app = express();
 const port = process.env.PORT || 3000;
@@ -28,6 +30,8 @@ app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 app.use('/api/productos', productRoutes);
 app.use('/api/company-info', companyInfoRoutes);
 app.use('/api/uploads', uploadRoutes);
+app.use('/api/team', teamRoutes);
+app.use('/api/banners', bannerRoutes);
 
 // Servir el frontend de Angular en producción
 if (process.env.NODE_ENV === 'production') {

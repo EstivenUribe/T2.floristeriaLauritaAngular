@@ -1,10 +1,26 @@
 <div class="admin-container">
   <header>
-    <h1>Administración de Productos</h1>
+    <h1>Panel de Administración</h1>
     <a [routerLink]="['/']">Ir a la página de Usuario</a>
   </header>
 
-  <main>
+  <div class="admin-tabs">
+    <button class="tab-button" [class.active]="activeTab === 'productos'" (click)="setActiveTab('productos')">
+      Productos
+    </button>
+    <button class="tab-button" [class.active]="activeTab === 'equipo'" (click)="setActiveTab('equipo')">
+      Equipo
+    </button>
+    <button class="tab-button" [class.active]="activeTab === 'banners'" (click)="setActiveTab('banners')">
+      Banners
+    </button>
+    <button class="tab-button" [class.active]="activeTab === 'configuracion'" (click)="setActiveTab('configuracion')">
+      Configuración
+    </button>
+  </div>
+
+  <!-- Pestaña de Productos -->
+  <main *ngIf="activeTab === 'productos'">
     <section id="formulario-producto">
       <h2>{{ isEditing ? 'Editar' : 'Agregar' }} Producto</h2>
       
@@ -100,6 +116,388 @@
           </div>
         </div>
       </div>
+    </section>
+  </main>
+
+  <!-- Pestaña de Equipo -->
+  <main *ngIf="activeTab === 'equipo'" class="admin-equipo">
+    <section id="formulario-equipo">
+      <h2>{{ isEditingTeamMember ? 'Editar' : 'Agregar' }} Miembro del Equipo</h2>
+      
+      <div *ngIf="success" class="alert alert-success">
+        {{ success }}
+      </div>
+      
+      <div *ngIf="error" class="alert alert-danger">
+        {{ error }}
+      </div>
+      
+      <form [formGroup]="teamMemberForm" (ngSubmit)="onSubmitTeamMember()">
+        <div class="form-group">
+          <label for="nombre_miembro">Nombre:</label>
+          <input type="text" id="nombre_miembro" formControlName="nombre" class="form-control"
+                 [ngClass]="{ 'is-invalid': submittedTeamMember && teamMemberForm.controls['nombre'].errors }">
+          <div *ngIf="submittedTeamMember && teamMemberForm.controls['nombre'].errors" class="invalid-feedback">
+            <div *ngIf="teamMemberForm.controls['nombre'].errors['required']">El nombre es obligatorio</div>
+          </div>
+        </div>
+        
+        <div class="form-group">
+          <label for="apellido">Apellido:</label>
+          <input type="text" id="apellido" formControlName="apellido" class="form-control"
+                 [ngClass]="{ 'is-invalid': submittedTeamMember && teamMemberForm.controls['apellido'].errors }">
+          <div *ngIf="submittedTeamMember && teamMemberForm.controls['apellido'].errors" class="invalid-feedback">
+            <div *ngIf="teamMemberForm.controls['apellido'].errors['required']">El apellido es obligatorio</div>
+          </div>
+        </div>
+        
+        <div class="form-group">
+          <label for="cargo">Cargo:</label>
+          <input type="text" id="cargo" formControlName="cargo" class="form-control"
+                 [ngClass]="{ 'is-invalid': submittedTeamMember && teamMemberForm.controls['cargo'].errors }">
+          <div *ngIf="submittedTeamMember && teamMemberForm.controls['cargo'].errors" class="invalid-feedback">
+            <div *ngIf="teamMemberForm.controls['cargo'].errors['required']">El cargo es obligatorio</div>
+          </div>
+        </div>
+        
+        <div class="form-group">
+          <label for="biografia">Biografía:</label>
+          <textarea id="biografia" formControlName="biografia" class="form-control"
+                    [ngClass]="{ 'is-invalid': submittedTeamMember && teamMemberForm.controls['biografia'].errors }"></textarea>
+          <div *ngIf="submittedTeamMember && teamMemberForm.controls['biografia'].errors" class="invalid-feedback">
+            <div *ngIf="teamMemberForm.controls['biografia'].errors['required']">La biografía es obligatoria</div>
+            <div *ngIf="teamMemberForm.controls['biografia'].errors['minlength']">La biografía debe tener al menos 50 caracteres</div>
+            <div *ngIf="teamMemberForm.controls['biografia'].errors['maxlength']">La biografía no debe exceder los 500 caracteres</div>
+          </div>
+        </div>
+        
+        <div class="form-group">
+          <label>Foto del Miembro:</label>
+          <div class="upload-container">
+            <div class="image-preview" *ngIf="teamMemberImagePreview">
+              <img [src]="teamMemberImagePreview" alt="Vista previa de la foto">
+            </div>
+            <div class="upload-controls">
+              <input type="file" id="teamMemberFileInput" accept="image/*" (change)="onTeamMemberFileSelected($event)" class="file-input">
+              <label for="teamMemberFileInput" class="file-input-label">Seleccionar Foto</label>
+              <button type="button" class="upload-btn" 
+                      [disabled]="!teamMemberSelectedFile || uploadingTeamMemberImage" 
+                      (click)="uploadTeamMemberImage()">
+                {{ uploadingTeamMemberImage ? 'Subiendo...' : 'Subir Foto' }}
+              </button>
+            </div>
+          </div>
+          <div class="form-group mt-3">
+            <label for="foto_miembro">Ruta de Foto:</label>
+            <input type="text" id="foto_miembro" formControlName="foto" class="form-control" readonly>
+            <small class="form-text text-muted">Esta ruta se establece automáticamente al subir una foto</small>
+          </div>
+        </div>
+        
+        <div class="form-group">
+          <label>Redes Sociales:</label>
+          <div formGroupName="redesSociales" class="social-links">
+            <div class="form-group">
+              <label for="facebook">Facebook:</label>
+              <input type="text" id="facebook" formControlName="facebook" class="form-control">
+            </div>
+            <div class="form-group">
+              <label for="instagram">Instagram:</label>
+              <input type="text" id="instagram" formControlName="instagram" class="form-control">
+            </div>
+            <div class="form-group">
+              <label for="twitter">Twitter:</label>
+              <input type="text" id="twitter" formControlName="twitter" class="form-control">
+            </div>
+            <div class="form-group">
+              <label for="linkedin">LinkedIn:</label>
+              <input type="text" id="linkedin" formControlName="linkedin" class="form-control">
+            </div>
+          </div>
+        </div>
+        
+        <div class="form-check">
+          <input type="checkbox" id="activo" formControlName="activo" class="form-check-input">
+          <label for="activo" class="form-check-label">Miembro Activo</label>
+        </div>
+        
+        <div class="form-buttons">
+          <button type="submit" class="btn btn-primary" [disabled]="loadingTeamMembers">
+            {{ isEditingTeamMember ? 'Actualizar' : 'Guardar' }} Miembro
+          </button>
+          <button type="button" class="btn btn-secondary" (click)="resetTeamMemberForm()" [disabled]="loadingTeamMembers">
+            Limpiar Formulario
+          </button>
+        </div>
+      </form>
+    </section>
+    
+    <section id="lista-equipo">
+      <h2>Miembros del Equipo</h2>
+      
+      <div *ngIf="loadingTeamMembers" class="loading">
+        <p>Cargando miembros del equipo...</p>
+      </div>
+      
+      <div *ngIf="!loadingTeamMembers && teamMembers.length === 0" class="no-items">
+        <p>No hay miembros del equipo registrados.</p>
+      </div>
+      
+      <div id="equipo-admin-list">
+        <div *ngFor="let miembro of teamMembers" class="miembro-admin-item" [class.inactive]="!miembro.activo">
+          <div class="member-status" *ngIf="!miembro.activo">Inactivo</div>
+          <h3>{{ miembro.nombreCompleto || miembro.nombre + ' ' + miembro.apellido }}</h3>
+          <p class="cargo">{{ miembro.cargo }}</p>
+          <img [src]="miembro.foto" [alt]="miembro.nombreCompleto || miembro.nombre + ' ' + miembro.apellido">
+          <p class="biografia">{{ miembro.biografia | slice:0:100 }}{{ miembro.biografia.length > 100 ? '...' : '' }}</p>
+          <div class="acciones-miembro">
+            <button class="btn-editar" (click)="editTeamMember(miembro)">Editar</button>
+            <button class="btn-toggle" (click)="toggleTeamMemberStatus(miembro._id!)">
+              {{ miembro.activo ? 'Desactivar' : 'Activar' }}
+            </button>
+            <button class="btn-eliminar" (click)="deleteTeamMember(miembro._id!)">Eliminar</button>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Pestaña de Banners -->
+  <main *ngIf="activeTab === 'banners'" class="admin-banners">
+    <section id="formulario-banner">
+      <h2>{{ isEditingBanner ? 'Editar' : 'Agregar' }} Banner</h2>
+      
+      <div *ngIf="success" class="alert alert-success">
+        {{ success }}
+      </div>
+      
+      <div *ngIf="error" class="alert alert-danger">
+        {{ error }}
+      </div>
+      
+      <form [formGroup]="bannerForm" (ngSubmit)="onSubmitBanner()">
+        <div class="form-group">
+          <label for="titulo">Título:</label>
+          <input type="text" id="titulo" formControlName="titulo" class="form-control"
+                 [ngClass]="{ 'is-invalid': submittedBanner && bannerForm.controls['titulo'].errors }">
+          <div *ngIf="submittedBanner && bannerForm.controls['titulo'].errors" class="invalid-feedback">
+            <div *ngIf="bannerForm.controls['titulo'].errors['required']">El título es obligatorio</div>
+            <div *ngIf="bannerForm.controls['titulo'].errors['maxlength']">El título no debe exceder los 100 caracteres</div>
+          </div>
+        </div>
+        
+        <div class="form-group">
+          <label for="subtitulo">Subtítulo:</label>
+          <input type="text" id="subtitulo" formControlName="subtitulo" class="form-control"
+                 [ngClass]="{ 'is-invalid': submittedBanner && bannerForm.controls['subtitulo'].errors }">
+          <div *ngIf="submittedBanner && bannerForm.controls['subtitulo'].errors" class="invalid-feedback">
+            <div *ngIf="bannerForm.controls['subtitulo'].errors['maxlength']">El subtítulo no debe exceder los 200 caracteres</div>
+          </div>
+        </div>
+        
+        <div class="form-group">
+          <label for="seccion">Sección:</label>
+          <select id="seccion" formControlName="seccion" class="form-control"
+                  [ngClass]="{ 'is-invalid': submittedBanner && bannerForm.controls['seccion'].errors }">
+            <option value="">Seleccionar sección</option>
+            <option value="inicio">Página de Inicio</option>
+            <option value="productos">Productos</option>
+            <option value="ofertas">Ofertas</option>
+            <option value="ocasiones">Ocasiones</option>
+            <option value="nosotros">Nosotros</option>
+            <option value="contacto">Contacto</option>
+          </select>
+          <div *ngIf="submittedBanner && bannerForm.controls['seccion'].errors" class="invalid-feedback">
+            <div *ngIf="bannerForm.controls['seccion'].errors['required']">La sección es obligatoria</div>
+          </div>
+        </div>
+        
+        <div class="form-group">
+          <label for="url">URL (opcional):</label>
+          <input type="text" id="url" formControlName="url" class="form-control">
+        </div>
+        
+        <div class="form-group">
+          <label>Imagen del Banner:</label>
+          <div class="upload-container">
+            <div class="image-preview" *ngIf="bannerImagePreview">
+              <img [src]="bannerImagePreview" alt="Vista previa del banner">
+            </div>
+            <div class="upload-controls">
+              <input type="file" id="bannerFileInput" accept="image/*" (change)="onBannerFileSelected($event)" class="file-input">
+              <label for="bannerFileInput" class="file-input-label">Seleccionar Imagen</label>
+              <button type="button" class="upload-btn" 
+                      [disabled]="!bannerSelectedFile || uploadingBannerImage" 
+                      (click)="uploadBannerImage()">
+                {{ uploadingBannerImage ? 'Subiendo...' : 'Subir Imagen' }}
+              </button>
+            </div>
+          </div>
+          <div class="form-group mt-3">
+            <label for="imagen_banner">Ruta de Imagen:</label>
+            <input type="text" id="imagen_banner" formControlName="imagen" class="form-control" readonly>
+            <small class="form-text text-muted">Esta ruta se establece automáticamente al subir una imagen</small>
+          </div>
+        </div>
+        
+        <div class="form-row">
+          <div class="form-group col-md-6">
+            <label for="fechaInicio">Fecha de Inicio:</label>
+            <input type="date" id="fechaInicio" formControlName="fechaInicio" class="form-control">
+          </div>
+          <div class="form-group col-md-6">
+            <label for="fechaFin">Fecha de Fin (opcional):</label>
+            <input type="date" id="fechaFin" formControlName="fechaFin" class="form-control">
+          </div>
+        </div>
+        
+        <div class="form-group">
+          <label for="textoBoton">Texto del Botón (opcional):</label>
+          <input type="text" id="textoBoton" formControlName="textoBoton" class="form-control"
+                 [ngClass]="{ 'is-invalid': submittedBanner && bannerForm.controls['textoBoton'].errors }">
+          <div *ngIf="submittedBanner && bannerForm.controls['textoBoton'].errors" class="invalid-feedback">
+            <div *ngIf="bannerForm.controls['textoBoton'].errors['maxlength']">El texto del botón no debe exceder los 30 caracteres</div>
+          </div>
+        </div>
+        
+        <div class="form-group">
+          <label for="posicionTexto">Posición del Texto:</label>
+          <select id="posicionTexto" formControlName="posicionTexto" class="form-control">
+            <option value="left">Izquierda</option>
+            <option value="center">Centro</option>
+            <option value="right">Derecha</option>
+          </select>
+        </div>
+        
+        <div class="form-group">
+          <label for="animacion">Animación:</label>
+          <select id="animacion" formControlName="animacion" class="form-control">
+            <option value="none">Ninguna</option>
+            <option value="fade">Desvanecer</option>
+            <option value="slide">Deslizar</option>
+            <option value="zoom">Zoom</option>
+          </select>
+        </div>
+        
+        <div class="form-check">
+          <input type="checkbox" id="activo_banner" formControlName="activo" class="form-check-input">
+          <label for="activo_banner" class="form-check-label">Banner Activo</label>
+        </div>
+        
+        <div class="form-group">
+          <label>Colores Personalizados:</label>
+          <div formGroupName="color" class="color-inputs">
+            <div class="form-group">
+              <label for="textoPrincipal">Color de Título:</label>
+              <input type="color" id="textoPrincipal" formControlName="textoPrincipal" class="form-control color-picker">
+            </div>
+            <div class="form-group">
+              <label for="textoSecundario">Color de Subtítulo:</label>
+              <input type="color" id="textoSecundario" formControlName="textoSecundario" class="form-control color-picker">
+            </div>
+            <div class="form-group">
+              <label for="boton">Color de Botón:</label>
+              <input type="color" id="boton" formControlName="boton" class="form-control color-picker">
+            </div>
+            <div class="form-group">
+              <label for="overlay">Color de Overlay (Semitransparente):</label>
+              <input type="color" id="overlay" formControlName="overlay" class="form-control color-picker">
+              <small class="form-text text-muted">El color se aplicará con transparencia sobre la imagen</small>
+            </div>
+          </div>
+        </div>
+        
+        <div class="form-buttons">
+          <button type="submit" class="btn btn-primary" [disabled]="loadingBanners">
+            {{ isEditingBanner ? 'Actualizar' : 'Guardar' }} Banner
+          </button>
+          <button type="button" class="btn btn-secondary" (click)="resetBannerForm()" [disabled]="loadingBanners">
+            Limpiar Formulario
+          </button>
+        </div>
+      </form>
+    </section>
+    
+    <section id="lista-banners">
+      <h2>Banners</h2>
+      
+      <div *ngIf="loadingBanners" class="loading">
+        <p>Cargando banners...</p>
+      </div>
+      
+      <div *ngIf="!loadingBanners && banners.length === 0" class="no-items">
+        <p>No hay banners registrados.</p>
+      </div>
+      
+      <div class="banner-filter">
+        <label for="filterSection">Filtrar por sección:</label>
+        <select id="filterSection" [(ngModel)]="bannerFilter" (change)="filterBanners()">
+          <option value="all">Todas las secciones</option>
+          <option value="inicio">Página de Inicio</option>
+          <option value="productos">Productos</option>
+          <option value="ofertas">Ofertas</option>
+          <option value="ocasiones">Ocasiones</option>
+          <option value="nosotros">Nosotros</option>
+          <option value="contacto">Contacto</option>
+        </select>
+      </div>
+      
+      <div id="banners-admin-list">
+        <div *ngFor="let banner of filteredBanners" class="banner-admin-item" [class.inactive]="!banner.activo">
+          <div class="banner-status" *ngIf="!banner.activo">Inactivo</div>
+          <h3>{{ banner.titulo }}</h3>
+          <p class="seccion">Sección: {{ getBannerSectionName(banner.seccion) }}</p>
+          <img [src]="banner.imagen" [alt]="banner.titulo">
+          <p *ngIf="banner.subtitulo" class="subtitulo">{{ banner.subtitulo }}</p>
+          <div class="banner-dates" *ngIf="banner.fechaInicio">
+            <p>Desde: {{ banner.fechaInicio | date:'dd/MM/yyyy' }}</p>
+            <p *ngIf="banner.fechaFin">Hasta: {{ banner.fechaFin | date:'dd/MM/yyyy' }}</p>
+          </div>
+          <div class="acciones-banner">
+            <button class="btn-editar" (click)="editBanner(banner)">Editar</button>
+            <button class="btn-toggle" (click)="toggleBannerStatus(banner._id!)">
+              {{ banner.activo ? 'Desactivar' : 'Activar' }}
+            </button>
+            <button class="btn-eliminar" (click)="deleteBanner(banner._id!)">Eliminar</button>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Pestaña de Configuración -->
+  <main *ngIf="activeTab === 'configuracion'" class="admin-configuracion">
+    <section id="configuracion-empresa">
+      <h2>Información de la Empresa</h2>
+      
+      <div *ngIf="success" class="alert alert-success">
+        {{ success }}
+      </div>
+      
+      <div *ngIf="error" class="alert alert-danger">
+        {{ error }}
+      </div>
+      
+      <form [formGroup]="companyInfoForm" (ngSubmit)="onSubmitCompanyInfo()">
+        <div class="form-group">
+          <label for="mision">Misión:</label>
+          <textarea id="mision" formControlName="mision" class="form-control" rows="4"></textarea>
+        </div>
+        
+        <div class="form-group">
+          <label for="vision">Visión:</label>
+          <textarea id="vision" formControlName="vision" class="form-control" rows="4"></textarea>
+        </div>
+        
+        <div class="form-buttons">
+          <button type="submit" class="btn btn-primary" [disabled]="loadingCompanyInfo">
+            Guardar Información
+          </button>
+          <button type="button" class="btn btn-secondary" (click)="resetCompanyInfoForm()" [disabled]="loadingCompanyInfo">
+            Cancelar Cambios
+          </button>
+        </div>
+      </form>
     </section>
   </main>
 </div>

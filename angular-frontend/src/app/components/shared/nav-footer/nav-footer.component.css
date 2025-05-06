@@ -47,12 +47,12 @@
 .brand-info h1 {
   font-size: 1.8rem;
   margin-bottom: 5px;
-  color: var(--primary-pink);
+  color: var(--color-primary);
 }
 
 .slogan {
   font-size: 0.9rem;
-  color: var(--gray);
+  color: var(--color-neutral-medium);
   margin: 0;
 }
 
@@ -63,7 +63,7 @@
   gap: 20px;
 }
 
-/* Enlaces de autenticación y carrito */
+/* Enlaces de autenticaciï¿½n y carrito */
 .auth-cart-container {
   display: flex;
   gap: 15px;
@@ -73,7 +73,7 @@
   display: flex;
   align-items: center;
   gap: 5px;
-  color: var(--dark);
+  color: var(--color-neutral-dark);
   font-weight: 500;
   font-size: 0.9rem;
   text-decoration: none;
@@ -81,7 +81,7 @@
 }
 
 .auth-link:hover, .cart-link:hover {
-  color: var(--primary-pink);
+  color: var(--color-primary);
 }
 
 .cart-link {
@@ -104,7 +104,7 @@
   font-weight: bold;
 }
 
-/* Menú principal */
+/* Menï¿½ principal */
 .main-menu {
   padding: 15px 0;
   background-color: white;
@@ -147,7 +147,7 @@
   width: 100%;
 }
 
-/* Menú hamburguesa */
+/* Menï¿½ hamburguesa */
 .menu-hamburger {
   display: flex;
   align-items: center;
@@ -162,7 +162,7 @@
   color: var(--primary-pink);
 }
 
-/* Sidebar (menú lateral) */
+/* Sidebar (menï¿½ lateral) */
 .sidebar {
   position: fixed;
   top: 0;
@@ -258,7 +258,7 @@
   visibility: visible;
 }
 
-/* Menú móvil estilo antiguo (ahora solo para el overlay) */
+/* Menï¿½ mï¿½vil estilo antiguo (ahora solo para el overlay) */
 .mobile-menu-toggle {
   display: none;
 }
@@ -287,8 +287,8 @@
 
 /* ===== FOOTER ===== */
 .main-footer {
-  background-color: var(--primary-purple);
-  color: white;
+  background-color: #5A3A80; /* Darker purple for better contrast */
+  color: #FFFFFF;
 }
 
 .footer-top {
@@ -301,10 +301,19 @@
   gap: 40px;
 }
 
+.footer-about h3, .footer-links h3, .footer-categories h3 {
+  color: #FFFFFF;
+  margin-bottom: 15px;
+  font-size: 1.3rem;
+  font-weight: 600;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+}
+
 .footer-about p {
-  margin-top: 15px;
-  font-size: 0.9rem;
-  opacity: 0.9;
+  margin-top: 10px;
+  font-size: 0.95rem;
+  line-height: 1.6;
+  color: #FFFFFF;
 }
 
 .footer-links ul, .footer-categories ul {
@@ -314,24 +323,42 @@
 }
 
 .footer-links ul li, .footer-categories ul li {
-  margin-bottom: 10px;
+  margin-bottom: 12px;
 }
 
 .footer-links ul li a, .footer-categories ul li a {
-  color: white;
-  opacity: 0.9;
+  color: #FFFFFF;
   text-decoration: none;
-  transition: opacity 0.3s;
+  transition: all 0.3s ease;
+  font-size: 0.95rem;
+  display: inline-block;
+  position: relative;
+  padding-left: 0;
+  font-weight: 500;
 }
 
 .footer-links ul li a:hover, .footer-categories ul li a:hover {
+  color: var(--color-secondary);
+  padding-left: 5px;
+}
+
+.footer-links ul li a::before, .footer-categories ul li a::before {
+  content: "â†’";
+  position: absolute;
+  left: -15px;
+  opacity: 0;
+  transition: all 0.3s ease;
+}
+
+.footer-links ul li a:hover::before, .footer-categories ul li a:hover::before {
   opacity: 1;
-  text-decoration: underline;
+  left: -10px;
 }
 
 .footer-bottom {
-  background-color: rgba(0,0,0,0.1);
+  background-color: #45276A; /* Even darker background for the bottom section */
   padding: 20px 0;
+  border-top: 1px solid rgba(255, 255, 255, 0.2);
 }
 
 .footer-bottom-content {
@@ -343,6 +370,7 @@
 .footer-bottom-content p {
   margin: 0;
   font-size: 0.9rem;
+  color: #FFFFFF;
 }
 
 .social-links {
@@ -351,19 +379,23 @@
 }
 
 .social-links a {
-  color: white;
-  background-color: rgba(255,255,255,0.1);
+  color: #FFFFFF;
+  background-color: rgba(255, 255, 255, 0.2);
   width: 36px;
   height: 36px;
   border-radius: 50%;
   display: flex;
   justify-content: center;
   align-items: center;
-  transition: background-color 0.3s;
+  transition: all 0.3s ease;
+  border: 1px solid rgba(255, 255, 255, 0.3);
 }
 
 .social-links a:hover {
-  background-color: var(--primary-pink);
+  background-color: var(--color-secondary);
+  color: #333333; /* Dark text on light background for better contrast */
+  transform: translateY(-3px);
+  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.2);
 }
 
 /* ===== RESPONSIVE ===== */

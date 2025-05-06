@@ -3,9 +3,10 @@
   "version": "1.0.0",
   "scripts": {
     "start": "node server.js",
-    "dev": "npm-run-all --parallel dev:backend dev:frontend",
-    "dev:backend": "nodemon server.js",
+    "prestart": "echo \"⚠️ Asegúrate de haber ejecutado npm run build o usar npm run prod si deseas servir la aplicación Angular compilada\"",
+    "dev": "nodemon server.js",
     "dev:frontend": "cd angular-frontend && npm start",
+    "dev:both": "concurrently \"npm run dev\" \"cd angular-frontend && npm start\"",
     "install": "npm-run-all --parallel install:*",
     "install:backend": "npm install",
     "install:frontend": "cd angular-frontend && npm install",
@@ -14,10 +15,12 @@
   },
   "dependencies": {
     "bcryptjs": "^3.0.2",
+    "concurrently": "^8.2.2",
     "cors": "^2.8.5",
     "express": "^4.18.2",
     "jsonwebtoken": "^9.0.2",
     "mongoose": "^8.0.0",
+    "multer": "^1.4.5-lts.1",
     "npm-run-all": "^4.1.5"
   },
   "devDependencies": {

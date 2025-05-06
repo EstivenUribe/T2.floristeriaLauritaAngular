@@ -1,10 +1,38 @@
 const path = require('path');
 const multer = require('multer');
+const fs = require('fs');
 
-// Configurar el almacenamiento
+// Configurar el almacenamiento con soporte para diferentes carpetas
 const storage = multer.diskStorage({
   destination: function(req, file, cb) {
-    cb(null, path.join(__dirname, '../uploads/'));
+    // Determinar la carpeta de destino (parámetro opcional en la solicitud)
+    let uploadFolder = '../uploads/';
+    
+    // Si hay un parámetro folder en el body, usarlo para determinar la subcarpeta
+    if (req.body && req.body.folder) {
+      switch(req.body.folder) {
+        case 'team':
+          uploadFolder = '../uploads/team/';
+          break;
+        case 'banners':
+          uploadFolder = '../uploads/banners/';
+          break;
+        // Caso por defecto (productos)
+        default:
+          uploadFolder = '../uploads/products/';
+      }
+    } else {
+      // Carpeta por defecto para productos
+      uploadFolder = '../uploads/products/';
+    }
+    
+    // Asegurar que la carpeta existe
+    const fullPath = path.join(__dirname, uploadFolder);
+    if (!fs.existsSync(fullPath)) {
+      fs.mkdirSync(fullPath, { recursive: true });
+    }
+    
+    cb(null, fullPath);
   },
   filename: function(req, file, cb) {
     // Crear un nombre de archivo único usando timestamp y nombre original
@@ -16,11 +44,11 @@ const storage = multer.diskStorage({
 
 // Filtrar archivos para aceptar solo imágenes
 const fileFilter = (req, file, cb) => {
-  const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png'];
+  const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/gif', 'image/webp'];
   if (allowedTypes.includes(file.mimetype)) {
     cb(null, true);
   } else {
-    cb(new Error('Solo se permiten archivos de imagen (jpeg, jpg, png)'), false);
+    cb(new Error('Solo se permiten archivos de imagen (jpeg, jpg, png, gif, webp)'), false);
   }
 };
 

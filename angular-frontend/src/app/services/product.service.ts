@@ -17,6 +17,10 @@ export class ProductService {
   constructor(private http: HttpClient) { }
 
   // Observable público para el estado de carga
+  get isLoading(): Observable<boolean> {
+    return this.loadingProducts.asObservable();
+  }
+
   get isLoadingProducts(): Observable<boolean> {
     return this.loadingProducts.asObservable();
   }

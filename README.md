@@ -40,12 +40,22 @@ Plataforma web completa para la Floristería Laurita en Sabaneta, Colombia. Perm
    npm run install
    ```
 
-2. **Modo desarrollo** (ejecuta backend y frontend simultáneamente)
+2. **Modo desarrollo** (ejecuta solo el backend con recarga automática)
    ```
    npm run dev
    ```
 
-3. **Producción**
+3. **Modo frontend** (ejecuta el servidor de desarrollo de Angular)
+   ```
+   npm run dev:frontend
+   ```
+
+4. **Modo completo** (ejecuta backend y frontend simultáneamente)
+   ```
+   npm run dev:both
+   ```
+
+5. **Producción**
    ```
    npm run prod
    ```
@@ -55,6 +65,24 @@ Plataforma web completa para la Floristería Laurita en Sabaneta, Colombia. Perm
 - **Puerto Backend**: 3000
 - **Puerto Frontend**: 4200 (en desarrollo)
 - **API Base URL**: http://localhost:3000/api
+
+## Solución de Problemas
+
+### Error con MongoDB
+Si el backend no puede conectarse a MongoDB, debes verificar:
+- Que las credenciales de MongoDB sean correctas
+- Que tengas conexión a internet
+- Que la IP desde la que te conectas esté permitida en MongoDB Atlas
+
+### Error con Rutas o Controladores
+Si aparece un error como "Route requires a callback function but got undefined":
+- Verifica que todos los controladores estén correctamente implementados
+- Comprueba que las importaciones de los controladores sean correctas
+
+### Error con Uploads
+Si tienes problemas con la carga de archivos:
+- Asegúrate de que existan las carpetas de uploads en el backend
+- Verifica los permisos de escritura en esas carpetas
 
 ## Autores
 
