@@ -21,16 +21,18 @@
             </div>
           </div>
           
-          <form class="register-form" (ngSubmit)="onSubmit()">
+          <form class="register-form" [formGroup]="registerForm" (ngSubmit)="onSubmit()">
             <div class="form-group">
-              <label for="fullName">Nombre completo *</label>
+              <label for="name">Nombre completo *</label>
               <input 
                 type="text" 
-                id="fullName" 
-                name="fullName" 
-                [(ngModel)]="registerForm.fullName" 
-                required
-                placeholder="Tu nombre completo">
+                id="name" 
+                formControlName="name" 
+                placeholder="Tu nombre completo"
+                [ngClass]="{'invalid-input': isFieldInvalid('name')}">
+              <div class="error-message" *ngIf="isFieldInvalid('name')">
+                {{ getErrorMessage('name') }}
+              </div>
             </div>
             
             <div class="form-group">
@@ -38,10 +40,12 @@
               <input 
                 type="email" 
                 id="email" 
-                name="email" 
-                [(ngModel)]="registerForm.email" 
-                required
-                placeholder="ejemplo@correo.com">
+                formControlName="email" 
+                placeholder="ejemplo@correo.com"
+                [ngClass]="{'invalid-input': isFieldInvalid('email')}">
+              <div class="error-message" *ngIf="isFieldInvalid('email')">
+                {{ getErrorMessage('email') }}
+              </div>
             </div>
             
             <div class="form-group password-group">
@@ -50,13 +54,15 @@
                 <input 
                   [type]="passwordVisible ? 'text' : 'password'" 
                   id="password" 
-                  name="password" 
-                  [(ngModel)]="registerForm.password" 
-                  required
-                  placeholder="Mínimo 8 caracteres">
+                  formControlName="password" 
+                  placeholder="Mínimo 8 caracteres"
+                  [ngClass]="{'invalid-input': isFieldInvalid('password')}">
                 <button type="button" class="toggle-password" (click)="togglePasswordVisibility()">
                   <i class="fas" [ngClass]="passwordVisible ? 'fa-eye-slash' : 'fa-eye'"></i>
                 </button>
+              </div>
+              <div class="error-message" *ngIf="isFieldInvalid('password')">
+                {{ getErrorMessage('password') }}
               </div>
             </div>
             
@@ -66,13 +72,15 @@
                 <input 
                   [type]="confirmPasswordVisible ? 'text' : 'password'" 
                   id="confirmPassword" 
-                  name="confirmPassword" 
-                  [(ngModel)]="registerForm.confirmPassword" 
-                  required
-                  placeholder="Repite tu contraseña">
+                  formControlName="confirmPassword" 
+                  placeholder="Repite tu contraseña"
+                  [ngClass]="{'invalid-input': isFieldInvalid('confirmPassword')}">
                 <button type="button" class="toggle-password" (click)="toggleConfirmPasswordVisibility()">
                   <i class="fas" [ngClass]="confirmPasswordVisible ? 'fa-eye-slash' : 'fa-eye'"></i>
                 </button>
+              </div>
+              <div class="error-message" *ngIf="isFieldInvalid('confirmPassword')">
+                {{ getErrorMessage('confirmPassword') }}
               </div>
             </div>
             
@@ -86,7 +94,7 @@
                   <input 
                     type="file" 
                     id="profileImage" 
-                    name="profileImage"
+                    formControlName="profileImage"
                     accept="image/*"
                     (change)="onFileSelected($event)">
                   <i class="fas fa-upload"></i> Subir imagen
@@ -97,15 +105,24 @@
             <div class="form-group checkbox-group">
               <input 
                 type="checkbox" 
-                id="agreeTerms" 
-                name="agreeTerms" 
-                [(ngModel)]="registerForm.agreeTerms">
-              <label for="agreeTerms">
+                id="termsAccepted" 
+                formControlName="termsAccepted"
+                [ngClass]="{'invalid-input': isFieldInvalid('termsAccepted')}">
+              <label for="termsAccepted">
                 Acepto los <a [routerLink]="['/privacidad']">términos y condiciones</a>
               </label>
+              <div class="error-message" *ngIf="isFieldInvalid('termsAccepted')">
+                {{ getErrorMessage('termsAccepted') }}
+              </div>
             </div>
             
-            <button type="submit" class="btn btn-primary">Crear cuenta</button>
+            <button 
+              type="submit" 
+              class="btn btn-primary"
+              [disabled]="registerForm.invalid || isLoading">
+              <span *ngIf="!isLoading">Crear cuenta</span>
+              <span *ngIf="isLoading">Procesando...</span>
+            </button>
           </form>
           
           <div class="login-redirect">

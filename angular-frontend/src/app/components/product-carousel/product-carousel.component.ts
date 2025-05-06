@@ -3,6 +3,7 @@ import { ProductService } from '../../services/product.service';
 import { Product } from '../../models/product.model';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { RouterModule } from '@angular/router';
+import { NotificationService } from '../../services/notification.service';
 
 // Swiper
 import { register } from 'swiper/element/bundle';
@@ -49,10 +50,16 @@ export class ProductCarouselComponent implements OnInit, AfterViewInit {
   
   constructor(
     private productService: ProductService,
+    private notificationService: NotificationService,
     @Inject(PLATFORM_ID) private platformId: Object
   ) { }
 
   ngOnInit(): void {
+    // Subscribirse al estado de carga
+    this.productService.isLoadingProducts.subscribe(isLoading => {
+      this.loading = isLoading;
+    });
+    
     this.loadProducts();
   }
   
@@ -63,24 +70,39 @@ export class ProductCarouselComponent implements OnInit, AfterViewInit {
   }
 
   loadProducts(): void {
-    this.loading = true;
-    this.productService.getProducts()
-      .subscribe({
-        next: (data) => {
-          // Filtrar productos destacados o mostrar todos si no hay destacados
-          this.products = data.filter(product => product.rebaja) || data;
-          this.loading = false;
-        },
-        error: (err) => {
-          this.error = 'Error al cargar productos para el carrusel.';
-          this.loading = false;
-          console.error('Error al cargar productos para carrusel:', err);
+    this.productService.getProducts().subscribe({
+      next: (data) => {
+        // Filtrar productos destacados o mostrar todos si no hay destacados
+        this.products = data.filter(product => product.rebaja) || data;
+        
+        // Si no hay productos destacados, mostrar un mensaje
+        if (this.products.length === 0) {
+          this.notificationService.info('No hay productos en oferta en este momento.');
         }
-      });
+      },
+      error: (err) => {
+        this.error = err.message || 'Error al cargar productos para el carrusel.';
+        this.notificationService.error(this.error);
+      }
+    });
   }
   
   // Método para formatear precio con moneda
   formatPrice(price: number): string {
     return new Intl.NumberFormat('es-CO', { style: 'currency', currency: 'COP' }).format(price);
+  }
+  
+  // Método para refrescar productos
+  refreshProducts(): void {
+    this.productService.refreshProducts().subscribe({
+      next: (data) => {
+        this.products = data.filter(product => product.rebaja) || data;
+        this.notificationService.success('Productos actualizados correctamente');
+      },
+      error: (err) => {
+        this.error = err.message || 'Error al actualizar los productos.';
+        this.notificationService.error(this.error);
+      }
+    });
   }
 }

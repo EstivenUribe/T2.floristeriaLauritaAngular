@@ -55,9 +55,9 @@
                       <p class="item-price">{{ item.price | currency:'COP':'symbol':'1.0-0' }}</p>
                     </div>
                     <div class="item-quantity">
-                      <button (click)="updateQuantity(item, false)">-</button>
+                      <button (click)="updateQuantity(i, false)">-</button>
                       <span>{{ item.quantity }}</span>
-                      <button (click)="updateQuantity(item, true)">+</button>
+                      <button (click)="updateQuantity(i, true)">+</button>
                     </div>
                     <div class="item-total">
                       {{ item.price * item.quantity | currency:'COP':'symbol':'1.0-0' }}

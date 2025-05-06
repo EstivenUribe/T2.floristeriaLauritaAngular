@@ -10,18 +10,21 @@ import { ContactComponent } from './components/contact/contact.component';
 import { CartComponent } from './components/cart/cart.component';
 import { RegisterComponent } from './components/register/register.component';
 import { PrivacyComponent } from './components/privacy/privacy.component';
+import { SearchComponent } from './components/search/search.component';
+import { authGuard, adminGuard, noAuthGuard } from './guards/auth.guard';
 
 export const routes: Routes = [
   { path: '', component: HomeComponent },
-  { path: 'login', component: LoginComponent },
-  { path: 'admin', component: AdminComponent },
+  { path: 'login', component: LoginComponent, canActivate: [noAuthGuard] },
+  { path: 'admin', component: AdminComponent, canActivate: [adminGuard] },
   { path: 'productos', component: CatalogComponent },
   { path: 'ofertas', component: OffersComponent },
   { path: 'ocasiones', component: OccasionsComponent },
   { path: 'nosotros', component: AboutComponent },
   { path: 'contacto', component: ContactComponent },
   { path: 'carrito', component: CartComponent },
-  { path: 'registro', component: RegisterComponent },
+  { path: 'registro', component: RegisterComponent, canActivate: [noAuthGuard] },
   { path: 'privacidad', component: PrivacyComponent },
+  { path: 'buscar', component: SearchComponent },
   { path: '**', redirectTo: '' }
 ];

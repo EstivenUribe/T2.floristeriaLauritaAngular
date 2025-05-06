@@ -3,20 +3,8 @@ import { CommonModule } from '@angular/common';
 import { RouterModule, Router } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { NavFooterComponent } from '../shared/nav-footer/nav-footer.component';
-
-interface CartItem {
-  id: number;
-  name: string;
-  price: number;
-  image: string;
-  quantity: number;
-}
-
-interface PaymentMethod {
-  id: string;
-  name: string;
-  icon: string;
-}
+import { CartService } from '../../services/cart.service';
+import { CartItem, PaymentMethod, ShippingInfo } from '../../models/cart.model';
 
 @Component({
   selector: 'app-cart',
@@ -34,14 +22,12 @@ export class CartComponent implements OnInit {
   cartItems: CartItem[] = [];
   currentStep = 1; // 1: Carrito, 2: Envío, 3: Pago, 4: Confirmación
   subtotal = 0;
-  shippingCost = 10000;
-  paymentMethods: PaymentMethod[] = [
-    { id: 'credit_card', name: 'Tarjeta de Crédito', icon: 'fa-credit-card' },
-    { id: 'debit_card', name: 'Tarjeta de Débito', icon: 'fa-credit-card' },
-    { id: 'pse', name: 'PSE', icon: 'fa-university' },
-    { id: 'paypal', name: 'PayPal', icon: 'fa-paypal' }
-  ];
+  shippingCost = 0;
+  paymentMethods: PaymentMethod[] = [];
   selectedPaymentMethod = '';
+  isLoading = false;
+  isProcessingOrder = false;
+  error = '';
   
   // Hacer Math accesible en la plantilla
   Math = Math;
@@ -49,7 +35,7 @@ export class CartComponent implements OnInit {
   // Para usar Date en la plantilla
   currentDate = new Date();
   
-  shippingForm = {
+  shippingForm: ShippingInfo = {
     fullName: '',
     address: '',
     city: '',
@@ -67,53 +53,68 @@ export class CartComponent implements OnInit {
     cvv: ''
   };
   
-  constructor(private router: Router) {}
+  constructor(
+    private router: Router,
+    private cartService: CartService
+  ) {}
   
   ngOnInit() {
-    // Simular productos en el carrito
-    this.cartItems = [
-      {
-        id: 1,
-        name: 'Ramo de Rosas Rojas',
-        price: 85000,
-        image: 'assets/images/products/product1.jpg',
-        quantity: 1
-      },
-      {
-        id: 2,
-        name: 'Orquídea Phalaenopsis',
-        price: 120000,
-        image: 'assets/images/products/product2.jpg',
-        quantity: 1
-      }
-    ];
+    // Suscribirse a los cambios en el carrito
+    this.cartService.items.subscribe(items => {
+      this.cartItems = items;
+      this.updateTotals();
+    });
     
-    this.calculateSubtotal();
+    // Cargar información de envío si existe
+    this.cartService.shipping.subscribe(info => {
+      if (info) {
+        this.shippingForm = info;
+      }
+    });
+    
+    // Obtener métodos de pago
+    this.paymentMethods = this.cartService.getPaymentMethods();
+    
+    // Obtener costo de envío
+    this.shippingCost = this.cartService.getShippingCost();
+    
+    // Suscribirse a estados de carga
+    this.cartService.isLoading.subscribe(loading => {
+      this.isLoading = loading;
+    });
+    
+    this.cartService.isProcessingOrder.subscribe(processing => {
+      this.isProcessingOrder = processing;
+    });
   }
   
-  calculateSubtotal() {
-    this.subtotal = this.cartItems.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+  updateTotals() {
+    this.subtotal = this.cartService.getSubtotal();
   }
   
   getTotal() {
-    return this.subtotal + this.shippingCost;
+    return this.cartService.getTotal();
   }
   
-  updateQuantity(item: CartItem, isIncrement: boolean) {
-    if (isIncrement) {
-      item.quantity++;
-    } else if (item.quantity > 1) {
-      item.quantity--;
+  updateQuantity(index: number, isIncrement: boolean) {
+    const item = this.cartItems[index];
+    const newQuantity = isIncrement ? item.quantity + 1 : item.quantity - 1;
+    
+    if (newQuantity > 0) {
+      this.cartService.updateQuantity(index, newQuantity);
     }
-    this.calculateSubtotal();
   }
   
   removeItem(index: number) {
-    this.cartItems.splice(index, 1);
-    this.calculateSubtotal();
+    this.cartService.removeItem(index);
   }
   
   nextStep() {
+    if (this.currentStep === 2) {
+      // Guardar información de envío
+      this.cartService.saveShippingInfo(this.shippingForm);
+    }
+    
     if (this.currentStep < 4) {
       this.currentStep++;
     }
@@ -129,23 +130,62 @@ export class CartComponent implements OnInit {
     this.selectedPaymentMethod = methodId;
   }
   
-  placeOrder() {
-    // En una implementación real, enviaríamos la orden al backend
-    console.log('Orden enviada:', {
-      items: this.cartItems,
-      shipping: this.shippingForm,
-      payment: {
-        method: this.selectedPaymentMethod,
-        details: this.paymentForm
-      },
-      total: this.getTotal()
-    });
+  validateShippingForm(): boolean {
+    // Validación básica
+    return (
+      !!this.shippingForm.fullName &&
+      !!this.shippingForm.address &&
+      !!this.shippingForm.city &&
+      !!this.shippingForm.phone &&
+      !!this.shippingForm.email
+    );
+  }
+  
+  validatePaymentForm(): boolean {
+    if (this.selectedPaymentMethod === 'credit_card' || this.selectedPaymentMethod === 'debit_card') {
+      return (
+        !!this.paymentForm.cardNumber &&
+        !!this.paymentForm.cardName &&
+        !!this.paymentForm.expiryDate &&
+        !!this.paymentForm.cvv
+      );
+    }
     
-    // Simular envío exitoso
-    this.nextStep();
+    return !!this.selectedPaymentMethod;
+  }
+  
+  placeOrder() {
+    if (!this.validatePaymentForm()) {
+      this.error = 'Por favor completa la información de pago';
+      return;
+    }
+    
+    this.error = '';
+    
+    this.cartService.placeOrder({
+      method: this.selectedPaymentMethod,
+      details: this.paymentForm
+    }).subscribe({
+      next: (order) => {
+        console.log('Orden procesada:', order);
+        this.nextStep();
+      },
+      error: (err) => {
+        this.error = err.message || 'Error al procesar la orden';
+      }
+    });
   }
   
   continueShopping() {
     this.router.navigate(['/productos']);
+  }
+  
+  clearCart() {
+    this.cartService.clearCart();
+  }
+  
+  // Formatear precio con moneda
+  formatPrice(price: number): string {
+    return new Intl.NumberFormat('es-CO', { style: 'currency', currency: 'COP' }).format(price);
   }
 }
