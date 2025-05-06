@@ -1,0 +1,477 @@
+.page-container {
+  padding-top: 0;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.page-header {
+  background-color: #f9f4f7;
+  padding: 60px 0 40px;
+  text-align: center;
+  margin-bottom: 40px;
+}
+
+.page-title {
+  color: var(--primary-purple);
+  font-size: 2.5rem;
+  margin-bottom: 15px;
+}
+
+.page-description {
+  color: var(--gray);
+  font-size: 1.1rem;
+  max-width: 700px;
+  margin: 0 auto;
+}
+
+/* Estilos generales de las secciones */
+.section {
+  padding: 60px 0;
+}
+
+.section-title {
+  color: var(--primary-purple);
+  font-size: 2rem;
+  margin-bottom: 20px;
+}
+
+.section-description {
+  color: var(--gray);
+  font-size: 1.1rem;
+  max-width: 700px;
+  margin: 0 auto 30px;
+  line-height: 1.6;
+}
+
+.bg-cream {
+  background-color: #f9f4f7;
+}
+
+.bg-light {
+  background-color: #f8f9fa;
+}
+
+.text-center {
+  text-align: center;
+}
+
+/* Historia */
+.about-content {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 40px;
+  align-items: center;
+  margin-bottom: 40px;
+}
+
+.about-text h2 {
+  color: var(--primary-purple);
+  font-size: 2rem;
+  margin-bottom: 20px;
+}
+
+.about-text p {
+  margin-bottom: 15px;
+  line-height: 1.6;
+}
+
+.about-image {
+  border-radius: var(--border-radius-lg);
+  overflow: hidden;
+  box-shadow: var(--shadow-md);
+}
+
+.about-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* Misión y Visión */
+.mission-vision-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 30px;
+}
+
+.mission-card, .vision-card {
+  background-color: white;
+  border-radius: var(--border-radius-md);
+  padding: 30px;
+  box-shadow: var(--shadow-sm);
+  transition: transform 0.3s, box-shadow 0.3s;
+}
+
+.mission-card:hover, .vision-card:hover {
+  transform: translateY(-10px);
+  box-shadow: var(--shadow-md);
+}
+
+.card-icon {
+  width: 70px;
+  height: 70px;
+  background-color: var(--primary-pink-light);
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.mission-card .card-icon {
+  background-color: var(--primary-pink-light);
+}
+
+.vision-card .card-icon {
+  background-color: #e6f7ff;
+}
+
+.card-icon i {
+  font-size: 1.8rem;
+}
+
+.mission-card .card-icon i {
+  color: var(--primary-pink);
+}
+
+.vision-card .card-icon i {
+  color: #0099ff;
+}
+
+.mission-card h2, .vision-card h2 {
+  color: var(--primary-purple);
+  font-size: 1.8rem;
+  margin-bottom: 15px;
+}
+
+.mission-card p, .vision-card p {
+  color: var(--gray);
+  line-height: 1.6;
+  margin-bottom: 15px;
+}
+
+/* Valores */
+.values-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 30px;
+  margin-top: 30px;
+}
+
+.value-card {
+  background-color: white;
+  border-radius: var(--border-radius-md);
+  padding: 30px;
+  text-align: center;
+  box-shadow: var(--shadow-sm);
+  transition: transform 0.3s, box-shadow 0.3s;
+}
+
+.value-card:hover {
+  transform: translateY(-10px);
+  box-shadow: var(--shadow-md);
+}
+
+.value-icon {
+  width: 80px;
+  height: 80px;
+  background-color: var(--primary-pink-light);
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 0 auto 20px;
+}
+
+.value-icon i {
+  font-size: 2rem;
+  color: var(--primary-pink);
+}
+
+.value-card h3 {
+  color: var(--primary-purple);
+  margin-bottom: 15px;
+  font-size: 1.2rem;
+}
+
+.value-card p {
+  color: var(--gray);
+  font-size: 0.9rem;
+  line-height: 1.6;
+}
+
+/* Equipo */
+.team-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 30px;
+  margin-top: 30px;
+}
+
+.team-card {
+  background-color: white;
+  border-radius: var(--border-radius-md);
+  overflow: hidden;
+  box-shadow: var(--shadow-sm);
+  transition: transform 0.3s, box-shadow 0.3s;
+}
+
+.team-card:hover {
+  transform: translateY(-10px);
+  box-shadow: var(--shadow-md);
+}
+
+.team-image {
+  height: 250px;
+  overflow: hidden;
+}
+
+.team-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.5s;
+}
+
+.team-card:hover .team-image img {
+  transform: scale(1.1);
+}
+
+.team-info {
+  padding: 20px;
+}
+
+.team-info h3 {
+  color: var(--primary-purple);
+  margin-bottom: 5px;
+  font-size: 1.2rem;
+}
+
+.team-role {
+  color: var(--primary-pink);
+  font-weight: 500;
+  margin-bottom: 15px;
+}
+
+.team-bio {
+  color: var(--gray);
+  font-size: 0.9rem;
+  line-height: 1.6;
+}
+
+/* Testimonios */
+.testimonials-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 30px;
+  margin-top: 30px;
+}
+
+.testimonial-card {
+  background-color: white;
+  border-radius: var(--border-radius-md);
+  overflow: hidden;
+  box-shadow: var(--shadow-sm);
+  transition: transform 0.3s, box-shadow 0.3s;
+}
+
+.testimonial-card:hover {
+  transform: translateY(-5px);
+  box-shadow: var(--shadow-md);
+}
+
+.testimonial-content {
+  padding: 30px;
+  position: relative;
+}
+
+.quote-icon {
+  position: absolute;
+  top: 20px;
+  left: 20px;
+  color: #f0f0f0;
+  font-size: 2rem;
+  z-index: 0;
+}
+
+.testimonial-text {
+  position: relative;
+  z-index: 1;
+  font-style: italic;
+  color: var(--dark);
+  line-height: 1.6;
+  margin-bottom: 20px;
+}
+
+.testimonial-rating {
+  color: #ffc107;
+  font-size: 1.1rem;
+  margin-bottom: 10px;
+}
+
+.testimonial-author {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  padding: 20px 30px;
+  background-color: #f9f9f9;
+}
+
+.author-image {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  overflow: hidden;
+}
+
+.author-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.author-info h4 {
+  margin: 0;
+  color: var(--primary-purple);
+  font-size: 1rem;
+}
+
+.author-info p {
+  margin: 5px 0 0;
+  color: var(--gray);
+  font-size: 0.9rem;
+}
+
+.testimonial-footer {
+  text-align: center;
+  margin-top: 40px;
+}
+
+.testimonial-footer p {
+  margin-bottom: 20px;
+  color: var(--gray);
+}
+
+.btn-primary {
+  background-color: var(--primary-pink);
+  color: white;
+  border: none;
+  padding: 12px 25px;
+  border-radius: var(--border-radius-sm);
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.btn-primary:hover {
+  background-color: #e6407e;
+}
+
+/* Reconocimientos */
+.awards-list {
+  max-width: 800px;
+  margin: 30px auto 0;
+}
+
+.award-item {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  background-color: white;
+  padding: 20px;
+  margin-bottom: 20px;
+  border-radius: var(--border-radius-md);
+  box-shadow: var(--shadow-sm);
+  transition: transform 0.3s, box-shadow 0.3s;
+}
+
+.award-item:hover {
+  transform: translateX(10px);
+  box-shadow: var(--shadow-md);
+}
+
+.award-icon {
+  width: 60px;
+  height: 60px;
+  background-color: var(--primary-pink-light);
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-shrink: 0;
+}
+
+.award-icon i {
+  font-size: 1.5rem;
+  color: var(--primary-pink);
+}
+
+.award-content h3 {
+  color: var(--primary-purple);
+  margin: 0 0 5px;
+  font-size: 1.2rem;
+}
+
+.award-content p {
+  color: var(--gray);
+  margin: 0;
+  font-size: 0.9rem;
+}
+
+/* Responsive */
+@media (max-width: 992px) {
+  .about-content, .mission-vision-grid {
+    grid-template-columns: 1fr;
+    gap: 30px;
+  }
+  
+  .about-text {
+    order: 1;
+  }
+  
+  .about-image {
+    order: 0;
+  }
+  
+  .testimonials-grid {
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  }
+}
+
+@media (max-width: 768px) {
+  .page-header {
+    padding: 40px 0 30px;
+  }
+  
+  .section {
+    padding: 40px 0;
+  }
+  
+  .page-title, .section-title {
+    font-size: 2rem;
+  }
+  
+  .about-text h2, .mission-card h2, .vision-card h2 {
+    font-size: 1.8rem;
+  }
+  
+  .team-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .testimonials-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .award-item {
+    flex-direction: column;
+    text-align: center;
+  }
+}
+
+@media (max-width: 576px) {
+  .team-image {
+    height: 200px;
+  }
+}

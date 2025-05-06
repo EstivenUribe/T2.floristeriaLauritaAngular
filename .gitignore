@@ -1,0 +1,35 @@
+# Node.js
+node_modules/
+npm-debug.log
+yarn-error.log
+yarn-debug.log
+
+# Angular
+/frontend/dist
+/frontend/.angular
+/frontend/node_modules
+
+# Environment variables
+.env
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# Logs
+logs/
+*.log
+
+# Dependency directories
+.pnp/
+.pnp.js
+
+# Testing
+/coverage
+
+# OS
+.DS_Store
+Thumbs.db
+**/.claude/settings.local.json

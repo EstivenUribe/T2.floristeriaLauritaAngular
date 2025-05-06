@@ -1,0 +1,27 @@
+{
+  "name": "catalogo-app",
+  "version": "1.0.0",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "npm-run-all --parallel dev:backend dev:frontend",
+    "dev:backend": "nodemon server.js",
+    "dev:frontend": "cd angular-frontend && npm start",
+    "install": "npm-run-all --parallel install:*",
+    "install:backend": "npm install",
+    "install:frontend": "cd angular-frontend && npm install",
+    "build": "cd angular-frontend && npm run build",
+    "prod": "npm run build && npm start"
+  },
+  "dependencies": {
+    "bcryptjs": "^3.0.2",
+    "cors": "^2.8.5",
+    "express": "^4.18.2",
+    "jsonwebtoken": "^9.0.2",
+    "mongoose": "^8.0.0",
+    "npm-run-all": "^4.1.5"
+  },
+  "devDependencies": {
+    "nodemon": "^3.0.1"
+  },
+  "description": "Aplicación de catálogo de productos con Express y Angular"
+}

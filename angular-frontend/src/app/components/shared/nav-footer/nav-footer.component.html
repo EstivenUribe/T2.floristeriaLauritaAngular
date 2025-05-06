@@ -1,0 +1,123 @@
+<!-- Header con navegación -->
+<header class="main-header" [ngClass]="{'fixed': isHeaderFixed}">
+  <div class="header-top">
+    <div class="container header-container">
+      <!-- Hamburger menu -->
+      <div class="menu-hamburger" (click)="toggleSidebar()">
+        <i class="fas fa-bars"></i>
+      </div>
+      
+      <!-- Logo y nombre -->
+      <div class="logo-container">
+        <img src="assets/images/general/Logo.png" alt="Floristería Laurita" class="logo">
+        <div class="brand-info">
+          <h1>Floristería Laurita</h1>
+          <p class="slogan">Belleza natural para cada ocasión</p>
+        </div>
+      </div>
+      
+      <!-- Acciones de usuario -->
+      <div class="user-actions">          
+        <div class="auth-cart-container">
+          <a href="#" class="auth-link" (click)="goToLogin($event)">
+            <i class="fas fa-user"></i>
+            <span>Iniciar sesión</span>
+          </a>
+          <a [routerLink]="['/carrito']" class="cart-link">
+            <i class="fas fa-shopping-cart"></i>
+            <span class="cart-count">0</span>
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Menú principal -->
+  <nav class="main-menu">
+    <div class="container">
+      <ul class="menu-items">
+        <li><a [routerLink]="['/']" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">Inicio</a></li>
+        <li><a [routerLink]="['/productos']" routerLinkActive="active">Catálogo</a></li>
+        <li><a [routerLink]="['/contacto']" routerLinkActive="active">Contacto</a></li>
+      </ul>
+    </div>
+  </nav>
+</header>
+
+<!-- Sidebar para menú hamburguesa -->
+<div class="sidebar" [ngClass]="{'active': showSidebar}">
+  <div class="sidebar-header">
+    <img src="assets/images/general/Logo.png" alt="Floristería Laurita" class="sidebar-logo">
+    <button (click)="toggleSidebar()" class="close-sidebar"><i class="fas fa-times"></i></button>
+  </div>
+  <ul class="sidebar-menu">
+    <li><a [routerLink]="['/']" (click)="toggleSidebar()" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">Inicio</a></li>
+    <li><a [routerLink]="['/productos']" (click)="toggleSidebar()" routerLinkActive="active">Catálogo</a></li>
+    <li><a [routerLink]="['/ofertas']" (click)="toggleSidebar()" routerLinkActive="active">Ofertas</a></li>
+    <li><a [routerLink]="['/ocasiones']" (click)="toggleSidebar()" routerLinkActive="active">Ocasiones Especiales</a></li>
+    <li><a [routerLink]="['/nosotros']" (click)="toggleSidebar()" routerLinkActive="active">Nosotros</a></li>
+    <li><a [routerLink]="['/contacto']" (click)="toggleSidebar()" routerLinkActive="active">Contacto</a></li>
+    <li><a [routerLink]="['/carrito']" (click)="toggleSidebar()" routerLinkActive="active">Carrito</a></li>
+    <li><a [routerLink]="['/login']" (click)="toggleSidebar()" routerLinkActive="active">Iniciar Sesión</a></li>
+    <li><a [routerLink]="['/registro']" (click)="toggleSidebar()" routerLinkActive="active">Registrarse</a></li>
+  </ul>
+</div>
+
+<!-- Overlay para cerrar el sidebar -->
+<div class="sidebar-overlay" [ngClass]="{'active': showSidebar}" (click)="toggleSidebar()"></div>
+
+<!-- Contenido de la página va aquí -->
+<ng-content></ng-content>
+
+<!-- Pie de página -->
+<footer class="main-footer">
+  <div class="footer-top">
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-about">
+          <h3>Floristería Laurita</h3>
+          <p>Desde 2010, ofreciendo las flores más frescas y hermosos arreglos florales para todos tus momentos especiales.</p>
+        </div>
+        
+        <div class="footer-links">
+          <h3>Enlaces rápidos</h3>
+          <ul>
+            <li><a [routerLink]="['/']">Inicio</a></li>
+            <li><a [routerLink]="['/productos']">Catálogo</a></li>
+            <li><a [routerLink]="['/nosotros']">Sobre nosotros</a></li>
+            <li><a [routerLink]="['/contacto']">Contacto</a></li>
+            <li><a [routerLink]="['/privacidad']">Política de privacidad</a></li>
+          </ul>
+        </div>
+        
+        <div class="footer-categories">
+          <h3>Categorías</h3>
+          <ul>
+            <li><a [routerLink]="['/productos/ramos']">Ramos</a></li>
+            <li><a [routerLink]="['/productos/arreglos']">Arreglos</a></li>
+            <li><a [routerLink]="['/productos/plantas']">Plantas</a></li>
+            <li><a [routerLink]="['/productos/accesorios']">Accesorios</a></li>
+            <li><a [routerLink]="['/ofertas']">Ofertas</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <div class="footer-bottom">
+    <div class="container">
+      <div class="footer-bottom-content">
+        <p>&copy; 2025 Floristería Laurita. Todos los derechos reservados.</p>
+        <div class="social-links">
+          <a href="#" target="_blank"><i class="fab fa-facebook-f"></i></a>
+          <a href="#" target="_blank"><i class="fab fa-instagram"></i></a>
+          <a href="#" target="_blank"><i class="fab fa-whatsapp"></i></a>
+          <a href="#" target="_blank"><i class="fab fa-pinterest-p"></i></a>
+        </div>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<!-- Overlay para el menú móvil -->
+<div class="overlay" [ngClass]="{'active': showMobileMenu}" (click)="closeMobileMenu()"></div>

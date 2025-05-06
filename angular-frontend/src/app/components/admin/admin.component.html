@@ -1,0 +1,105 @@
+<div class="admin-container">
+  <header>
+    <h1>Administración de Productos</h1>
+    <a [routerLink]="['/']">Ir a la página de Usuario</a>
+  </header>
+
+  <main>
+    <section id="formulario-producto">
+      <h2>{{ isEditing ? 'Editar' : 'Agregar' }} Producto</h2>
+      
+      <div *ngIf="success" class="alert alert-success">
+        {{ success }}
+      </div>
+      
+      <div *ngIf="error" class="alert alert-danger">
+        {{ error }}
+      </div>
+      
+      <form [formGroup]="productForm" (ngSubmit)="onSubmit()">
+        <div class="form-group">
+          <label for="nombre">Nombre:</label>
+          <input type="text" id="nombre" formControlName="nombre" class="form-control" 
+                [ngClass]="{ 'is-invalid': submitted && productForm.controls['nombre'].errors }">
+          <div *ngIf="submitted && productForm.controls['nombre'].errors" class="invalid-feedback">
+            <div *ngIf="productForm.controls['nombre'].errors['required']">El nombre es obligatorio</div>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="descripcion">Descripción:</label>
+          <textarea id="descripcion" formControlName="descripcion" class="form-control"></textarea>
+        </div>
+
+        <div class="form-group">
+          <label>Imagen del Producto:</label>
+          <div class="upload-container">
+            <div class="image-preview" *ngIf="imagePreview">
+              <img [src]="imagePreview" alt="Vista previa de la imagen">
+            </div>
+            <div class="upload-controls">
+              <input type="file" id="fileInput" accept="image/*" (change)="onFileSelected($event)" class="file-input">
+              <label for="fileInput" class="file-input-label">Seleccionar Imagen</label>
+              <button type="button" class="upload-btn" [disabled]="!selectedFile || uploadingImage" (click)="uploadImage()">
+                {{ uploadingImage ? 'Subiendo...' : 'Subir Imagen' }}
+              </button>
+            </div>
+          </div>
+          <div class="form-group mt-3">
+            <label for="imagen">Ruta de Imagen:</label>
+            <input type="text" id="imagen" formControlName="imagen" class="form-control" readonly>
+            <small class="form-text text-muted">Esta ruta se establece automáticamente al subir una imagen</small>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="precio">Precio:</label>
+          <input type="number" id="precio" formControlName="precio" min="0" step="0.01" class="form-control"
+                [ngClass]="{ 'is-invalid': submitted && productForm.controls['precio'].errors }">
+          <div *ngIf="submitted && productForm.controls['precio'].errors" class="invalid-feedback">
+            <div *ngIf="productForm.controls['precio'].errors['required']">El precio es obligatorio</div>
+            <div *ngIf="productForm.controls['precio'].errors['min']">El precio debe ser mayor o igual a 0</div>
+          </div>
+        </div>
+
+        <div class="form-check">
+          <input type="checkbox" id="rebaja" formControlName="rebaja" class="form-check-input">
+          <label for="rebaja" class="form-check-label">En Rebaja</label>
+        </div>
+
+        <div class="form-buttons">
+          <button type="submit" class="btn btn-primary" [disabled]="loading">
+            {{ isEditing ? 'Actualizar' : 'Guardar' }} Producto
+          </button>
+          <button type="button" class="btn btn-secondary" (click)="resetForm()" [disabled]="loading">
+            Limpiar Formulario
+          </button>
+        </div>
+      </form>
+    </section>
+
+    <section id="lista-productos">
+      <h2>Lista de Productos</h2>
+      
+      <div *ngIf="loading" class="loading">
+        <p>Cargando productos...</p>
+      </div>
+      
+      <div *ngIf="!loading && products.length === 0" class="no-products">
+        <p>No hay productos registrados.</p>
+      </div>
+      
+      <div id="productos-admin-list">
+        <div *ngFor="let producto of products" class="producto-admin-item">
+          <h3>{{ producto.nombre }}</h3>
+          <p>Precio: ${{ producto.precio.toFixed(2) }}</p>
+          <img [src]="producto.imagen" [alt]="producto.nombre">
+          <div class="acciones-producto">
+            <button class="btn-editar" (click)="editProduct(producto)">Editar</button>
+            <button class="btn-eliminar" (click)="deleteProduct(producto._id!)">Eliminar</button>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+</div>

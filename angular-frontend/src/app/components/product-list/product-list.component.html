@@ -1,0 +1,98 @@
+<section id="contenedor-productos">
+  <div *ngIf="loading" class="loading">
+    <p>Cargando productos...</p>
+  </div>
+  
+  <div *ngIf="error" class="error">
+    <p>{{ error }}</p>
+  </div>
+  
+  <div *ngIf="!loading && !error" class="products-container">
+    <div *ngFor="let producto of products" class="producto-box" (click)="showProductDetails(producto)">
+      <div class="producto-imagen-container">
+        <img [src]="producto.imagen" [alt]="producto.nombre" class="imagen-frontal">
+        <div class="imagen-trasera">
+          <h3>{{ producto.nombre }}</h3>
+          <p>{{ producto.descripcion }}</p>
+          <p class="precio">${{ producto.precio.toFixed(2) }}</p>
+          <button class="view-details-btn">Ver detalles</button>
+          <span *ngIf="producto.rebaja" class="rebaja-tag">¡En Rebaja!</span>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Modal de detalles del producto -->
+  <div class="product-modal-overlay" *ngIf="showModal" (click)="closeModalOnOverlayClick($event)">
+    <div class="product-modal" *ngIf="selectedProduct">
+      <button class="close-modal" (click)="closeModal()">
+        <i class="fas fa-times"></i>
+      </button>
+      
+      <div class="product-modal-content">
+        <div class="product-modal-image">
+          <img [src]="selectedProduct.imagen" [alt]="selectedProduct.nombre">
+          <span *ngIf="selectedProduct.rebaja" class="rebaja-tag">¡En Rebaja!</span>
+        </div>
+        
+        <div class="product-modal-details">
+          <h2>{{ selectedProduct.nombre }}</h2>
+          <p class="product-description">{{ selectedProduct.descripcion }}</p>
+          
+          <div class="product-price">
+            <span class="price">${{ selectedProduct.precio.toFixed(2) }}</span>
+            <span *ngIf="selectedProduct.rebaja" class="original-price">${{ (selectedProduct.precio * 1.2).toFixed(2) }}</span>
+          </div>
+          
+          <div class="product-quantity">
+            <span>Cantidad:</span>
+            <div class="quantity-controls">
+              <button (click)="decrementQuantity()">-</button>
+              <span>{{ quantity }}</span>
+              <button (click)="incrementQuantity()">+</button>
+            </div>
+          </div>
+          
+          <div class="product-variations" *ngIf="selectedProduct.variaciones?.length">
+            <div class="variation" *ngFor="let variation of selectedProduct.variaciones">
+              <span>{{ variation.nombre }}:</span>
+              <div class="variation-options">
+                <button 
+                  *ngFor="let option of variation.opciones" 
+                  class="variation-option"
+                  [class.selected]="option.selected">
+                  {{ option.valor }}
+                </button>
+              </div>
+            </div>
+          </div>
+          
+          <div class="product-details-list">
+            <div class="product-detail-item">
+              <i class="fas fa-check-circle"></i>
+              <span>Producto fresco garantizado</span>
+            </div>
+            <div class="product-detail-item">
+              <i class="fas fa-truck"></i>
+              <span>Entrega disponible en Sabaneta y alrededores</span>
+            </div>
+            <div class="product-detail-item">
+              <i class="fas fa-undo"></i>
+              <span>Garantía de satisfacción</span>
+            </div>
+          </div>
+          
+          <div class="product-actions">
+            <button class="add-to-cart-btn" (click)="addToCart()">
+              <i class="fas fa-shopping-cart"></i>
+              Añadir al carrito
+            </button>
+            <button class="wishlist-btn">
+              <i class="far fa-heart"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

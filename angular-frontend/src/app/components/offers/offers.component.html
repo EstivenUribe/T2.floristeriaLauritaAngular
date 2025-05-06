@@ -1,0 +1,96 @@
+<app-nav-footer>
+  <div class="page-container">
+    <div class="page-header">
+      <div class="container">
+        <h1 class="page-title">Ofertas Especiales</h1>
+        <p class="page-description">Descubre nuestras promociones, descuentos y arreglos florales de temporada</p>
+      </div>
+    </div>
+    
+    <section class="banner-section section">
+      <div class="container">
+        <div class="offer-banner">
+          <div class="offer-content">
+            <h2><span class="highlight">20% OFF</span> en todos los ramos</h2>
+            <p>Promoción válida hasta el 31 de mayo de 2025 o hasta agotar existencias.</p>
+            <a [routerLink]="['/productos']" class="btn btn-primary">Ver productos</a>
+          </div>
+        </div>
+      </div>
+    </section>
+    
+    <section class="featured-section section">
+      <div class="container">
+        <h2 class="section-title">Ofertas destacadas</h2>
+        <app-product-carousel></app-product-carousel>
+      </div>
+    </section>
+    
+    <section class="all-offers section">
+      <div class="container">
+        <h2 class="section-title">Todas las ofertas</h2>
+        <div class="offers-grid">
+          <div class="offer-card">
+            <div class="offer-tag">15% OFF</div>
+            <div class="offer-image">
+              <img src="assets/images/offers/offer1.jpg" alt="Ramo de rosas">
+            </div>
+            <div class="offer-info">
+              <h3>Ramo de Rosas Clásico</h3>
+              <div class="price-container">
+                <span class="old-price">$85.000</span>
+                <span class="new-price">$72.250</span>
+              </div>
+              <a href="#" class="btn btn-outline">Añadir al carrito</a>
+            </div>
+          </div>
+          
+          <div class="offer-card">
+            <div class="offer-tag">25% OFF</div>
+            <div class="offer-image">
+              <img src="assets/images/offers/offer2.jpg" alt="Arreglo primaveral">
+            </div>
+            <div class="offer-info">
+              <h3>Arreglo Primaveral</h3>
+              <div class="price-container">
+                <span class="old-price">$120.000</span>
+                <span class="new-price">$90.000</span>
+              </div>
+              <a href="#" class="btn btn-outline">Añadir al carrito</a>
+            </div>
+          </div>
+          
+          <div class="offer-card">
+            <div class="offer-tag">10% OFF</div>
+            <div class="offer-image">
+              <img src="assets/images/offers/offer3.jpg" alt="Orquídea">
+            </div>
+            <div class="offer-info">
+              <h3>Orquídea Phalaenopsis</h3>
+              <div class="price-container">
+                <span class="old-price">$95.000</span>
+                <span class="new-price">$85.500</span>
+              </div>
+              <a href="#" class="btn btn-outline">Añadir al carrito</a>
+            </div>
+          </div>
+          
+          <div class="offer-card">
+            <div class="offer-tag">30% OFF</div>
+            <div class="offer-image">
+              <img src="assets/images/offers/offer4.jpg" alt="Combo ramo y chocolate">
+            </div>
+            <div class="offer-info">
+              <h3>Combo Ramo + Chocolates</h3>
+              <div class="price-container">
+                <span class="old-price">$150.000</span>
+                <span class="new-price">$105.000</span>
+              </div>
+              <a href="#" class="btn btn-outline">Añadir al carrito</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>
+</app-nav-footer>

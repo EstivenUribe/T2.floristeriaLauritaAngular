@@ -1,0 +1,33 @@
+<section id="acerca-de">
+  <h2>Acerca de Nosotros</h2>
+  
+  <div *ngIf="loading" class="loading">
+    <p>Cargando información...</p>
+  </div>
+  
+  <div *ngIf="error" class="error">
+    <p>{{ error }}</p>
+  </div>
+  
+  <div *ngIf="!loading && !error && companyInfo">
+    <div id="info-integrantes">
+      <h3>Nuestro Equipo</h3>
+      <ul *ngIf="companyInfo.integrantes && companyInfo.integrantes.length > 0">
+        <li *ngFor="let integrante of companyInfo.integrantes">
+          {{ integrante.nombre }} {{ integrante.apellido }}
+        </li>
+      </ul>
+      <p *ngIf="!companyInfo.integrantes || companyInfo.integrantes.length === 0">
+        Información de integrantes no disponible.
+      </p>
+    </div>
+    
+    <div id="mision-vision">
+      <h3>Nuestra Misión</h3>
+      <p>{{ companyInfo.mision || 'Misión no disponible.' }}</p>
+      
+      <h3>Nuestra Visión</h3>
+      <p>{{ companyInfo.vision || 'Visión no disponible.' }}</p>
+    </div>
+  </div>
+</section>

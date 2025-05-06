@@ -1,0 +1,189 @@
+// Crear un archivo HTML para generar imágenes de marcador de posición
+// Esta es una solución temporal hasta que se añadan imágenes reales
+
+const fs = require('fs');
+const path = require('path');
+
+// Función para generar un archivo HTML que crea imágenes de marcador de posición
+function createPlaceholderHtml() {
+  const html = `
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Floristería Laurita - Imágenes de Marcador de Posición</title>
+  <style>
+    body { font-family: Arial, sans-serif; margin: 0; padding: 20px; }
+    .container { max-width: 1200px; margin: 0 auto; }
+    .card { margin-bottom: 20px; padding: 15px; border: 1px solid #ddd; border-radius: 8px; }
+    canvas { border: 1px solid #eee; }
+    button { padding: 8px 15px; background: #4CAF50; color: white; border: none; border-radius: 4px; cursor: pointer; margin-top: 10px; }
+    input, select { padding: 8px; margin: 5px 0; width: 100%; box-sizing: border-box; }
+    .flex { display: flex; gap: 15px; flex-wrap: wrap; }
+    .col { flex: 1; min-width: 300px; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Floristería Laurita - Generador de Imágenes</h1>
+    <p>Esta herramienta genera imágenes de marcador de posición para el desarrollo. Guarda cada imagen usando el botón "Descargar".</p>
+    
+    <div class="flex">
+      <div class="col">
+        <div class="card">
+          <h2>Configuración de Imagen</h2>
+          <div>
+            <label for="width">Ancho:</label>
+            <input type="number" id="width" value="600" min="100" max="1200">
+          </div>
+          <div>
+            <label for="height">Alto:</label>
+            <input type="number" id="height" value="400" min="100" max="1200">
+          </div>
+          <div>
+            <label for="bgColor">Color de fondo:</label>
+            <input type="color" id="bgColor" value="#f8f0ff">
+          </div>
+          <div>
+            <label for="textColor">Color del texto:</label>
+            <input type="color" id="textColor" value="#333333">
+          </div>
+          <div>
+            <label for="text">Texto (nombre de imagen):</label>
+            <input type="text" id="text" value="Floristería Laurita" placeholder="Título de la imagen">
+          </div>
+          <div>
+            <label for="category">Categoría:</label>
+            <select id="category">
+              <option value="flowers">Flores</option>
+              <option value="bouquet">Ramo</option>
+              <option value="wedding">Boda</option>
+              <option value="birthday">Cumpleaños</option>
+              <option value="sympathy">Condolencias</option>
+              <option value="anniversary">Aniversario</option>
+              <option value="logo">Logo</option>
+            </select>
+          </div>
+          <button onclick="generateImage()">Generar Imagen</button>
+        </div>
+      </div>
+      
+      <div class="col">
+        <div class="card">
+          <h2>Vista Previa</h2>
+          <canvas id="canvas" width="600" height="400"></canvas>
+          <div>
+            <button onclick="downloadImage()">Descargar Imagen</button>
+            <p id="filename">Nombre de archivo: producto.jpg</p>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <div class="card">
+      <h2>Imágenes Requeridas</h2>
+      <p>Según los errores de consola, necesitas generar estas imágenes:</p>
+      <ul>
+        <li>Logo.png - Logo de la floristería</li>
+        <li>hero-banner.jpg - Banner para la página principal</li>
+        <li>categories/anniversary.jpg - Imagen para la categoría de aniversario</li>
+        <li>categories/birthday.jpg - Imagen para la categoría de cumpleaños</li>
+        <li>categories/wedding.jpg - Imagen para la categoría de bodas</li>
+        <li>categories/sympathy.jpg - Imagen para la categoría de condolencias</li>
+        <li>products/product1.jpg - Imagen para el producto 1</li>
+        <li>products/product2.jpg - Imagen para el producto 2</li>
+        <li>icons/google-logo.png - Logo de Google para inicio de sesión</li>
+      </ul>
+    </div>
+  </div>
+
+  <script>
+    function generateImage() {
+      const canvas = document.getElementById('canvas');
+      const ctx = canvas.getContext('2d');
+      const width = parseInt(document.getElementById('width').value);
+      const height = parseInt(document.getElementById('height').value);
+      const bgColor = document.getElementById('bgColor').value;
+      const textColor = document.getElementById('textColor').value;
+      const text = document.getElementById('text').value;
+      const category = document.getElementById('category').value;
+      
+      // Actualizar tamaño del canvas
+      canvas.width = width;
+      canvas.height = height;
+      
+      // Dibujar fondo
+      ctx.fillStyle = bgColor;
+      ctx.fillRect(0, 0, width, height);
+      
+      // Dibujar texto principal
+      ctx.fillStyle = textColor;
+      ctx.font = 'bold ' + Math.max(20, Math.floor(width / 20)) + 'px Arial';
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.fillText(text, width / 2, height / 2);
+      
+      // Dibujar categoría
+      ctx.font = 'italic ' + Math.max(16, Math.floor(width / 30)) + 'px Arial';
+      ctx.fillText(category.toUpperCase(), width / 2, height / 2 + 40);
+      
+      // Dibujar borde decorativo
+      ctx.strokeStyle = textColor;
+      ctx.lineWidth = 5;
+      ctx.beginPath();
+      ctx.rect(10, 10, width - 20, height - 20);
+      ctx.stroke();
+      
+      // Dibujar flores decorativas en las esquinas
+      drawFlower(ctx, 30, 30, 15, textColor);
+      drawFlower(ctx, width - 30, 30, 15, textColor);
+      drawFlower(ctx, 30, height - 30, 15, textColor);
+      drawFlower(ctx, width - 30, height - 30, 15, textColor);
+      
+      // Actualizar nombre de archivo
+      const filename = text.toLowerCase().replace(/[^a-z0-9]/g, '-') + '.jpg';
+      document.getElementById('filename').textContent = 'Nombre de archivo: ' + filename;
+    }
+    
+    function drawFlower(ctx, x, y, size, color) {
+      ctx.fillStyle = color;
+      // Dibujar pétalos
+      for (let i = 0; i < 6; i++) {
+        ctx.beginPath();
+        const angle = (i / 6) * Math.PI * 2;
+        const dx = Math.cos(angle) * size;
+        const dy = Math.sin(angle) * size;
+        ctx.ellipse(x + dx, y + dy, size / 2, size, angle, 0, Math.PI * 2);
+        ctx.fill();
+      }
+      // Dibujar centro
+      ctx.beginPath();
+      ctx.arc(x, y, size / 2, 0, Math.PI * 2);
+      ctx.fillStyle = '#FFCC00';
+      ctx.fill();
+    }
+    
+    function downloadImage() {
+      const canvas = document.getElementById('canvas');
+      const text = document.getElementById('text').value;
+      const filename = text.toLowerCase().replace(/[^a-z0-9]/g, '-') + '.jpg';
+      
+      // Crear enlace temporal para descarga
+      const link = document.createElement('a');
+      link.download = filename;
+      link.href = canvas.toDataURL('image/jpeg', 0.8);
+      link.click();
+    }
+    
+    // Generar imagen inicial
+    window.onload = generateImage;
+  </script>
+</body>
+</html>
+  `;
+
+  fs.writeFileSync(path.join(__dirname, 'placeholder-generator.html'), html);
+  console.log('Generador de marcadores de posición creado en:', path.join(__dirname, 'placeholder-generator.html'));
+  console.log('Abre ese archivo en un navegador para generar imágenes de marcador de posición.');
+}
+
+createPlaceholderHtml();
