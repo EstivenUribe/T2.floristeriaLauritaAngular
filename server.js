@@ -199,7 +199,7 @@ process.on('SIGINT', () => {
 
 // Usar configuración de base de datos
 const dbConfig = require('./backend/config/db');
-const dbUrl = process.env.MONGODB_URI || dbConfig.url;
+let dbUrl = process.env.MONGODB_URI || dbConfig.url;
 
 // Función para iniciar el servidor Express
 function startServer(isDbConnected = true) {
@@ -227,17 +227,36 @@ function startServer(isDbConnected = true) {
     });
 }
 
+// Validar la URI de MongoDB
+if (!dbConfig.validateUri(dbUrl)) {
+    console.error('🔴 URI de MongoDB inválida. Utilizando URI local de respaldo.');
+    dbUrl = 'mongodb://localhost:27017/floristeria';
+}
+
+// Configurar manejo de eventos de MongoDB
+mongoose.connection.on('connected', () => {
+    console.log('🟢 Conexión a MongoDB establecida');
+});
+
+mongoose.connection.on('error', (err) => {
+    console.error('🔴 Error en la conexión a MongoDB:', err.message);
+});
+
+mongoose.connection.on('disconnected', () => {
+    console.warn('🟠 Desconectado de MongoDB');
+});
+
+// Manejar cierre de la aplicación
+process.on('SIGINT', async () => {
+    await mongoose.connection.close();
+    console.log('Conexión a MongoDB cerrada debido a la terminación de la aplicación');
+    process.exit(0);
+});
+
 // Conectar a MongoDB primero
 console.log('Intentando conectar a MongoDB...');
-mongoose.connect(dbUrl, {
-    ...dbConfig.options,
-    // Aumentar timeout para darle más tiempo a la conexión
-    serverSelectionTimeoutMS: 10000,
-    // Reintentar la conexión varias veces
-    retryWrites: true,
-})
+mongoose.connect(dbUrl, dbConfig.options)
 .then(() => {
-    console.log('🟢 Conexión a MongoDB establecida');
     startServer(true);
 })
 .catch(err => {
@@ -246,4 +265,30 @@ mongoose.connect(dbUrl, {
     
     // Iniciar servidor en modo limitado
     startServer(false);
+
+    // Programar reintentos de conexión
+    let retryCount = 0;
+    const maxRetries = 5;
+    const retryInterval = 10000; // 10 segundos
+
+    const retryConnection = setInterval(() => {
+        if (retryCount >= maxRetries) {
+            console.error(`🔴 Se alcanzó el número máximo de reintentos (${maxRetries}). No se pudo conectar a MongoDB.`);
+            clearInterval(retryConnection);
+            return;
+        }
+
+        retryCount++;
+        console.log(`⏳ Reintentando conexión a MongoDB (${retryCount}/${maxRetries})...`);
+
+        mongoose.connect(dbUrl, dbConfig.options)
+            .then(() => {
+                console.log('🟢 Conexión a MongoDB establecida después de reintentos');
+                clearInterval(retryConnection);
+                // No es necesario reiniciar el servidor, las rutas de API ya están configuradas para usar MongoDB
+            })
+            .catch(err => {
+                console.error(`🔴 Error al reintentar conexión con MongoDB (${retryCount}/${maxRetries}):`, err.message);
+            });
+    }, retryInterval);
 });

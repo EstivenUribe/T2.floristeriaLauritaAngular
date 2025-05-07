@@ -130,7 +130,7 @@
     <div *ngIf="!loading && !error && products.length > 0" class="products-container">
       <div *ngFor="let producto of products" class="producto-box" (click)="showProductDetails(producto)">
         <div class="producto-imagen-container">
-          <img [src]="producto.imagen || 'assets/images/products/placeholder.jpg'" [alt]="producto.nombre" class="imagen-frontal">
+          <img [src]="producto.imagen || 'assets/images/products/placeholder.jpg'" [alt]="producto.nombre" class="imagen-frontal" (error)="handleImageError($event)">
           <div class="imagen-trasera">
             <h3>{{ producto.nombre }}</h3>
             <p *ngIf="producto.descripcion">{{ producto.descripcion | slice:0:80 }}{{ producto.descripcion.length > 80 ? '...' : '' }}</p>
@@ -205,7 +205,7 @@
       
       <div class="product-modal-content">
         <div class="product-modal-image">
-          <img [src]="selectedProduct.imagen || 'assets/images/products/placeholder.jpg'" [alt]="selectedProduct.nombre">
+          <img [src]="selectedProduct.imagen || 'assets/images/products/placeholder.jpg'" [alt]="selectedProduct.nombre" (error)="handleImageError($event)">
           <span *ngIf="selectedProduct.rebaja" class="rebaja-tag">¡En Rebaja!</span>
           <span *ngIf="selectedProduct.destacado" class="destacado-tag">Destacado</span>
         </div>

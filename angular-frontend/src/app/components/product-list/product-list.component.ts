@@ -292,4 +292,12 @@ export class ProductListComponent implements OnInit, OnDestroy {
     
     return range;
   }
+  
+  // Método para manejar imágenes no encontradas
+  handleImageError(event: Event): void {
+    const imgElement = event.target as HTMLImageElement;
+    imgElement.src = 'assets/images/products/placeholder.jpg';
+    // Log para registro de errores de imagen
+    console.warn('Error cargando imagen:', imgElement.alt);
+  }
 }
