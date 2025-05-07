@@ -185,9 +185,9 @@ img {
 }
 
 .btn-primary {
-  background-color: var(--color-primary);
+  background-color: var(--color-primary-dark);
   color: var(--color-text-light);
-  border-color: var(--color-primary);
+  border-color: var(--color-primary-dark);
 }
 
 .btn-primary:hover, .btn-primary:focus {
@@ -454,7 +454,7 @@ textarea:focus {
 
 /* Encabezados de página */
 .page-header {
-  background-color: var(--color-primary-light);
+  background-color: var(--color-primary-dark);
   color: var(--color-text-light);
   padding: var(--spacing-xl) 0;
   margin-bottom: var(--spacing-xl);

@@ -4,7 +4,6 @@ import { LoginComponent } from './components/login/login.component';
 import { AdminComponent } from './components/admin/admin.component';
 import { CatalogComponent } from './components/catalog/catalog.component';
 import { OffersComponent } from './components/offers/offers.component';
-import { OccasionsComponent } from './components/occasions/occasions.component';
 import { AboutComponent } from './components/about/about.component';
 import { ContactComponent } from './components/contact/contact.component';
 import { CartComponent } from './components/cart/cart.component';
@@ -19,7 +18,6 @@ export const routes: Routes = [
   { path: 'admin', component: AdminComponent, canActivate: [adminGuard] },
   { path: 'productos', component: CatalogComponent },
   { path: 'ofertas', component: OffersComponent },
-  { path: 'ocasiones', component: OccasionsComponent },
   { path: 'nosotros', component: AboutComponent },
   { path: 'contacto', component: ContactComponent },
   { path: 'carrito', component: CartComponent },

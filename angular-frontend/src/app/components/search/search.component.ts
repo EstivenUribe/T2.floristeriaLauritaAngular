@@ -4,7 +4,7 @@ import { FormsModule, ReactiveFormsModule, FormControl } from '@angular/forms';
 import { RouterModule, Router, ActivatedRoute } from '@angular/router';
 import { NavFooterComponent } from '../shared/nav-footer/nav-footer.component';
 import { ProductService } from '../../services/product.service';
-import { Product } from '../../models/product.model';
+import { Product, ProductFilter, PaginationParams } from '../../models/product.model';
 import { ProductSkeletonComponent } from '../shared/product-skeleton/product-skeleton.component';
 import { NotificationService } from '../../services/notification.service';
 import { Subject, debounceTime, distinctUntilChanged, takeUntil } from 'rxjs';
@@ -28,28 +28,28 @@ import { Subject, debounceTime, distinctUntilChanged, takeUntil } from 'rxjs';
         <div class="col-12">
           <h1 class="text-center mb-4">Buscar Productos</h1>
           
-          <div class="search-form mb-4">
-            <div class="input-group">
-              <input 
-                type="text"
-                [formControl]="searchControl"
-                class="form-control"
-                placeholder="Buscar productos..."
-                aria-label="Buscar productos"
-              >
-              <button 
-                class="btn btn-primary" 
-                type="button"
-                (click)="search()"
-              >
-                <i class="fas fa-search"></i> Buscar
-              </button>
-            </div>
-          </div>
-          
-          <!-- Filtros -->
-          <div class="filters mb-4">
+          <!-- Búsqueda integrada con filtros -->
+          <div class="mb-4">
             <div class="row">
+              <div class="col-md-8 mb-3">
+                <div class="input-group">
+                  <input 
+                    type="text"
+                    [formControl]="searchControl"
+                    class="form-control"
+                    placeholder="Buscar productos..."
+                    aria-label="Buscar productos"
+                  >
+                  <button 
+                    class="btn btn-primary" 
+                    type="button"
+                    (click)="search()"
+                  >
+                    <i class="fas fa-search"></i> Buscar
+                  </button>
+                </div>
+              </div>
+              
               <div class="col-md-4 mb-3">
                 <select 
                   class="form-select" 
@@ -62,8 +62,10 @@ import { Subject, debounceTime, distinctUntilChanged, takeUntil } from 'rxjs';
                   <option value="arreglos">Arreglos</option>
                 </select>
               </div>
-              
-              <div class="col-md-4 mb-3">
+            </div>
+            
+            <div class="row">
+              <div class="col-md-6 mb-3">
                 <select 
                   class="form-select" 
                   [formControl]="sortControl"
@@ -76,7 +78,7 @@ import { Subject, debounceTime, distinctUntilChanged, takeUntil } from 'rxjs';
                 </select>
               </div>
               
-              <div class="col-md-4 mb-3">
+              <div class="col-md-6 mb-3">
                 <div class="form-check">
                   <input 
                     class="form-check-input" 
@@ -236,20 +238,55 @@ export class SearchComponent implements OnInit, OnDestroy {
   search(): void {
     const query = this.searchControl.value || '';
     const category = this.categoryControl.value || '';
+    const sortValue = this.sortControl.value || 'relevance';
     
-    this.productService.getFilteredProducts(query, category).subscribe({
-      next: (products) => {
-        // Filtrar por descuento si está seleccionado
-        if (this.discountedControl.value) {
-          products = products.filter(p => p.rebaja);
-        }
+    // Prepare sort parameters
+    let sortBy: 'nombre' | 'precio' | 'fechaCreacion' = 'fechaCreacion';
+    let sortDirection: 'asc' | 'desc' = 'desc';
+    
+    // Map UI sort options to API parameters
+    if (sortValue === 'price_asc') {
+      sortBy = 'precio';
+      sortDirection = 'asc';
+    } else if (sortValue === 'price_desc') {
+      sortBy = 'precio';
+      sortDirection = 'desc';
+    } else if (sortValue === 'name_asc') {
+      sortBy = 'nombre';
+      sortDirection = 'asc';
+    } else if (sortValue === 'name_desc') {
+      sortBy = 'nombre';
+      sortDirection = 'desc';
+    }
+    
+    // Create filter object for API
+    const filter: ProductFilter = {
+      search: query,
+      sortBy,
+      sortDirection
+    };
+    
+    if (category) {
+      filter.categoria = category;
+    }
+    
+    if (this.discountedControl.value) {
+      filter.rebaja = true;
+    }
+    
+    // Create pagination params
+    const params: PaginationParams = {
+      page: 1,
+      limit: 20,
+      filter
+    };
+    
+    // Use paginated API
+    this.productService.getProducts(params).subscribe({
+      next: (response) => {
+        this.products = response.items;
         
-        // Ordenar productos según el criterio seleccionado
-        this.sortProducts(products);
-        
-        this.products = products;
-        
-        if (products.length === 0 && (query || category)) {
+        if (this.products.length === 0 && (query || category)) {
           this.notificationService.info('No se encontraron productos que coincidan con tu búsqueda');
         }
       },
@@ -281,7 +318,9 @@ export class SearchComponent implements OnInit, OnDestroy {
     this.search();
   }
   
-  // Método para ordenar productos
+  // This method is no longer needed as sorting is handled by the API
+  // Keeping it as a comment for reference
+  /*
   sortProducts(products: Product[]): void {
     const sortValue = this.sortControl.value;
     
@@ -301,6 +340,7 @@ export class SearchComponent implements OnInit, OnDestroy {
       // Para 'relevance' mantenemos el orden original
     }
   }
+  */
   
   // Método para formatear precio
   formatPrice(price: number): string {

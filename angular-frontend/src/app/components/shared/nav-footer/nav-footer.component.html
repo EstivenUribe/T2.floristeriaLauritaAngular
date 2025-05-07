@@ -1,5 +1,5 @@
 <!-- Header con navegación -->
-<header class="main-header" [ngClass]="{'fixed': isHeaderFixed}">
+<header class="main-header">
   <div class="header-top">
     <div class="container header-container">
       <!-- Hamburger menu -->
@@ -9,7 +9,7 @@
       
       <!-- Logo y nombre -->
       <div class="logo-container">
-        <img src="assets/images/general/Logo.png" alt="Floristería Laurita" class="logo">
+        <img src="assets/Logo.png" alt="Floristería Laurita" class="logo">
         <div class="brand-info">
           <h1>Floristería Laurita</h1>
           <p class="slogan">Belleza natural para cada ocasión</p>
@@ -25,7 +25,7 @@
           </a>
           <a [routerLink]="['/carrito']" class="cart-link">
             <i class="fas fa-shopping-cart"></i>
-            <span class="cart-count">0</span>
+            <span class="cart-count">{{ cartItemCount }}</span>
           </a>
         </div>
       </div>
@@ -38,6 +38,8 @@
       <ul class="menu-items">
         <li><a [routerLink]="['/']" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">Inicio</a></li>
         <li><a [routerLink]="['/productos']" routerLinkActive="active">Catálogo</a></li>
+        <li><a [routerLink]="['/ofertas']" routerLinkActive="active">Ofertas</a></li>
+        <li><a [routerLink]="['/buscar']" routerLinkActive="active">Buscar</a></li>
         <li><a [routerLink]="['/contacto']" routerLinkActive="active">Contacto</a></li>
       </ul>
     </div>
@@ -47,14 +49,13 @@
 <!-- Sidebar para menú hamburguesa -->
 <div class="sidebar" [ngClass]="{'active': showSidebar}">
   <div class="sidebar-header">
-    <img src="assets/images/general/Logo.png" alt="Floristería Laurita" class="sidebar-logo">
+    <img src="assets/Logo.png" alt="Floristería Laurita" class="sidebar-logo">
     <button (click)="toggleSidebar()" class="close-sidebar"><i class="fas fa-times"></i></button>
   </div>
   <ul class="sidebar-menu">
     <li><a [routerLink]="['/']" (click)="toggleSidebar()" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">Inicio</a></li>
     <li><a [routerLink]="['/productos']" (click)="toggleSidebar()" routerLinkActive="active">Catálogo</a></li>
     <li><a [routerLink]="['/ofertas']" (click)="toggleSidebar()" routerLinkActive="active">Ofertas</a></li>
-    <li><a [routerLink]="['/ocasiones']" (click)="toggleSidebar()" routerLinkActive="active">Ocasiones Especiales</a></li>
     <li><a [routerLink]="['/nosotros']" (click)="toggleSidebar()" routerLinkActive="active">Nosotros</a></li>
     <li><a [routerLink]="['/contacto']" (click)="toggleSidebar()" routerLinkActive="active">Contacto</a></li>
     <li><a [routerLink]="['/carrito']" (click)="toggleSidebar()" routerLinkActive="active">Carrito</a></li>

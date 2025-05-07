@@ -2,6 +2,7 @@ import { Component, Input, Output, EventEmitter, OnInit, OnDestroy } from '@angu
 import { CommonModule } from '@angular/common';
 import { Subject, Subscription, timer } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
+import { animate, style, transition, trigger } from '@angular/animations';
 
 export type NotificationType = 'success' | 'error' | 'warning' | 'info';
 
@@ -9,6 +10,17 @@ export type NotificationType = 'success' | 'error' | 'warning' | 'info';
   selector: 'app-notification',
   standalone: true,
   imports: [CommonModule],
+  animations: [
+    trigger('fadeInOut', [
+      transition(':enter', [
+        style({ opacity: 0, transform: 'translateY(-20px)' }),
+        animate('300ms ease-out', style({ opacity: 1, transform: 'translateY(0)' }))
+      ]),
+      transition(':leave', [
+        animate('300ms ease-in', style({ opacity: 0, transform: 'translateY(-20px)' }))
+      ])
+    ])
+  ],
   template: `
     <div *ngIf="visible" 
          class="notification-container"

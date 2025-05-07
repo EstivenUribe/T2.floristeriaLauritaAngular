@@ -5,6 +5,9 @@ const { verifyAdmin } = require('../middleware/auth');
 
 // Rutas públicas
 router.get('/', productController.getAllProducts);
+router.get('/light', productController.getLightProducts);
+router.get('/categorias', productController.getCategorias);
+router.get('/destacados', productController.getFeaturedProducts);
 router.get('/:id', productController.getProductById);
 
 // Rutas protegidas (solo admin)

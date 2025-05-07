@@ -5,7 +5,7 @@ import { TeamService } from '../../services/team.service';
 import { BannerService } from '../../services/banner.service';
 import { CompanyInfoService } from '../../services/company-info.service';
 import { UploadService } from '../../services/upload.service';
-import { Product } from '../../models/product.model';
+import { Product, PaginationParams } from '../../models/product.model';
 import { TeamMember } from '../../models/team-member.model';
 import { Banner, BannerSection } from '../../models/banner.model';
 import { CompanyInfo } from '../../models/company-info.model';
@@ -190,10 +190,20 @@ export class AdminComponent implements OnInit {
 
   // PRODUCTOS
   loadProducts(): void {
-    this.productService.getProducts()
+    // Using the new paginated API
+    const params: PaginationParams = {
+      page: 1,
+      limit: 100, // Fetch a large number of products for admin view
+      filter: {
+        sortBy: 'fechaCreacion',
+        sortDirection: 'desc'
+      }
+    };
+    
+    this.productService.getProducts(params)
       .subscribe({
-        next: (data) => {
-          this.products = data;
+        next: (response) => {
+          this.products = response.items;
         },
         error: (err) => {
           this.error = 'Error al cargar productos.';

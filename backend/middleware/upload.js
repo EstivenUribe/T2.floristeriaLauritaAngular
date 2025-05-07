@@ -6,39 +6,65 @@ const fs = require('fs');
 const storage = multer.diskStorage({
   destination: function(req, file, cb) {
     // Determinar la carpeta de destino (parámetro opcional en la solicitud)
-    let uploadFolder = '../uploads/';
+    let targetFolder;
+    let backupFolder;
+
+    // Carpeta por defecto si no se especifica otra cosa
+    const defaultFolder = 'products';
     
     // Si hay un parámetro folder en el body, usarlo para determinar la subcarpeta
-    if (req.body && req.body.folder) {
-      switch(req.body.folder) {
-        case 'team':
-          uploadFolder = '../uploads/team/';
-          break;
-        case 'banners':
-          uploadFolder = '../uploads/banners/';
-          break;
-        // Caso por defecto (productos)
-        default:
-          uploadFolder = '../uploads/products/';
+    const requestedFolder = (req.body && req.body.folder) ? req.body.folder : defaultFolder;
+    
+    // Folder en assets de Angular (ubicación principal)
+    const assetsPath = path.join(__dirname, '../../angular-frontend/src/assets/images/');
+    
+    // Crear un mapa de rutas para las carpetas
+    const folders = {
+      'products': `${assetsPath}products/`,
+      'team': `${assetsPath}team/`,
+      'banners': `${assetsPath}banners/`,
+      'categories': `${assetsPath}categories/`,
+      'general': `${assetsPath}general/`
+    };
+    
+    // Establecer la carpeta principal en assets
+    targetFolder = folders[requestedFolder] || folders[defaultFolder];
+    
+    // Establecer una carpeta de respaldo para compatibilidad
+    backupFolder = path.join(__dirname, '../uploads/', requestedFolder);
+    
+    // Crear ambas carpetas si no existen
+    [targetFolder, backupFolder].forEach(folder => {
+      if (!fs.existsSync(folder)) {
+        fs.mkdirSync(folder, { recursive: true });
       }
-    } else {
-      // Carpeta por defecto para productos
-      uploadFolder = '../uploads/products/';
-    }
+    });
     
-    // Asegurar que la carpeta existe
-    const fullPath = path.join(__dirname, uploadFolder);
-    if (!fs.existsSync(fullPath)) {
-      fs.mkdirSync(fullPath, { recursive: true });
-    }
+    // Guardar la ruta relativa para usarla en el controlador
+    req.uploadFolderType = requestedFolder;
+    req.uploadFolderRelativePath = `/assets/images/${requestedFolder}/`;
     
-    cb(null, fullPath);
+    cb(null, targetFolder);
   },
   filename: function(req, file, cb) {
-    // Crear un nombre de archivo único usando timestamp y nombre original
-    const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
-    const extension = path.extname(file.originalname);
-    cb(null, file.fieldname + '-' + uniqueSuffix + extension);
+    // Sanitizar el nombre del archivo original
+    const originalName = file.originalname.toLowerCase().replace(/[^a-z0-9.]/g, '-');
+    
+    // Obtener extensión
+    const extension = path.extname(originalName);
+    
+    // Crear nombre base
+    const baseName = path.basename(originalName, extension).substring(0, 20);
+    
+    // Crear un nombre de archivo único usando timestamp y nombre sanitizado
+    const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E6);
+    const fileName = `${baseName}-${uniqueSuffix}${extension}`;
+    
+    // Guardar el nombre de archivo para usarlo en el controlador
+    req.uploadedFileName = fileName;
+    req.uploadedFilePath = `${req.uploadFolderRelativePath}${fileName}`;
+    
+    cb(null, fileName);
   }
 });
 

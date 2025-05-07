@@ -1,6 +1,6 @@
 import { Component, OnInit, AfterViewInit, ViewEncapsulation, PLATFORM_ID, Inject, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { ProductService } from '../../services/product.service';
-import { Product } from '../../models/product.model';
+import { Product, PaginationParams } from '../../models/product.model';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { NotificationService } from '../../services/notification.service';
@@ -70,10 +70,21 @@ export class ProductCarouselComponent implements OnInit, AfterViewInit {
   }
 
   loadProducts(): void {
-    this.productService.getProducts().subscribe({
-      next: (data) => {
-        // Filtrar productos destacados o mostrar todos si no hay destacados
-        this.products = data.filter(product => product.rebaja) || data;
+    // Using the new paginated API with filter for discounted products
+    const params: PaginationParams = {
+      page: 1,
+      limit: 8, // Limit to show in carousel
+      filter: {
+        rebaja: true,
+        sortBy: 'fechaCreacion',
+        sortDirection: 'desc'
+      }
+    };
+    
+    this.productService.getProducts(params).subscribe({
+      next: (response) => {
+        // Get items from paginated response
+        this.products = response.items;
         
         // Si no hay productos destacados, mostrar un mensaje
         if (this.products.length === 0) {
@@ -94,9 +105,23 @@ export class ProductCarouselComponent implements OnInit, AfterViewInit {
   
   // Método para refrescar productos
   refreshProducts(): void {
-    this.productService.refreshProducts().subscribe({
-      next: (data) => {
-        this.products = data.filter(product => product.rebaja) || data;
+    // Force refresh cache then reload
+    this.productService.refreshCache();
+    
+    // Reload products with same parameters
+    const params: PaginationParams = {
+      page: 1,
+      limit: 8,
+      filter: {
+        rebaja: true,
+        sortBy: 'fechaCreacion', 
+        sortDirection: 'desc'
+      }
+    };
+    
+    this.productService.getProducts(params).subscribe({
+      next: (response) => {
+        this.products = response.items;
         this.notificationService.success('Productos actualizados correctamente');
       },
       error: (err) => {

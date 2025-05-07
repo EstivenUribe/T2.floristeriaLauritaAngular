@@ -1,24 +1,198 @@
-<section id="contenedor-productos">
-  <div *ngIf="loading" class="loading">
-    <p>Cargando productos...</p>
+<section class="products-section">
+  <!-- Filtros -->
+  <div class="filters-container">
+    <h3>Filtros</h3>
+    
+    <!-- Búsqueda Incorporada a Filtros -->
+    <div class="filter-group">
+      <label for="search">Buscar y Filtrar</label>
+      <div class="search-input">
+        <input 
+          type="text" 
+          id="search" 
+          name="search" 
+          [(ngModel)]="filter.search" 
+          placeholder="Buscar productos...">
+        <button (click)="applyFilter()">
+          <i class="fas fa-search"></i>
+        </button>
+      </div>
+    </div>
+    
+    <!-- Categoría -->
+    <div class="filter-group">
+      <label for="categoria">Categoría</label>
+      <select id="categoria" [(ngModel)]="filter.categoria" (change)="applyFilter()">
+        <option value="">Todas las categorías</option>
+        <option *ngFor="let categoria of categorias" [value]="categoria">{{ categoria }}</option>
+      </select>
+    </div>
+    
+    <!-- Precio -->
+    <div class="filter-group price-filter">
+      <label>Precio</label>
+      <div class="price-inputs">
+        <input 
+          type="number" 
+          placeholder="Min" 
+          [(ngModel)]="filter.minPrice"
+          min="0">
+        <span>-</span>
+        <input 
+          type="number" 
+          placeholder="Max" 
+          [(ngModel)]="filter.maxPrice"
+          min="0">
+        <button (click)="applyFilter()">Aplicar</button>
+      </div>
+    </div>
+    
+    <!-- Opciones -->
+    <div class="filter-group checkbox-filters">
+      <div class="checkbox-filter">
+        <input 
+          type="checkbox" 
+          id="destacados" 
+          [(ngModel)]="filter.destacado"
+          (change)="applyFilter()">
+        <label for="destacados">Destacados</label>
+      </div>
+      
+      <div class="checkbox-filter">
+        <input 
+          type="checkbox" 
+          id="rebaja" 
+          [(ngModel)]="filter.rebaja"
+          (change)="applyFilter()">
+        <label for="rebaja">En rebaja</label>
+      </div>
+    </div>
+    
+    <!-- Ordenar por -->
+    <div class="filter-group">
+      <label for="sortBy">Ordenar por</label>
+      <div class="sort-controls">
+        <select id="sortBy" [(ngModel)]="filter.sortBy" (change)="applyFilter()">
+          <option value="fechaCreacion">Fecha</option>
+          <option value="nombre">Nombre</option>
+          <option value="precio">Precio</option>
+        </select>
+        <select id="sortDirection" [(ngModel)]="filter.sortDirection" (change)="applyFilter()">
+          <option value="asc">Ascendente</option>
+          <option value="desc">Descendente</option>
+        </select>
+      </div>
+    </div>
+    
+    <!-- Botón para limpiar filtros -->
+    <button class="clear-filters-btn" (click)="clearFilters()">
+      Limpiar filtros
+    </button>
   </div>
   
-  <div *ngIf="error" class="error">
-    <p>{{ error }}</p>
-  </div>
-  
-  <div *ngIf="!loading && !error" class="products-container">
-    <div *ngFor="let producto of products" class="producto-box" (click)="showProductDetails(producto)">
-      <div class="producto-imagen-container">
-        <img [src]="producto.imagen" [alt]="producto.nombre" class="imagen-frontal">
-        <div class="imagen-trasera">
-          <h3>{{ producto.nombre }}</h3>
-          <p>{{ producto.descripcion }}</p>
-          <p class="precio">${{ producto.precio.toFixed(2) }}</p>
-          <button class="view-details-btn">Ver detalles</button>
-          <span *ngIf="producto.rebaja" class="rebaja-tag">¡En Rebaja!</span>
+  <!-- Contenido principal -->
+  <div class="products-main-content">
+    <!-- Indicador de resultados y opciones de vista -->
+    <div class="results-info" *ngIf="!loading && !error">
+      <div class="results-count">
+        <span>{{ totalItems }} productos encontrados</span>
+      </div>
+      
+      <div class="view-options">
+        <label for="pageSize">Mostrar:</label>
+        <select id="pageSize" [(ngModel)]="pageSize" (change)="changePageSize(pageSize)">
+          <option [value]="12">12</option>
+          <option [value]="24">24</option>
+          <option [value]="48">48</option>
+        </select>
+      </div>
+    </div>
+    
+    <!-- Mensaje de carga -->
+    <div *ngIf="loading" class="loading">
+      <div class="loading-spinner"></div>
+      <p>Cargando productos...</p>
+    </div>
+    
+    <!-- Mensaje de error -->
+    <div *ngIf="error" class="error">
+      <p>{{ error }}</p>
+      <button (click)="loadProducts()">Reintentar</button>
+    </div>
+    
+    <!-- Sin resultados -->
+    <div *ngIf="!loading && !error && products.length === 0" class="no-results">
+      <p>No se encontraron productos con los criterios seleccionados.</p>
+      <button (click)="clearFilters()">Limpiar filtros</button>
+    </div>
+    
+    <!-- Listado de productos -->
+    <div *ngIf="!loading && !error && products.length > 0" class="products-container">
+      <div *ngFor="let producto of products" class="producto-box" (click)="showProductDetails(producto)">
+        <div class="producto-imagen-container">
+          <img [src]="producto.imagen || 'assets/images/products/placeholder.jpg'" [alt]="producto.nombre" class="imagen-frontal">
+          <div class="imagen-trasera">
+            <h3>{{ producto.nombre }}</h3>
+            <p *ngIf="producto.descripcion">{{ producto.descripcion | slice:0:80 }}{{ producto.descripcion.length > 80 ? '...' : '' }}</p>
+            <div class="price-container">
+              <p class="precio" *ngIf="!producto.rebaja || !producto.descuento">${{ producto.precio.toFixed(2) }}</p>
+              <div *ngIf="producto.rebaja && producto.descuento" class="discount-price">
+                <p class="precio-final">${{ getPrecioFinal(producto).toFixed(2) }}</p>
+                <p class="precio-original">${{ producto.precio.toFixed(2) }}</p>
+                <span class="descuento-porcentaje">-{{ producto.descuento }}%</span>
+              </div>
+            </div>
+            <button class="view-details-btn">Ver detalles</button>
+            <span *ngIf="producto.rebaja" class="rebaja-tag">¡En Rebaja!</span>
+            <span *ngIf="producto.destacado" class="destacado-tag">Destacado</span>
+          </div>
         </div>
       </div>
+    </div>
+    
+    <!-- Paginación -->
+    <div *ngIf="hasPagination()" class="pagination">
+      <button 
+        [disabled]="currentPage <= 1"
+        (click)="goToPage(currentPage - 1)"
+        class="pagination-button prev">
+        &laquo; Anterior
+      </button>
+      
+      <div class="page-numbers">
+        <button 
+          *ngIf="currentPage > 3" 
+          (click)="goToPage(1)"
+          class="pagination-button">
+          1
+        </button>
+        
+        <span *ngIf="currentPage > 3">...</span>
+        
+        <button 
+          *ngFor="let page of getPageRange()" 
+          [class.active]="page === currentPage"
+          (click)="goToPage(page)"
+          class="pagination-button">
+          {{ page }}
+        </button>
+        
+        <span *ngIf="currentPage < totalPages - 2">...</span>
+        
+        <button 
+          *ngIf="currentPage < totalPages - 2" 
+          (click)="goToPage(totalPages)"
+          class="pagination-button">
+          {{ totalPages }}
+        </button>
+      </div>
+      
+      <button 
+        [disabled]="currentPage >= totalPages"
+        (click)="goToPage(currentPage + 1)"
+        class="pagination-button next">
+        Siguiente &raquo;
+      </button>
     </div>
   </div>
   
@@ -31,17 +205,30 @@
       
       <div class="product-modal-content">
         <div class="product-modal-image">
-          <img [src]="selectedProduct.imagen" [alt]="selectedProduct.nombre">
+          <img [src]="selectedProduct.imagen || 'assets/images/products/placeholder.jpg'" [alt]="selectedProduct.nombre">
           <span *ngIf="selectedProduct.rebaja" class="rebaja-tag">¡En Rebaja!</span>
+          <span *ngIf="selectedProduct.destacado" class="destacado-tag">Destacado</span>
         </div>
         
         <div class="product-modal-details">
-          <h2>{{ selectedProduct.nombre }}</h2>
+          <div class="product-modal-header">
+            <h2>{{ selectedProduct.nombre }}</h2>
+            <div *ngIf="selectedProduct.categoria" class="product-category">
+              <span>Categoría: {{ selectedProduct.categoria }}</span>
+            </div>
+          </div>
+          
           <p class="product-description">{{ selectedProduct.descripcion }}</p>
           
           <div class="product-price">
-            <span class="price">${{ selectedProduct.precio.toFixed(2) }}</span>
-            <span *ngIf="selectedProduct.rebaja" class="original-price">${{ (selectedProduct.precio * 1.2).toFixed(2) }}</span>
+            <div *ngIf="!selectedProduct.rebaja || !selectedProduct.descuento">
+              <span class="price">${{ selectedProduct.precio.toFixed(2) }}</span>
+            </div>
+            <div *ngIf="selectedProduct.rebaja && selectedProduct.descuento" class="discount-price-container">
+              <span class="price">${{ getPrecioFinal(selectedProduct).toFixed(2) }}</span>
+              <span class="original-price">${{ selectedProduct.precio.toFixed(2) }}</span>
+              <span class="discount-badge">-{{ selectedProduct.descuento }}%</span>
+            </div>
           </div>
           
           <div class="product-quantity">
@@ -79,6 +266,15 @@
             <div class="product-detail-item">
               <i class="fas fa-undo"></i>
               <span>Garantía de satisfacción</span>
+            </div>
+          </div>
+          
+          <div class="product-meta" *ngIf="selectedProduct.tags?.length">
+            <div class="product-tags">
+              <span>Etiquetas:</span>
+              <div class="tags-container">
+                <span *ngFor="let tag of selectedProduct.tags" class="tag">{{ tag }}</span>
+              </div>
             </div>
           </div>
           

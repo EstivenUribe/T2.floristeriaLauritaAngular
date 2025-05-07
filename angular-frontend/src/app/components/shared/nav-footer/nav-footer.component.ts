@@ -1,6 +1,8 @@
-import { Component, HostListener } from '@angular/core';
+import { Component, HostListener, OnInit, OnDestroy } from '@angular/core';
 import { Router, RouterModule } from '@angular/router';
 import { CommonModule } from '@angular/common';
+import { CartService } from '../../../services/cart.service';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-nav-footer',
@@ -12,18 +14,35 @@ import { CommonModule } from '@angular/common';
   templateUrl: './nav-footer.component.html',
   styleUrl: './nav-footer.component.css'
 })
-export class NavFooterComponent {
+export class NavFooterComponent implements OnInit, OnDestroy {
   showLoginMenu = false;
   showMobileMenu = false;
   showSidebar = false;
   isHeaderFixed = false;
+  cartItemCount = 0;
+  private cartSubscription: Subscription | null = null;
 
-  constructor(private router: Router) { }
+  constructor(
+    private router: Router,
+    private cartService: CartService
+  ) { }
   
-  // Detecta el scroll para fijar el header
+  ngOnInit(): void {
+    this.cartSubscription = this.cartService.items.subscribe(items => {
+      this.cartItemCount = items.reduce((total, item) => total + item.quantity, 0);
+    });
+  }
+  
+  ngOnDestroy(): void {
+    if (this.cartSubscription) {
+      this.cartSubscription.unsubscribe();
+    }
+  }
+  
+  // Ya no usamos el header fijo
   @HostListener('window:scroll', [])
   onWindowScroll() {
-    this.isHeaderFixed = window.scrollY > 100;
+    // No fijar el header al hacer scroll
   }
 
   // Menú lateral (sidebar)
