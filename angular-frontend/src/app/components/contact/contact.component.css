@@ -6,7 +6,7 @@
 }
 
 .page-header {
-  background-color: #f9f4f7;
+  background-color: #700f49;
   padding: 60px 0 40px;
   text-align: center;
   margin-bottom: 40px;
@@ -33,7 +33,7 @@
   margin-bottom: 40px;
 }
 
-/* Información de contacto */
+/* Informaciï¿½n de contacto */
 .contact-info h2 {
   color: var(--primary-purple);
   font-size: 1.8rem;

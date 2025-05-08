@@ -6,44 +6,12 @@
         <p class="page-description">Descubre nuestra colección de arreglos florales, ramos y plantas</p>
       </div>
     </div>
-    
+    <app-product-list></app-product-list>
     <section class="products-section section">
-      <div class="container">
-        <div class="filters-section">
-          <div class="filter-controls">
-            <div class="filter-group">
-              <label for="category-filter">Categoría:</label>
-              <select id="category-filter" class="filter-select">
-                <option value="all">Todas las categorías</option>
-                <option value="ramos">Ramos</option>
-                <option value="arreglos">Arreglos</option>
-                <option value="plantas">Plantas</option>
-                <option value="accesorios">Accesorios</option>
-              </select>
-            </div>
+      
             
-            <div class="filter-group">
-              <label for="price-filter">Precio:</label>
-              <select id="price-filter" class="filter-select">
-                <option value="all">Todos los precios</option>
-                <option value="0-50000">Menos de $50.000</option>
-                <option value="50000-100000">$50.000 - $100.000</option>
-                <option value="100000-150000">$100.000 - $150.000</option>
-                <option value="150000+">Más de $150.000</option>
-              </select>
-            </div>
-            
-            <div class="filter-group">
-              <div class="search-box">
-                <input type="text" placeholder="Buscar productos...">
-                <button><i class="fas fa-search"></i></button>
-              </div>
-            </div>
-          </div>
-        </div>
         
-        <app-product-list></app-product-list>
-      </div>
+      
     </section>
   </div>
 </app-nav-footer>

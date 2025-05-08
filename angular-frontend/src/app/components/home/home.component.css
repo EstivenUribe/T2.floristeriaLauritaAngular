@@ -434,8 +434,9 @@
 
 /* ===== FOOTER ===== */
 .main-footer {
-  background-color: var(--primary-purple);
-  color: white;
+  background-color: #7854a4;
+  color: #ffffff;
+
 }
 
 .footer-top {
@@ -497,7 +498,7 @@
 
 .subscribe-form button {
   background-color: var(--primary-pink);
-  color: white;
+  color: wheat;
   border: none;
   border-radius: 5px;
   padding: 12px;
