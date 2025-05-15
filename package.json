@@ -8,7 +8,7 @@
     "dev:frontend": "cd angular-frontend && npm start",
     "dev:both": "concurrently \"npm run dev\" \"cd angular-frontend && npm start\"",
     "install": "npm-run-all --parallel install:*",
-    "install:backend": "npm install",
+    "install:backend": "cd backend && npm install",
     "install:frontend": "cd angular-frontend && npm install",
     "build": "cd angular-frontend && npm run build",
     "prod": "npm run build && npm start"
