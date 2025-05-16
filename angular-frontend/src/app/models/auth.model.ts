@@ -1,9 +1,10 @@
 export interface User {
-  _id?: string;
+  _id: string;
   name: string;
   email: string;
   password?: string;
-  role?: string;
+  role: string;
+  isAdmin?: boolean;
   profilePicture?: string;
   createdAt?: Date;
   updatedAt?: Date;
@@ -26,7 +27,7 @@ export interface RegisterRequest {
 export interface AuthResponse {
   token: string;
   user: User;
-  expiresAt?: number;
+  expiresIn?: number;
 }
 
 export interface TokenPayload {

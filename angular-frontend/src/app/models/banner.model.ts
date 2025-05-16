@@ -28,7 +28,13 @@ export interface Banner {
 /**
  * Tipos de secciones para los banners
  */
-export type BannerSection = 'inicio' | 'productos' | 'ofertas' | 'ocasiones' | 'nosotros' | 'contacto';
+export enum BannerSection {
+  Hero = 'hero',
+  About = 'about',
+  Products = 'products',
+  Testimonials = 'testimonials',
+  Contact = 'contact'
+}
 
 /**
  * Interfaz para reordenar banners

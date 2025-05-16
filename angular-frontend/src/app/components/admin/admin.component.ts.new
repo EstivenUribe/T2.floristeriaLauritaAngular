@@ -22,9 +22,6 @@ import { finalize, tap } from 'rxjs/operators';
   styleUrls: ['./admin.component.css']
 })
 export class AdminComponent implements OnInit {
-    // Banner
-    bannerList: Banner[] = [];
-    selectedBannerSection: BannerSection | null = null;
   // State variables
   activeTab: 'productos' | 'equipo' | 'banners' | 'configuracion' = 'productos';
   
@@ -70,47 +67,6 @@ export class AdminComponent implements OnInit {
   loadingCompanyInfo = false;
   submittedCompanyInfo = false;
   companyInfo: CompanyInfo | null = null;
-
-  // Método para subir imagen
-  uploadImage(): void {
-    if (!this.selectedFile) {
-      this.error = 'Por favor, seleccione una imagen primero';
-      return;
-    }
-
-    this.uploadingImage = true;
-    this.error = '';
-    this.success = '';
-
-    const formData = new FormData();
-    formData.append('image', this.selectedFile);
-    formData.append('folder', 'products'); // O 'team' o 'banners' según el contexto
-
-    this.uploadService.uploadImage(formData).subscribe(
-      (response) => {
-        this.imagePreview = response.imageUrl;
-        this.productForm.patchValue({ imagen: response.imageUrl });
-        this.success = 'Imagen subida exitosamente';
-        this.uploadingImage = false;
-      },
-      (error) => {
-        this.uploadingImage = false;
-        let errorMessage = 'Error al subir la imagen';
-        
-        if (error.error && error.error.message) {
-          errorMessage = error.error.message;
-        } else if (error.status === 401) {
-          errorMessage = 'Sesión expirada. Por favor, inicie sesión nuevamente';
-        } else if (error.status === 413) {
-          errorMessage = 'El archivo es demasiado grande';
-        } else if (error.status === 400) {
-          errorMessage = 'Formato de archivo no válido';
-        }
-        
-        this.error = errorMessage;
-      }
-    );
-  }
 
   constructor(
     private formBuilder: FormBuilder,
@@ -165,10 +121,10 @@ export class AdminComponent implements OnInit {
     this.teamMemberForm = this.formBuilder.group({
       _id: [''],
       nombre: ['', [Validators.required]],
-      apellido: [''],
       cargo: ['', [Validators.required]],
-      foto: [''],
-      biografia: ['', [Validators.required]]
+      imagen: [''],
+      descripcion: ['', [Validators.required]],
+      activo: [true]
     });
   }
 
@@ -309,9 +265,10 @@ export class AdminComponent implements OnInit {
       descripcion: product.descripcion,
       imagen: product.imagen,
       precio: product.precio,
-      rebaja: product.rebaja
+      rebaja: product.rebaja,
+      activo: product.activo
     });
-
+    
     // Set image preview if available
     if (product.imagen) {
       this.imagePreview = product.imagen;
@@ -346,16 +303,18 @@ export class AdminComponent implements OnInit {
       descripcion: '',
       imagen: '',
       precio: 0,
-      rebaja: 0
+      rebaja: 0,
+      activo: true
     });
   }
-
+  
   // Product file handling
   onFileSelected(event: Event): void {
     const input = event.target as HTMLInputElement;
     if (input.files && input.files.length > 0) {
       this.selectedFile = input.files[0];
-      // Opcional: mostrar previsualización
+      
+      // Create preview of the image
       const reader = new FileReader();
       reader.onload = (e: any) => {
         this.imagePreview = e.target.result;
@@ -364,7 +323,43 @@ export class AdminComponent implements OnInit {
     }
   }
 
-  // Equipo
+  uploadImage(): void {
+    if (!this.selectedFile) {
+      return;
+    }
+    
+    // Verificar autenticación antes de intentar subir
+    const token = localStorage.getItem('auth_token') || sessionStorage.getItem('auth_token');
+    console.log('Token antes de subir imagen:', token ? 'Existe token' : 'No hay token', 
+                'Token comienza con:', token ? token.substring(0, 10) + '...' : 'N/A');
+    
+    if (!token) {
+      this.error = 'No has iniciado sesión. Por favor, inicia sesión como administrador.';
+      return;
+    }
+    
+    this.uploadingImage = true;
+    this.resetMessages();
+    
+    this.uploadService.uploadImage(this.selectedFile)
+      .subscribe({
+        next: (response) => {
+          // Update form with image path
+          this.productForm.patchValue({
+            imagen: response.imagePath
+          });
+          this.uploadingImage = false;
+          this.success = 'Imagen subida correctamente';
+        },
+        error: (err) => {
+          this.error = 'Error al subir la imagen: ' + (err.error?.message || err.message || 'Error desconocido');
+          this.uploadingImage = false;
+          console.error('Error al subir imagen:', err);
+        }
+      });
+  }
+
+  // EQUIPO
   loadTeamMembers(): void {
     this.teamService.getTeamMembers(false) // Get all team members including inactive
       .subscribe({
@@ -372,54 +367,23 @@ export class AdminComponent implements OnInit {
           this.teamMembers = data;
         },
         error: (err) => {
-          this.error = 'Error al cargar miembros del equipo.';
-          console.error('Error al cargar miembros del equipo:', err);
+          this.error = 'Error al cargar equipo.';
+          console.error('Error al cargar equipo:', err);
         }
       });
-  }
-
-  createTeamMember() {
-    this.submittedTeamMember = true;
-    if (this.teamMemberForm.valid) {
-      const teamMember = {
-        nombre: this.teamMemberForm.get('nombre')?.value,
-        apellido: this.teamMemberForm.get('apellido')?.value || '',
-        cargo: this.teamMemberForm.get('cargo')?.value || '',
-        foto: this.teamMemberSelectedFile ? this.teamMemberImagePreview || '' : '',
-        biografia: this.teamMemberForm.get('biografia')?.value || ''
-      };
-
-      if (this.isEditingTeamMember) {
-        this.teamService.updateTeamMember(this.currentTeamMemberId, teamMember).subscribe({
-          next: () => {
-            this.loadTeamMembers();
-            this.resetTeamMemberForm();
-          },
-          error: (error) => console.error('Error updating team member', error)
-        });
-      } else {
-        this.teamService.createTeamMember(teamMember).subscribe({
-          next: () => {
-            this.loadTeamMembers();
-            this.resetTeamMemberForm();
-          },
-          error: (error) => console.error('Error creating team member', error)
-        });
-      }
-    }
   }
 
   onSubmitTeamMember(): void {
     this.submittedTeamMember = true;
     this.resetMessages();
-
+    
     // Validate form
     if (this.teamMemberForm.invalid) {
       return;
     }
-
+    
     const teamMember: TeamMember = this.teamMemberForm.value;
-
+    
     if (this.isEditingTeamMember) {
       // Update existing team member
       this.teamService.updateTeamMember(this.currentTeamMemberId, teamMember)
@@ -431,7 +395,7 @@ export class AdminComponent implements OnInit {
           },
           error: (err) => {
             this.error = 'Error al actualizar miembro del equipo.';
-            console.error('Error al actualizar miembro del equipo:', err);
+            console.error('Error al actualizar miembro:', err);
           }
         });
     } else {
@@ -445,31 +409,32 @@ export class AdminComponent implements OnInit {
           },
           error: (err) => {
             this.error = 'Error al crear miembro del equipo.';
-            console.error('Error al crear miembro del equipo:', err);
+            console.error('Error al crear miembro:', err);
           }
         });
     }
   }
-
+  
   editTeamMember(teamMember: TeamMember): void {
     this.isEditingTeamMember = true;
     this.currentTeamMemberId = teamMember._id as string;
-
+    
     // Update form with team member data
     this.teamMemberForm.patchValue({
       _id: teamMember._id,
       nombre: teamMember.nombre,
-      apellido: teamMember.apellido,
       cargo: teamMember.cargo,
-      biografia: teamMember.biografia
+      imagen: teamMember.imagen,
+      descripcion: teamMember.descripcion,
+      activo: teamMember.activo
     });
-
+    
     // Set image preview if available
-    if (teamMember.foto) {
-      this.teamMemberImagePreview = teamMember.foto;
+    if (teamMember.imagen) {
+      this.teamMemberImagePreview = teamMember.imagen;
     }
   }
-
+  
   deleteTeamMember(id: string): void {
     if (confirm('¿Estás seguro de que quieres eliminar este miembro del equipo?')) {
       this.teamService.deleteTeamMember(id)
@@ -480,26 +445,26 @@ export class AdminComponent implements OnInit {
           },
           error: (err) => {
             this.error = 'Error al eliminar miembro del equipo.';
-            console.error('Error al eliminar miembro del equipo:', err);
+            console.error('Error al eliminar miembro:', err);
           }
         });
     }
   }
-
+  
   toggleTeamMemberStatus(id: string): void {
     this.teamService.toggleMemberStatus(id)
       .subscribe({
         next: (updatedMember) => {
-          this.success = `Miembro del equipo ${updatedMember.activo ? 'activado' : 'desactivado'} correctamente.`;
+          this.success = `Estado actualizado correctamente.`;
           this.loadTeamMembers();
         },
         error: (err) => {
-          this.error = 'Error al cambiar el estado del miembro del equipo.';
-          console.error('Error al cambiar estado del miembro:', err);
+          this.error = 'Error al cambiar el estado del miembro.';
+          console.error('Error al cambiar estado:', err);
         }
       });
   }
-
+  
   resetTeamMemberForm(): void {
     this.submittedTeamMember = false;
     this.isEditingTeamMember = false;
@@ -515,40 +480,34 @@ export class AdminComponent implements OnInit {
       activo: true
     });
   }
-
+  
   // Team member file handling
-  onTeamMemberFileSelected(event: any): void {
-    const file = event.target.files[0];
-    if (file) {
-      this.teamMemberSelectedFile = file;
+  onTeamMemberFileSelected(event: Event): void {
+    const inputElement = event.target as HTMLInputElement; 
+    if (inputElement.files && inputElement.files.length > 0) {
+      this.teamMemberSelectedFile = inputElement.files[0];
       
-      // Preview image
+      // Create preview of the image
       const reader = new FileReader();
       reader.onload = () => {
-        this.teamMemberImagePreview = reader.result as string;
-        this.teamMemberForm.patchValue({
-          foto: this.teamMemberImagePreview
-        });
+        this.teamMemberImagePreview = reader.result as string; 
       };
-      reader.readAsDataURL(file);
+      reader.readAsDataURL(this.teamMemberSelectedFile);
     }
   }
-
+  
   uploadTeamMemberImage(): void {
     if (!this.teamMemberSelectedFile) {
       return;
     }
-
+    
     this.uploadingTeamMemberImage = true;
     this.resetMessages();
-
-    const teamMemberFormData = new FormData();
-    teamMemberFormData.append('image', this.teamMemberSelectedFile);
-    teamMemberFormData.append('folder', 'team');
-    this.uploadService.uploadImage(teamMemberFormData)
+    
+    this.uploadService.uploadImage(this.teamMemberSelectedFile, 'team')
       .subscribe({
         next: (response) => {
-          // Update form with image path
+          // Update team member form with image path
           this.teamMemberForm.patchValue({
             imagen: response.imagePath
           });
@@ -556,9 +515,9 @@ export class AdminComponent implements OnInit {
           this.success = 'Foto subida correctamente';
         },
         error: (err) => {
-          this.error = 'Error al subir la foto';
+          this.error = 'Error al subir la imagen';
           this.uploadingTeamMemberImage = false;
-          console.error('Error al subir foto:', err);
+          console.error('Error al subir imagen del miembro:', err);
         }
       });
   }
@@ -569,7 +528,7 @@ export class AdminComponent implements OnInit {
       .subscribe({
         next: (data) => {
           this.banners = data;
-          this.filterBanners();
+          this.filteredBanners = [...data];
         },
         error: (err) => {
           this.error = 'Error al cargar banners.';
@@ -577,7 +536,7 @@ export class AdminComponent implements OnInit {
         }
       });
   }
-
+  
   filterBanners(): void {
     if (this.bannerFilter === 'all') {
       this.filteredBanners = [...this.banners];
@@ -587,18 +546,18 @@ export class AdminComponent implements OnInit {
       );
     }
   }
-
+  
   onSubmitBanner(): void {
     this.submittedBanner = true;
     this.resetMessages();
-
+    
     // Validate form
     if (this.bannerForm.invalid) {
       return;
     }
-
+    
     const banner: Banner = this.bannerForm.value;
-
+    
     if (this.isEditingBanner) {
       // Update existing banner
       this.bannerService.updateBanner(this.currentBannerId, banner)
@@ -629,19 +588,19 @@ export class AdminComponent implements OnInit {
         });
     }
   }
-
+  
   editBanner(banner: Banner): void {
     this.isEditingBanner = true;
     this.currentBannerId = banner._id as string;
-
+    
     // Convert date strings to Date objects
-    const fechaInicio = banner.fechaInicio ? new Date(banner.fechaInicio) : new Date();
+    const fechaInicio = banner.fechaInicio ? new Date(banner.fechaInicio) : null;
     const fechaFin = banner.fechaFin ? new Date(banner.fechaFin) : null;
-
+    
     // Format dates for input[type=date]
-    const formattedFechaInicio = fechaInicio.toISOString().split('T')[0];
+    const formattedFechaInicio = fechaInicio ? fechaInicio.toISOString().split('T')[0] : null;
     const formattedFechaFin = fechaFin ? fechaFin.toISOString().split('T')[0] : null;
-
+    
     // Update form with banner data
     this.bannerForm.patchValue({
       _id: banner._id,
@@ -654,15 +613,50 @@ export class AdminComponent implements OnInit {
       fechaFin: formattedFechaFin,
       orden: banner.orden
     });
+    
+    // Set image preview if available
+    if (banner.imagen) {
+      this.bannerImagePreview = banner.imagen;
+    }
   }
-
+  
+  deleteBanner(id: string): void {
+    if(confirm('¿Estás seguro de que quieres eliminar este banner?')) {
+      this.bannerService.deleteBanner(id)
+        .subscribe({
+          next: () => {
+            this.success = 'Banner eliminado correctamente.';
+            this.loadBanners();
+          },
+          error: (err) => {
+            this.error = 'Error al eliminar banner.';
+            console.error('Error al eliminar banner:', err);
+          }
+        });
+    }
+  }
+  
+  toggleBannerStatus(id: string): void {
+    this.bannerService.toggleBannerStatus(id)
+      .subscribe({
+        next: (updatedBanner) => {
+          this.success = `Banner ${updatedBanner.activo ? 'activado' : 'desactivado'} correctamente.`;
+          this.loadBanners();
+        },
+        error: (err) => {
+          this.error = 'Error al cambiar el estado del banner.';
+          console.error('Error al cambiar estado del banner:', err);
+        }
+      });
+  }
+  
   resetBannerForm(): void {
     this.submittedBanner = false;
     this.isEditingBanner = false;
     this.currentBannerId = '';
     this.bannerSelectedFile = null;
     this.bannerImagePreview = null;
-
+    
     this.bannerForm.reset({
       _id: '',
       titulo: '',
@@ -675,85 +669,66 @@ export class AdminComponent implements OnInit {
       orden: 0
     });
   }
-
+  
   // Banner file handling
   onBannerFileSelected(event: Event): void {
-    const inputElement = event.target as HTMLInputElement;
+    const inputElement = event.target as HTMLInputElement; 
     if (inputElement.files && inputElement.files.length > 0) {
       this.bannerSelectedFile = inputElement.files[0];
-
-      // Create preview of the image
+      
+      // Preview image
       const reader = new FileReader();
       reader.onload = () => {
-        this.bannerImagePreview = reader.result as string;
+        this.bannerImagePreview = reader.result as string; 
       };
       reader.readAsDataURL(this.bannerSelectedFile);
     }
   }
-
+  
   uploadBannerImage(): void {
     if (!this.bannerSelectedFile) {
       return;
     }
-
+    
     this.uploadingBannerImage = true;
     this.resetMessages();
-
-    const bannerFormData = new FormData();
-    bannerFormData.append('image', this.bannerSelectedFile);
-    bannerFormData.append('folder', 'banners');
-    this.uploadService.uploadImage(bannerFormData).pipe(
-      finalize(() => this.uploadingBannerImage = false)
-    ).subscribe({
-      next: (response: any) => {
-        this.bannerImagePreview = response.url;
-        this.bannerForm.patchValue({ imagen: response.url });
-        this.bannerSelectedFile = null;
-      },
-      error: (error) => {
-        console.error('Upload failed', error);
-      }
-    });
-  }
-
-  deleteBanner(bannerId: string): void {
-    this.bannerService.deleteBanner(bannerId)
+    
+    this.uploadService.uploadImage(this.bannerSelectedFile, 'banners')
       .subscribe({
-        next: () => {
-          this.loadBanners();
+        next: (response) => {
+          // Update banner form with image path
+          this.bannerForm.patchValue({
+            imagen: response.imagePath
+          });
+          this.uploadingBannerImage = false;
+          this.success = 'Imagen subida correctamente';
         },
-        error: (error) => console.error('Error deleting banner', error)
+        error: (err) => {
+          this.error = 'Error al subir la imagen';
+          this.uploadingBannerImage = false;
+          console.error('Error al subir imagen del banner:', err);
+        }
       });
   }
-
-  toggleBannerStatus(bannerId: string): void {
-    this.bannerService.toggleBannerStatus(bannerId)
-      .subscribe({
-        next: () => {
-          this.loadBanners();
-        },
-        error: (error) => console.error('Error toggling banner status', error)
-      });
-  }
-
+  
   // Helper to get section name
   getBannerSectionName(section: BannerSection): string {
-    switch (section) {
-      case BannerSection.Hero:
-        return 'Hero';
-      case BannerSection.About:
+    switch(section) {
+      case 'hero':
+        return 'Hero Principal';
+      case 'about':
         return 'Sobre Nosotros';
-      case BannerSection.Products:
+      case 'products':
         return 'Productos';
-      case BannerSection.Testimonials:
+      case 'testimonials':
         return 'Testimonios';
-      case BannerSection.Contact:
+      case 'contact':
         return 'Contacto';
       default:
-        return '';
+        return 'Desconocido';
     }
   }
-
+  
   // COMPANY INFO
   loadCompanyInfo(): void {
     this.companyInfoService.getCompanyInfo()
@@ -773,14 +748,14 @@ export class AdminComponent implements OnInit {
         }
       });
   }
-
+  
   onSubmitCompanyInfo(): void {
     this.submittedCompanyInfo = true;
     this.resetMessages();
-
+    
     const companyInfo: CompanyInfo = this.companyInfoForm.value;
-
-    this.companyInfoService.updateCompanyInfo(companyInfo)
+    
+    this.companyInfoService.updateCompanyInfo(companyInfo) 
       .subscribe({
         next: () => {
           this.success = 'Información de la empresa actualizada correctamente.';
@@ -792,16 +767,16 @@ export class AdminComponent implements OnInit {
         }
       });
   }
-
+  
   resetCompanyInfoForm(): void {
     this.submittedCompanyInfo = false;
-
+    
     if (this.companyInfo) {
       this.companyInfoForm.patchValue({
         _id: this.companyInfo._id,
-        mision: this.companyInfo.mision,
-        vision: this.companyInfo.vision,
-        integrantes: this.companyInfo.integrantes
+        mision: this.companyInfo.mision || '',
+        vision: this.companyInfo.vision || '',
+        integrantes: this.companyInfo.integrantes || []
       });
     } else {
       this.companyInfoForm.reset({

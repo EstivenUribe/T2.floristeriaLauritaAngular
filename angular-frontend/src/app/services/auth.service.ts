@@ -1,9 +1,9 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
-import { BehaviorSubject, Observable, throwError, of } from 'rxjs';
-import { catchError, tap, finalize, map } from 'rxjs/operators';
-import { User, LoginRequest, RegisterRequest, AuthResponse, TokenPayload } from '../models/auth.model';
+import { BehaviorSubject, Observable, of, throwError, Subscription } from 'rxjs';
+import { catchError, finalize, map, tap } from 'rxjs/operators';
 import { Router } from '@angular/router';
+import { User, LoginRequest, RegisterRequest, AuthResponse, TokenPayload } from '../models/auth.model';
 
 @Injectable({
   providedIn: 'root'
@@ -18,6 +18,8 @@ export class AuthService {
   private isAuthenticatedSubject = new BehaviorSubject<boolean>(false);
   private isLoadingSubject = new BehaviorSubject<boolean>(false);
   private isAdminSubject = new BehaviorSubject<boolean>(false);
+  private tokenExpirationTimer: any = null;
+  private tokenRefreshSubscription: Subscription | null = null;
   
   // Observables públicos
   public currentUser$ = this.currentUserSubject.asObservable();
@@ -32,7 +34,68 @@ export class AuthService {
     // Inicializar estado de autenticación al cargar el servicio
     this.loadAuthState();
   }
+
+  // Obtener el token actual
+  getToken(): string | null {
+    // Primero intentar obtener del localStorage
+    const token = localStorage.getItem(this.tokenKey);
+    if (token) return token;
+    
+    // Si no existe en localStorage, intentar sessionStorage
+    return sessionStorage.getItem(this.tokenKey);
+  }
+
+  // Cerrar sesión
+  logout(): void {
+    console.log('Cerrando sesión...');
+    
+    // Limpiar el almacenamiento
+    localStorage.removeItem(this.tokenKey);
+    localStorage.removeItem(this.userKey);
+    sessionStorage.removeItem(this.tokenKey);
+    sessionStorage.removeItem(this.userKey);
+    
+    // Limpiar los observables
+    this.currentUserSubject.next(null);
+    this.isAuthenticatedSubject.next(false);
+    this.isAdminSubject.next(false);
+    
+    // Limpiar el temporizador de cierre de sesión automático
+    this.clearAutoLogout();
+    
+    console.log('Sesión cerrada');
+    
+    // Redirigir al login
+    this.router.navigate(['/login']);
+  }
   
+  // Configurar el cierre de sesión automático
+  private setAutoLogout(expirationDuration: number): void {
+    // Limpiar el temporizador existente si lo hay
+    this.clearAutoLogout();
+    
+    console.log(`La sesión expirará en ${expirationDuration / 1000} segundos`);
+    
+    // Configurar un nuevo temporizador
+    this.tokenExpirationTimer = setTimeout(() => {
+      console.log('La sesión ha expirado automáticamente');
+      this.logout();
+    }, expirationDuration);
+  }
+  
+  // Limpiar el temporizador de cierre de sesión automático
+  private clearAutoLogout(): void {
+    if (this.tokenExpirationTimer) {
+      clearTimeout(this.tokenExpirationTimer);
+      this.tokenExpirationTimer = null;
+    }
+    
+    if (this.tokenRefreshSubscription) {
+      this.tokenRefreshSubscription.unsubscribe();
+      this.tokenRefreshSubscription = null;
+    }
+  }
+
   // Iniciar sesión
   login(credentials: LoginRequest): Observable<AuthResponse> {
     this.isLoadingSubject.next(true);
@@ -43,26 +106,32 @@ export class AuthService {
       finalize(() => this.isLoadingSubject.next(false))
     );
   }
-  
+
   // Iniciar sesión como administrador
   adminLogin(password: string): Observable<boolean> {
-    // En un caso real, esto sería una petición al backend
-    // Por ahora, simulamos una verificación simple
     this.isLoadingSubject.next(true);
     
-    // Implementar con llamada real a API en producción
+    // Simulamos una respuesta del servidor
     if (password === 'admin123') {
+      const expiresIn = 3600; // 1 hora en segundos
       const mockResponse: AuthResponse = {
         token: 'admin_token',
         user: {
           _id: 'admin',
           name: 'Administrador',
           email: 'admin@example.com',
-          role: 'admin'
-        }
+          role: 'admin',
+          isAdmin: true
+        },
+        expiresIn: expiresIn
       };
       
-      this.handleAuthResponse(mockResponse, false);
+      // Guardar la información de autenticación
+      this.handleAuthResponse(mockResponse, true);
+      
+      // Configurar el temporizador para cerrar sesión automáticamente
+      this.setAutoLogout(expiresIn * 1000);
+      
       this.isLoadingSubject.next(false);
       return of(true);
     } else {
@@ -70,7 +139,8 @@ export class AuthService {
       return throwError(() => new Error('Contraseña de administrador incorrecta'));
     }
   }
-  
+  }
+
   // Registrar usuario
   register(userData: RegisterRequest): Observable<AuthResponse> {
     this.isLoadingSubject.next(true);
@@ -81,24 +151,7 @@ export class AuthService {
       finalize(() => this.isLoadingSubject.next(false))
     );
   }
-  
-  // Cerrar sesión
-  logout(): void {
-    // Eliminar token y datos de usuario
-    localStorage.removeItem(this.tokenKey);
-    localStorage.removeItem(this.userKey);
-    sessionStorage.removeItem(this.tokenKey);
-    sessionStorage.removeItem(this.userKey);
-    
-    // Actualizar estado
-    this.currentUserSubject.next(null);
-    this.isAuthenticatedSubject.next(false);
-    this.isAdminSubject.next(false);
-    
-    // Redirigir a inicio
-    this.router.navigate(['/']);
-  }
-  
+
   // Obtener información del usuario actual
   getCurrentUser(): Observable<User | null> {
     // Si ya tenemos usuario en el estado, devolverlo
@@ -132,7 +185,7 @@ export class AuthService {
     // Si no hay token, no hay usuario autenticado
     return of(null);
   }
-  
+
   // Actualizar perfil de usuario
   updateProfile(userData: Partial<User>): Observable<User> {
     this.isLoadingSubject.next(true);
@@ -150,7 +203,7 @@ export class AuthService {
       finalize(() => this.isLoadingSubject.next(false))
     );
   }
-  
+
   // Verificar token
   isTokenValid(): Observable<boolean> {
     const token = this.getToken();
@@ -174,28 +227,32 @@ export class AuthService {
       return of(false);
     }
   }
-  
-  // Obtener token actual
-  getToken(): string | null {
-    return localStorage.getItem(this.tokenKey) || sessionStorage.getItem(this.tokenKey);
-  }
-  
+
   // Métodos privados
   
-  // Manejar respuesta de autenticación
-  private handleAuthResponse(response: AuthResponse, rememberMe: boolean = false): void {
-    const { token, user } = response;
+  // Manejar la respuesta de autenticación
+  private handleAuthResponse(authData: AuthResponse, remember: boolean): void {
+    const storage = remember ? localStorage : sessionStorage;
     
-    // Guardar token y usuario
-    this.saveToken(token, rememberMe);
-    this.saveUser(user);
+    // Asegurarse de que el rol de administrador esté configurado correctamente
+    const isAdmin = authData.user.role === 'admin' || authData.user.isAdmin === true;
+    const user: User = {
+      ...authData.user,
+      isAdmin: isAdmin
+    };
     
-    // Actualizar estado
+    // Guardar token y usuario en el almacenamiento
+    storage.setItem(this.tokenKey, authData.token);
+    storage.setItem(this.userKey, JSON.stringify(user));
+    
+    // Actualizar los observables
     this.currentUserSubject.next(user);
     this.isAuthenticatedSubject.next(true);
-    this.isAdminSubject.next(user.role === 'admin');
+    this.isAdminSubject.next(isAdmin);
+    
+    console.log('Usuario autenticado:', { user, token: authData.token });
   }
-  
+
   // Guardar token
   private saveToken(token: string, rememberMe: boolean): void {
     if (rememberMe) {
@@ -217,31 +274,34 @@ export class AuthService {
     
     if (token) {
       try {
-        // Verificar si el token es válido
-        const payload = this.parseToken(token);
-        const isExpired = payload.exp * 1000 < Date.now();
+        // Cargar usuario desde el almacenamiento local
+        const userData = localStorage.getItem(this.userKey) || sessionStorage.getItem(this.userKey);
         
-        if (isExpired) {
-          this.logout();
-          return;
-        }
-        
-        // Cargar usuario desde almacenamiento
-        const storage = localStorage.getItem(this.tokenKey) ? localStorage : sessionStorage;
-        const userJson = storage.getItem(this.userKey);
-        
-        if (userJson) {
-          const user = JSON.parse(userJson) as User;
+        if (userData) {
+          const user: User = JSON.parse(userData);
+          const isAdmin = user.role === 'admin' || user.isAdmin === true;
+          
+          // Actualizar los observables con los datos del usuario
           this.currentUserSubject.next(user);
           this.isAuthenticatedSubject.next(true);
-          this.isAdminSubject.next(user.role === 'admin');
+          this.isAdminSubject.next(isAdmin);
+          
+          console.log('Sesión cargada:', { user, isAdmin });
+          
+          // Configurar el temporizador para cerrar sesión automáticamente
+          const expiresIn = 3600 * 1000; // 1 hora por defecto para el token de admin
+          this.setAutoLogout(expiresIn);
         } else {
-          // Si tenemos token pero no usuario, intentar obtener usuario
-          this.getCurrentUser().subscribe();
+          console.warn('Token encontrado pero no hay datos de usuario');
+          this.logout();
         }
       } catch (error) {
+        console.error('Error al cargar el estado de autenticación:', error);
         this.logout();
       }
+    } else {
+      // No hay token, asegurarse de que el estado sea de no autenticado
+      this.logout();
     }
   }
   

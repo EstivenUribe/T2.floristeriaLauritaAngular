@@ -1,8 +1,9 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpErrorResponse, HttpParams } from '@angular/common/http';
 import { Observable, throwError, BehaviorSubject, of } from 'rxjs';
-import { catchError, retry, tap, map, shareReplay, finalize } from 'rxjs/operators';
+import { catchError, retry, tap, map, shareReplay, finalize, switchMap } from 'rxjs/operators';
 import { Product, ProductFilter, PaginationParams, PaginatedResponse } from '../models/product.model';
+import { UploadService } from './upload.service';
 
 @Injectable({
   providedIn: 'root'
@@ -16,7 +17,7 @@ export class ProductService {
   private featuredProductsCache = new BehaviorSubject<Product[]>([]);
   private categoriesCache = new BehaviorSubject<string[]>([]);
 
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient, private uploadService: UploadService) { }
 
   // Estado de carga
   get isLoading(): Observable<boolean> {
@@ -176,18 +177,20 @@ export class ProductService {
   }
 
   // Crear un nuevo producto
-  createProduct(product: Product): Observable<Product> {
-    return this.http.post<Product>(this.apiUrl, product).pipe(
+  createProduct(product: Product, imagenFile: File): Observable<Product> {
+    const productFormData = new FormData();
+    productFormData.append('image', imagenFile);
+    productFormData.append('folder', 'products');
+    return this.uploadService.uploadImage(productFormData).pipe(
+      switchMap((uploadedImage: any) => {
+        product.imagen = uploadedImage.url; // Ajusta según la respuesta de tu backend
+        return this.http.post<Product>(this.apiUrl, product);
+      }),
       tap(newProduct => {
-        // Actualizar caché individual
         if (newProduct._id) {
           this.productCache.set(newProduct._id, newProduct);
         }
-        
-        // Invalidar caché de productos para forzar recarga
         this.productsCache.clear();
-        
-        // Invalidar caché de productos destacados si el nuevo producto es destacado
         if (newProduct.destacado) {
           this.featuredProductsCache.next([]);
         }
@@ -216,7 +219,7 @@ export class ProductService {
   }
 
   // Eliminar un producto
-  deleteProduct(id: string): Observable<any> {
+  deleteProduct(id: string): Observable<void> {
     return this.http.delete(`${this.apiUrl}/${id}`).pipe(
       tap(() => {
         // Eliminar de la caché individual
@@ -228,6 +231,7 @@ export class ProductService {
         // Invalidar caché de productos destacados
         this.featuredProductsCache.next([]);
       }),
+      map(() => {}),  // Convert to void
       catchError(this.handleError)
     );
   }
