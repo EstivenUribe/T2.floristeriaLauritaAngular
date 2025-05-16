@@ -11,13 +11,13 @@
 /* Variables de color - Nueva paleta */
 :root {
   /* Colores principales */
-  --color-primary: #a35bff;      /* Púrpura */
+  --color-primary: #000000;      /* Púrpura */
   --color-secondary: #40E0D0;    /* Turquesa */
   --color-tertiary: #98FB98;     /* Verde menta */
   --color-accent: #FFFFE0;       /* Amarillo suave */
 
   /* Variaciones del color principal */
-  --color-primary-light: #B088D8;
+  --color-primary-light: #7D56AE;
   --color-primary-dark: #7D54A8;
 
   /* Variaciones del color secundario */

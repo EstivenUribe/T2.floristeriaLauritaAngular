@@ -58,11 +58,18 @@
 
 /* Historia */
 .about-content {
+
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 40px;
   align-items: center;
   margin-bottom: 40px;
+  padding: 30px;
+  margin-top: 30px;
+  background-color: #fff;
+  box-shadow: 0 14px 28px rgba(128, 128, 128, 0.25), 0 10px 10px rgba(138, 137, 137, 0.22);
+  position: relative;
+  overflow: hidden;
 }
 
 .about-text h2 {
@@ -96,16 +103,17 @@
 }
 
 .mission-card, .vision-card {
-  background-color: white;
-  border-radius: var(--border-radius-md);
-  padding: 30px;
-  box-shadow: var(--shadow-sm);
   transition: transform 0.3s, box-shadow 0.3s;
+  padding: 30px;
+  margin-top: 30px;
+  background-color: #fff;
+  box-shadow: 0 14px 28px rgba(128, 128, 128, 0.25), 0 10px 10px rgba(138, 137, 137, 0.22);
+  position: relative;
+  overflow: hidden;
 }
 
 .mission-card:hover, .vision-card:hover {
-  transform: translateY(-10px);
-  box-shadow: var(--shadow-md);
+
 }
 
 .card-icon {
@@ -160,12 +168,14 @@
 }
 
 .value-card {
-  background-color: white;
-  border-radius: var(--border-radius-md);
   padding: 30px;
   text-align: center;
-  box-shadow: var(--shadow-sm);
   transition: transform 0.3s, box-shadow 0.3s;
+  margin-top: 30px;
+  background-color: #fff;
+  box-shadow: 0 14px 28px rgba(128, 128, 128, 0.25), 0 10px 10px rgba(138, 137, 137, 0.22);
+  position: relative;
+  overflow: hidden;
 }
 
 .value-card:hover {
@@ -210,11 +220,13 @@
 }
 
 .team-card {
-  background-color: white;
-  border-radius: var(--border-radius-md);
-  overflow: hidden;
-  box-shadow: var(--shadow-sm);
   transition: transform 0.3s, box-shadow 0.3s;
+  padding: 30px;
+  margin-top: 30px;
+  background-color: #fff;
+  box-shadow: 0 14px 28px rgba(128, 128, 128, 0.25), 0 10px 10px rgba(138, 137, 137, 0.22);
+  position: relative;
+  overflow: hidden;
 }
 
 .team-card:hover {
@@ -269,11 +281,13 @@
 }
 
 .testimonial-card {
-  background-color: white;
-  border-radius: var(--border-radius-md);
-  overflow: hidden;
-  box-shadow: var(--shadow-sm);
   transition: transform 0.3s, box-shadow 0.3s;
+  padding: 30px;
+  margin-top: 30px;
+  background-color: #fff;
+  box-shadow: 0 14px 28px rgba(128, 128, 128, 0.25), 0 10px 10px rgba(138, 137, 137, 0.22);
+  position: relative;
+  overflow: hidden;
 }
 
 .testimonial-card:hover {
@@ -378,12 +392,15 @@
   display: flex;
   align-items: center;
   gap: 20px;
-  background-color: white;
-  padding: 20px;
   margin-bottom: 20px;
   border-radius: var(--border-radius-md);
-  box-shadow: var(--shadow-sm);
   transition: transform 0.3s, box-shadow 0.3s;
+  padding: 30px;
+  margin-top: 30px;
+  background-color: #fff;
+  box-shadow: 0 14px 28px rgba(128, 128, 128, 0.25), 0 10px 10px rgba(138, 137, 137, 0.22);
+  position: relative;
+  overflow: hidden;
 }
 
 .award-item:hover {
@@ -425,15 +442,15 @@
     grid-template-columns: 1fr;
     gap: 30px;
   }
-  
+
   .about-text {
     order: 1;
   }
-  
+
   .about-image {
     order: 0;
   }
-  
+
   .testimonials-grid {
     grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
   }
@@ -443,27 +460,27 @@
   .page-header {
     padding: 40px 0 30px;
   }
-  
+
   .section {
     padding: 40px 0;
   }
-  
+
   .page-title, .section-title {
     font-size: 2rem;
   }
-  
+
   .about-text h2, .mission-card h2, .vision-card h2 {
     font-size: 1.8rem;
   }
-  
+
   .team-grid {
     grid-template-columns: 1fr;
   }
-  
+
   .testimonials-grid {
     grid-template-columns: 1fr;
   }
-  
+
   .award-item {
     flex-direction: column;
     text-align: center;

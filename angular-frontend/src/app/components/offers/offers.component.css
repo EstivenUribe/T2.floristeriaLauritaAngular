@@ -73,11 +73,12 @@
 }
 
 .offer-card {
-  background-color: white;
-  border-radius: var(--border-radius-md);
   overflow: hidden;
-  box-shadow: var(--shadow-sm);
   transition: transform 0.3s, box-shadow 0.3s;
+  text-align: center;
+  padding-bottom: 20px;
+  background-color: #fff;
+  box-shadow: 0 14px 28px rgba(128, 128, 128, 0.25), 0 10px 10px rgba(138, 137, 137, 0.22);
   position: relative;
 }
 
@@ -151,17 +152,17 @@
   .offer-banner {
     height: 250px;
   }
-  
+
   .offer-content {
     margin-left: 30px;
     padding: 20px;
     max-width: 400px;
   }
-  
+
   .offer-content h2 {
     font-size: 1.5rem;
   }
-  
+
   .highlight {
     font-size: 1.8rem;
   }
@@ -171,17 +172,17 @@
   .page-header {
     padding: 40px 0 30px;
   }
-  
+
   .page-title {
     font-size: 2rem;
   }
-  
+
   .offer-banner {
     height: auto;
     padding: 40px 0;
     justify-content: center;
   }
-  
+
   .offer-content {
     margin-left: 0;
     max-width: 90%;
@@ -192,15 +193,15 @@
   .offer-content {
     padding: 15px;
   }
-  
+
   .offer-content h2 {
     font-size: 1.3rem;
   }
-  
+
   .highlight {
     font-size: 1.5rem;
   }
-  
+
   .offer-content p {
     font-size: 0.9rem;
   }

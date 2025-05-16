@@ -2,23 +2,23 @@
   <!-- Filtros -->
   <div class="filters-container">
     <h3>Filtros</h3>
-    
+
     <!-- Búsqueda Incorporada a Filtros -->
     <div class="filter-group">
       <label for="search">Buscar y Filtrar</label>
       <div class="search-input">
-        <input 
-          type="text" 
-          id="search" 
-          name="search" 
-          [(ngModel)]="filter.search" 
+        <input class = "effect-1"
+          type="text"
+          id="search"
+          name="search"
+          [(ngModel)]="filter.search"
           placeholder="Buscar productos...">
         <button (click)="applyFilter()">
           <i class="fas fa-search"></i>
         </button>
       </div>
     </div>
-    
+
     <!-- Categoría -->
     <div class="filter-group">
       <label for="categoria">Categoría</label>
@@ -27,47 +27,47 @@
         <option *ngFor="let categoria of categorias" [value]="categoria">{{ categoria }}</option>
       </select>
     </div>
-    
+
     <!-- Precio -->
     <div class="filter-group price-filter">
       <label>Precio</label>
       <div class="price-inputs">
-        <input 
-          type="number" 
-          placeholder="Min" 
+        <input
+          type="number"
+          placeholder="Min"
           [(ngModel)]="filter.minPrice"
           min="0">
         <span>-</span>
-        <input 
-          type="number" 
-          placeholder="Max" 
+        <input
+          type="number"
+          placeholder="Max"
           [(ngModel)]="filter.maxPrice"
           min="0">
         <button (click)="applyFilter()">Aplicar</button>
       </div>
     </div>
-    
+
     <!-- Opciones -->
     <div class="filter-group checkbox-filters">
       <div class="checkbox-filter">
-        <input 
-          type="checkbox" 
-          id="destacados" 
+        <input
+          type="checkbox"
+          id="destacados"
           [(ngModel)]="filter.destacado"
           (change)="applyFilter()">
         <label for="destacados">Destacados</label>
       </div>
-      
+
       <div class="checkbox-filter">
-        <input 
-          type="checkbox" 
-          id="rebaja" 
+        <input
+          type="checkbox"
+          id="rebaja"
           [(ngModel)]="filter.rebaja"
           (change)="applyFilter()">
         <label for="rebaja">En rebaja</label>
       </div>
     </div>
-    
+
     <!-- Ordenar por -->
     <div class="filter-group">
       <label for="sortBy">Ordenar por</label>
@@ -83,13 +83,13 @@
         </select>
       </div>
     </div>
-    
+
     <!-- Botón para limpiar filtros -->
     <button class="clear-filters-btn" (click)="clearFilters()">
       Limpiar filtros
     </button>
   </div>
-  
+
   <!-- Contenido principal -->
   <div class="products-main-content">
     <!-- Indicador de resultados y opciones de vista -->
@@ -97,7 +97,7 @@
       <div class="results-count">
         <span>{{ totalItems }} productos encontrados</span>
       </div>
-      
+
       <div class="view-options">
         <label for="pageSize">Mostrar:</label>
         <select id="pageSize" [(ngModel)]="pageSize" (change)="changePageSize(pageSize)">
@@ -107,25 +107,25 @@
         </select>
       </div>
     </div>
-    
+
     <!-- Mensaje de carga -->
     <div *ngIf="loading" class="loading">
       <div class="loading-spinner"></div>
       <p>Cargando productos...</p>
     </div>
-    
+
     <!-- Mensaje de error -->
     <div *ngIf="error" class="error">
       <p>{{ error }}</p>
       <button (click)="loadProducts()">Reintentar</button>
     </div>
-    
+
     <!-- Sin resultados -->
     <div *ngIf="!loading && !error && products.length === 0" class="no-results">
       <p>No se encontraron productos con los criterios seleccionados.</p>
       <button (click)="clearFilters()">Limpiar filtros</button>
     </div>
-    
+
     <!-- Listado de productos -->
     <div *ngIf="!loading && !error && products.length > 0" class="products-container">
       <div *ngFor="let producto of products" class="producto-box" (click)="showProductDetails(producto)">
@@ -149,45 +149,45 @@
         </div>
       </div>
     </div>
-    
+
     <!-- Paginación -->
     <div *ngIf="hasPagination()" class="pagination">
-      <button 
+      <button
         [disabled]="currentPage <= 1"
         (click)="goToPage(currentPage - 1)"
         class="pagination-button prev">
         &laquo; Anterior
       </button>
-      
+
       <div class="page-numbers">
-        <button 
-          *ngIf="currentPage > 3" 
+        <button
+          *ngIf="currentPage > 3"
           (click)="goToPage(1)"
           class="pagination-button">
           1
         </button>
-        
+
         <span *ngIf="currentPage > 3">...</span>
-        
-        <button 
-          *ngFor="let page of getPageRange()" 
+
+        <button
+          *ngFor="let page of getPageRange()"
           [class.active]="page === currentPage"
           (click)="goToPage(page)"
           class="pagination-button">
           {{ page }}
         </button>
-        
+
         <span *ngIf="currentPage < totalPages - 2">...</span>
-        
-        <button 
-          *ngIf="currentPage < totalPages - 2" 
+
+        <button
+          *ngIf="currentPage < totalPages - 2"
           (click)="goToPage(totalPages)"
           class="pagination-button">
           {{ totalPages }}
         </button>
       </div>
-      
-      <button 
+
+      <button
         [disabled]="currentPage >= totalPages"
         (click)="goToPage(currentPage + 1)"
         class="pagination-button next">
@@ -195,21 +195,21 @@
       </button>
     </div>
   </div>
-  
+
   <!-- Modal de detalles del producto -->
   <div class="product-modal-overlay" *ngIf="showModal" (click)="closeModalOnOverlayClick($event)">
     <div class="product-modal" *ngIf="selectedProduct">
       <button class="close-modal" (click)="closeModal()">
         <i class="fas fa-times"></i>
       </button>
-      
+
       <div class="product-modal-content">
         <div class="product-modal-image">
           <img [src]="selectedProduct.imagen || 'assets/images/products/placeholder.jpg'" [alt]="selectedProduct.nombre" (error)="handleImageError($event)">
           <span *ngIf="selectedProduct.rebaja" class="rebaja-tag">¡En Rebaja!</span>
           <span *ngIf="selectedProduct.destacado" class="destacado-tag">Destacado</span>
         </div>
-        
+
         <div class="product-modal-details">
           <div class="product-modal-header">
             <h2>{{ selectedProduct.nombre }}</h2>
@@ -217,9 +217,9 @@
               <span>Categoría: {{ selectedProduct.categoria }}</span>
             </div>
           </div>
-          
+
           <p class="product-description">{{ selectedProduct.descripcion }}</p>
-          
+
           <div class="product-price">
             <div *ngIf="!selectedProduct.rebaja || !selectedProduct.descuento">
               <span class="price">${{ selectedProduct.precio.toFixed(2) }}</span>
@@ -230,7 +230,7 @@
               <span class="discount-badge">-{{ selectedProduct.descuento }}%</span>
             </div>
           </div>
-          
+
           <div class="product-quantity">
             <span>Cantidad:</span>
             <div class="quantity-controls">
@@ -239,13 +239,13 @@
               <button (click)="incrementQuantity()">+</button>
             </div>
           </div>
-          
+
           <div class="product-variations" *ngIf="selectedProduct.variaciones?.length">
             <div class="variation" *ngFor="let variation of selectedProduct.variaciones">
               <span>{{ variation.nombre }}:</span>
               <div class="variation-options">
-                <button 
-                  *ngFor="let option of variation.opciones" 
+                <button
+                  *ngFor="let option of variation.opciones"
                   class="variation-option"
                   [class.selected]="option.selected">
                   {{ option.valor }}
@@ -253,7 +253,7 @@
               </div>
             </div>
           </div>
-          
+
           <div class="product-details-list">
             <div class="product-detail-item">
               <i class="fas fa-check-circle"></i>
@@ -268,7 +268,7 @@
               <span>Garantía de satisfacción</span>
             </div>
           </div>
-          
+
           <div class="product-meta" *ngIf="selectedProduct.tags?.length">
             <div class="product-tags">
               <span>Etiquetas:</span>
@@ -277,7 +277,7 @@
               </div>
             </div>
           </div>
-          
+
           <div class="product-actions">
             <button class="add-to-cart-btn" (click)="addToCart()">
               <i class="fas fa-shopping-cart"></i>

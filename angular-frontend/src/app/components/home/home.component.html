@@ -7,7 +7,7 @@
         <div class="menu-hamburger" (click)="toggleSidebar()">
           <i class="fas fa-bars"></i>
         </div>
-        
+
         <!-- Logo y nombre -->
         <div class="logo-container">
           <img src="assets/images/general/Logo.png" alt="Floristería Laurita" class="logo">
@@ -16,9 +16,9 @@
             <p class="slogan">Belleza natural para cada ocasión</p>
           </div>
         </div>
-        
+
         <!-- Acciones de usuario -->
-        <div class="user-actions">          
+        <div class="user-actions">
           <div class="auth-cart-container">
             <a href="#" class="auth-link" (click)="goToLogin($event)">
               <i class="fas fa-user"></i>
@@ -32,19 +32,21 @@
         </div>
       </div>
     </div>
-    
+
     <!-- Menú principal -->
-    <nav class="main-menu">
+    <nav class="main-menu" [ngClass]="{'fixed': false}">
       <div class="container">
         <ul class="menu-items">
-          <li><a [routerLink]="['/']" class="active">Inicio</a></li>
-          <li><a [routerLink]="['/productos']">Catálogo</a></li>
-          <li><a [routerLink]="['/contacto']">Contacto</a></li>
+          <li><a [routerLink]="['/']" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">Inicio</a></li>
+          <li><a [routerLink]="['/productos']" routerLinkActive="active">Catálogo</a></li>
+          <li><a [routerLink]="['/ofertas']" routerLinkActive="active">Ofertas</a></li>
+          <li><a [routerLink]="['/nosotros']" routerLinkActive="active">Nosotros</a></li>
+          <li><a [routerLink]="['/contacto']" routerLinkActive="active">Contacto</a></li>
         </ul>
       </div>
     </nav>
   </header>
-  
+
   <!-- Sidebar para menú hamburguesa -->
   <div class="sidebar" [ngClass]="{'active': showSidebar}">
     <div class="sidebar-header">
@@ -52,17 +54,17 @@
       <button (click)="toggleSidebar()" class="close-sidebar"><i class="fas fa-times"></i></button>
     </div>
     <ul class="sidebar-menu">
-      <li><a [routerLink]="['/']" (click)="toggleSidebar()">Inicio</a></li>
-      <li><a [routerLink]="['/productos']" (click)="toggleSidebar()">Catálogo</a></li>
-      <li><a [routerLink]="['/ofertas']" (click)="toggleSidebar()">Ofertas</a></li>
-      <li><a [routerLink]="['/nosotros']" (click)="toggleSidebar()">Nosotros</a></li>
-      <li><a [routerLink]="['/contacto']" (click)="toggleSidebar()">Contacto</a></li>
-      <li><a [routerLink]="['/carrito']" (click)="toggleSidebar()">Carrito</a></li>
-      <li><a [routerLink]="['/login']" (click)="toggleSidebar()">Iniciar Sesión</a></li>
-      <li><a [routerLink]="['/registro']" (click)="toggleSidebar()">Registrarse</a></li>
+      <li><a [routerLink]="['/']" (click)="toggleSidebar()" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">Inicio</a></li>
+      <li><a [routerLink]="['/productos']" (click)="toggleSidebar()" routerLinkActive="active">Catálogo</a></li>
+      <li><a [routerLink]="['/ofertas']" (click)="toggleSidebar()" routerLinkActive="active">Ofertas</a></li>
+      <li><a [routerLink]="['/nosotros']" (click)="toggleSidebar()" routerLinkActive="active">Nosotros</a></li>
+      <li><a [routerLink]="['/contacto']" (click)="toggleSidebar()" routerLinkActive="active">Contacto</a></li>
+      <li><a [routerLink]="['/carrito']" (click)="toggleSidebar()" routerLinkActive="active">Carrito</a></li>
+      <li><a [routerLink]="['/login']" (click)="toggleSidebar()" routerLinkActive="active">Iniciar Sesión</a></li>
+      <li><a [routerLink]="['/registro']" (click)="toggleSidebar()" routerLinkActive="active">Registrarse</a></li>
     </ul>
   </div>
-  
+
   <!-- Overlay para cerrar el sidebar -->
   <div class="sidebar-overlay" [ngClass]="{'active': showSidebar}" (click)="toggleSidebar()"></div>
 
@@ -85,7 +87,7 @@
         <app-product-carousel></app-product-carousel>
       </div>
     </section>
-    
+
     <!-- Sección de categorías -->
     <section class="flower-categories section bg-cream">
       <div class="container">
@@ -98,7 +100,7 @@
             <h3>Aniversarios</h3>
             <a href="#" class="btn btn-outline">Ver más</a>
           </div>
-          
+
           <div class="category-card">
             <div class="category-image">
               <img src="assets\images\categories\birthday.png" alt="Cumpleaños">
@@ -106,7 +108,7 @@
             <h3>Cumpleaños</h3>
             <a href="#" class="btn btn-outline">Ver más</a>
           </div>
-          
+
           <div class="category-card">
             <div class="category-image">
               <img src="assets\images\categories\wedding.png" alt="Bodas">
@@ -114,7 +116,7 @@
             <h3>Bodas</h3>
             <a href="#" class="btn btn-outline">Ver más</a>
           </div>
-          
+
           <div class="category-card">
             <div class="category-image">
               <img src="assets\images\categories\sympathy.png" alt="Condolencias">
@@ -125,7 +127,7 @@
         </div>
       </div>
     </section>
-    
+
     <!-- Productos destacados -->
     <section id="productos" class="section">
       <div class="container">
@@ -133,14 +135,14 @@
         <app-product-list></app-product-list>
       </div>
     </section>
-    
+
     <!-- Sobre nosotros -->
     <section id="nosotros" class="section bg-light">
       <div class="container">
         <app-company-info></app-company-info>
       </div>
     </section>
-    
+
     <!-- Reseñas de clientes -->
     <section class="testimonials-section section">
       <div class="container">
@@ -153,7 +155,7 @@
         </div>
       </div>
     </section>
-    
+
     <!-- Contacto -->
     <section id="contacto" class="contact-section section bg-cream">
       <div class="container">
@@ -161,23 +163,23 @@
           <div class="contact-info">
             <h2>Contáctanos</h2>
             <p>Estamos ubicados en el corazón de Sabaneta, Colombia. Visítanos o ponte en contacto con nosotros para pedidos especiales.</p>
-            
+
             <div class="contact-details">
               <div class="contact-item">
                 <i class="fas fa-map-marker-alt"></i>
                 <p>Calle 65 Sur #45-25, Sabaneta, Antioquia</p>
               </div>
-              
+
               <div class="contact-item">
                 <i class="fas fa-phone-alt"></i>
                 <p>+57 (604) 301-5555</p>
               </div>
-              
+
               <div class="contact-item">
                 <i class="fas fa-envelope"></i>
                 <p>info&#64;floristerialaurita.com</p>
               </div>
-              
+
               <div class="contact-item">
                 <i class="fas fa-clock"></i>
                 <p>Lunes a Sábado: 8:00 AM - 6:00 PM</p>
@@ -185,7 +187,7 @@
               </div>
             </div>
           </div>
-          
+
           <div class="contact-map">
             <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3966.721192765997!2d-75.61742132418426!3d6.1511479282222185!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x8e46829511b43ef9%3A0xe77fafc182e6a83!2sSabaneta%2C%20Antioquia!5e0!3m2!1ses!2sco!4v1715266543978!5m2!1ses!2sco" width="600" height="450" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
           </div>
@@ -196,6 +198,7 @@
 
   <!-- Pie de página -->
   <footer class="main-footer">
+
     <div class="footer-top">
       <div class="container">
         <div class="footer-grid">
@@ -203,7 +206,7 @@
             <h3>Floristería Laurita</h3>
             <p>Desde 1980, ofreciendo las flores más frescas y hermosos arreglos florales para todos tus momentos especiales.</p>
           </div>
-          
+
           <div class="footer-links">
             <h3>Enlaces rápidos</h3>
             <ul>
@@ -214,7 +217,7 @@
               <li><a [routerLink]="['/privacidad']">Política de privacidad</a></li>
             </ul>
           </div>
-          
+
           <div class="footer-categories">
             <h3>Categorías</h3>
             <ul>
@@ -228,7 +231,7 @@
         </div>
       </div>
     </div>
-    
+
     <div class="footer-bottom">
       <div class="container">
         <div class="footer-bottom-content">
