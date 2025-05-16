@@ -3,6 +3,7 @@
   min-height: 100vh;
   display: flex;
   flex-direction: column;
+
 }
 
 .page-header {
@@ -174,7 +175,7 @@
     grid-template-columns: 1fr;
     gap: 40px;
   }
-  
+
   .contact-form-container {
     order: -1;
   }
@@ -184,15 +185,15 @@
   .page-header {
     padding: 40px 0 30px;
   }
-  
+
   .page-title {
     font-size: 2rem;
   }
-  
+
   .contact-info h2, .contact-form-container h2 {
     font-size: 1.5rem;
   }
-  
+
   .map-section {
     height: 350px;
   }
@@ -202,7 +203,7 @@
   .contact-form-container {
     padding: 20px;
   }
-  
+
   .form-group input, .form-group textarea {
     padding: 10px;
   }

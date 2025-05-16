@@ -11,46 +11,46 @@
 /* Variables de color - Nueva paleta */
 :root {
   /* Colores principales */
-  --color-primary: #9966CC;      /* Púrpura */
+  --color-primary: #a35bff;      /* Púrpura */
   --color-secondary: #40E0D0;    /* Turquesa */
   --color-tertiary: #98FB98;     /* Verde menta */
   --color-accent: #FFFFE0;       /* Amarillo suave */
-  
+
   /* Variaciones del color principal */
   --color-primary-light: #B088D8;
   --color-primary-dark: #7D54A8;
-  
+
   /* Variaciones del color secundario */
   --color-secondary-light: #68E8DC;
   --color-secondary-dark: #32B0A0;
-  
+
   /* Colores neutros */
   --color-neutral-dark: #444444;   /* Gris oscuro */
   --color-neutral-medium: #777777; /* Gris medio */
   --color-neutral-light: #DDDDDD;  /* Gris claro */
-  
+
   /* Fondo y texto */
   --color-background: #FFFAF0;     /* Crema muy suave */
   --color-text: #333333;
   --color-text-light: #FFFFFF;
-  
+
   /* Colores funcionales */
   --color-success: var(--color-tertiary);
   --color-error: #FF6B6B;
   --color-warning: #FFD166;
   --color-info: var(--color-secondary);
-  
+
   /* Sombras */
   --shadow-small: 0 2px 4px rgba(0, 0, 0, 0.1);
   --shadow-medium: 0 4px 8px rgba(0, 0, 0, 0.12);
   --shadow-large: 0 8px 16px rgba(0, 0, 0, 0.15);
-  
+
   /* Bordes */
   --border-radius-small: 4px;
   --border-radius-medium: 8px;
   --border-radius-large: 12px;
   --border-radius-round: 50%;
-  
+
   /* Espaciado */
   --spacing-xs: 4px;
   --spacing-sm: 8px;
@@ -58,11 +58,11 @@
   --spacing-lg: 24px;
   --spacing-xl: 32px;
   --spacing-xxl: 48px;
-  
+
   /* Fuentes */
   --font-primary: 'Montserrat', sans-serif;
   --font-display: 'Playfair Display', serif;
-  
+
   /* Tamaños de fuente */
   --font-size-xs: 0.75rem;    /* 12px */
   --font-size-sm: 0.875rem;   /* 14px */
@@ -72,19 +72,19 @@
   --font-size-xl: 1.5rem;     /* 24px */
   --font-size-xxl: 2rem;      /* 32px */
   --font-size-display: 2.5rem; /* 40px */
-  
+
   /* Pesos de fuente */
   --font-weight-light: 300;
   --font-weight-regular: 400;
   --font-weight-medium: 500;
   --font-weight-semibold: 600;
   --font-weight-bold: 700;
-  
+
   /* Transiciones */
   --transition-fast: 0.2s ease;
   --transition-normal: 0.3s ease;
   --transition-slow: 0.5s ease;
-  
+
   /* Anchos de contenedor */
   --container-width-sm: 540px;
   --container-width-md: 720px;
@@ -265,8 +265,8 @@ textarea {
   transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
 }
 
-input:focus, 
-select:focus, 
+input:focus,
+select:focus,
 textarea:focus {
   border-color: var(--color-primary);
   box-shadow: 0 0 0 3px rgba(153, 102, 204, 0.2);
@@ -307,7 +307,7 @@ textarea:focus {
   padding: var(--spacing-lg);
 }
 
-.error-container, 
+.error-container,
 .success-container {
   padding: var(--spacing-md);
   border-radius: var(--border-radius-medium);
@@ -580,23 +580,23 @@ textarea:focus {
   h1 { font-size: var(--font-size-xl); }
   h2 { font-size: var(--font-size-lg); }
   h3 { font-size: var(--font-size-md); }
-  
+
   .section {
     padding: var(--spacing-xl) 0;
   }
-  
+
   .container {
     padding: 0 var(--spacing-md);
   }
-  
+
   .page-header {
     padding: var(--spacing-lg) 0;
   }
-  
+
   .page-title {
     font-size: var(--font-size-xl);
   }
-  
+
   .hidden-sm {
     display: none;
   }

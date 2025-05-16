@@ -1,122 +1,193 @@
-<app-nav-footer>
-  <div class="page-container">
-    <div class="page-header">
-      <div class="container">
-        <h1 class="page-title">Iniciar Sesión</h1>
-        <p class="page-description">Accede a tu cuenta para disfrutar de beneficios exclusivos</p>
-      </div>
+<!-- Contenedor principal de la página de login -->
+<div class="login-page-wrapper">
+
+  <!-- Contenedor del formulario con animación de panel deslizante -->
+  <div
+    class="container"
+    id="container"
+    [ngClass]="{'right-panel-active': isRightPanelActive}"
+  >
+    <!-- Panel de Registro -->
+    <div class="form-container sign-up-container">
+      <form (ngSubmit)="register()">
+        <h1>Crear Cuenta</h1>
+        <!-- Botón para regresar al inicio -->
+        <div class="home-link">
+          <a [routerLink]="['/']" class="back-home">
+            <i class="fas fa-home"></i> Volver al Inicio
+          </a>
+        </div>
+        <!-- Botones de redes sociales -->
+        <div class="social-container">
+          <a href="#" class="social" (click)="$event.preventDefault()">
+            <i class="fab fa-facebook-f"></i>
+          </a>
+          <a href="#" class="social" (click)="signInWithGoogle(); $event.preventDefault()">
+            <i class="fab fa-google"></i>
+          </a>
+          <a href="#" class="social" (click)="$event.preventDefault()">
+            <i class="fab fa-linkedin-in"></i>
+          </a>
+        </div>
+        <span>o usa tu correo para registrarte</span>
+        <!-- Campos del formulario de registro -->
+        <input
+          type="text"
+          placeholder="Nombre"
+          [(ngModel)]="registerName"
+          name="registerName"
+          required
+        />
+        <input
+          type="email"
+          placeholder="Correo electrónico"
+          [(ngModel)]="registerEmail"
+          name="registerEmail"
+          required
+        />
+        <input
+          [type]="passwordVisible ? 'text' : 'password'"
+          placeholder="Contraseña"
+          [(ngModel)]="registerPassword"
+          name="registerPassword"
+          required
+        />
+        <button type="submit">Registrarse</button>
+      </form>
     </div>
-    
-    <section class="login-section section">
-      <div class="container">
-        <div class="login-container">
-          <div class="login-options">
-            <div class="login-tabs">
-              <button 
-                [ngClass]="{'active': !isAdminLogin}" 
-                (click)="isAdminLogin = false; error = '';">
-                Usuario
-              </button>
-              <button 
-                [ngClass]="{'active': isAdminLogin}" 
-                (click)="isAdminLogin = true; error = '';">
-                Administrador
-              </button>
-            </div>
+    <!-- Panel de Inicio de Sesión -->
+    <div class="form-container sign-in-container">
+      <!-- Mensaje de error si existe -->
+      <div *ngIf="error" class="error-message">
+        {{ error }}
+      </div>
+      <!-- Formulario de Administrador -->
+      <form *ngIf="isAdminLogin" (ngSubmit)="login()">
+        <h1>Administrador</h1>
+        <!-- Botón para regresar al inicio -->
+        <div class="home-link">
+          <a [routerLink]="['/']" class="back-home">
+            <i class="fas fa-home"></i> Volver al Inicio
+          </a>
+        </div>
+        <span>Ingresa con tu clave de administrador</span>
+        <!-- Campo de contraseña de admin con toggle de visibilidad -->
+        <div class="password-input">
+          <input
+            [type]="passwordVisible ? 'text' : 'password'"
+            placeholder="Clave de Administrador"
+            [(ngModel)]="adminPassword"
+            name="adminPassword"
+            required
+          />
+          <button
+            type="button"
+            class="toggle-password"
+            (click)="togglePasswordVisibility()"
+          >
+            <i class="fas" [ngClass]="passwordVisible ? 'fa-eye-slash' : 'fa-eye'"></i>
+          </button>
+        </div>
+        <a
+          href="#"
+          (click)="toggleLoginType(); $event.preventDefault()"
+        >
+          Acceder como usuario
+        </a>
+        <button type="submit" [disabled]="isLoading">
+          <span *ngIf="!isLoading">Acceder</span>
+          <span *ngIf="isLoading">Cargando...</span>
+        </button>
+      </form>
+      <!-- Formulario de Usuario -->
+      <form *ngIf="!isAdminLogin" (ngSubmit)="login()">
+        <h1>Iniciar Sesión</h1>
+        <!-- Botón para regresar al inicio -->
+        <div class="home-link">
+          <a [routerLink]="['/']" class="back-home">
+            <i class="fas fa-home"></i> Volver al Inicio
+          </a>
+        </div>
+        <!-- Botones de redes sociales -->
+        <div class="social-container">
+          <a href="#" class="social" (click)="$event.preventDefault()">
+            <i class="fab fa-facebook-f"></i>
+          </a>
+          <a href="#" class="social" (click)="signInWithGoogle(); $event.preventDefault()">
+            <i class="fab fa-google"></i>
+          </a>
+          <a href="#" class="social" (click)="$event.preventDefault()">
+            <i class="fab fa-linkedin-in"></i>
+          </a>
+        </div>
+        <span>o usa tu cuenta</span>
+        <!-- Campo de email -->
+        <input
+          type="email"
+          placeholder="Correo electrónico"
+          [(ngModel)]="loginForm.email"
+          name="email"
+          required
+        />
+        <!-- Campo de contraseña con toggle de visibilidad -->
+        <div class="password-input">
+          <input
+            [type]="passwordVisible ? 'text' : 'password'"
+            placeholder="Contraseña"
+            [(ngModel)]="loginForm.password"
+            name="password"
+            required
+          />
+          <button
+            type="button"
+            class="toggle-password"
+            (click)="togglePasswordVisibility()"
+          >
+            <i class="fas" [ngClass]="passwordVisible ? 'fa-eye-slash' : 'fa-eye'"></i>
+          </button>
+        </div>
+        <!-- Opciones adicionales -->
+        <div class="extras">
+          <div class="checkbox-group">
+            <input
+              type="checkbox"
+              id="rememberMe"
+              [(ngModel)]="loginForm.rememberMe"
+              name="rememberMe"
+            />
+            <label for="rememberMe">Recordarme</label>
           </div>
-          
-          <!-- Usuario normal -->
-          <div *ngIf="!isAdminLogin">
-            <div class="google-sign-in" (click)="signInWithGoogle()">
-              <img src="assets\images\icons\google-logo.webp" alt="Google">
-              <span>Continuar con Google</span>
-            </div>
-            
-            <div class="divider">
-              <span>o</span>
-            </div>
-            
-            <div *ngIf="error" class="error-message">
-              {{ error }}
-            </div>
-            
-            <form class="login-form" (ngSubmit)="login()">
-              <div class="form-group">
-                <label for="email">Correo electrónico</label>
-                <input 
-                  type="email" 
-                  id="email" 
-                  name="email" 
-                  [(ngModel)]="loginForm.email" 
-                  required
-                  placeholder="ejemplo@correo.com">
-              </div>
-              
-              <div class="form-group password-group">
-                <label for="password">Contraseña</label>
-                <div class="password-input">
-                  <input 
-                    [type]="passwordVisible ? 'text' : 'password'" 
-                    id="password" 
-                    name="password" 
-                    [(ngModel)]="loginForm.password" 
-                    required
-                    placeholder="Tu contraseña">
-                  <button type="button" class="toggle-password" (click)="togglePasswordVisibility()">
-                    <i class="fas" [ngClass]="passwordVisible ? 'fa-eye-slash' : 'fa-eye'"></i>
-                  </button>
-                </div>
-              </div>
-              
-              <div class="form-options">
-                <div class="checkbox-group">
-                  <input 
-                    type="checkbox" 
-                    id="rememberMe" 
-                    name="rememberMe" 
-                    [(ngModel)]="loginForm.rememberMe">
-                  <label for="rememberMe">Recordarme</label>
-                </div>
-                
-                <a [routerLink]="['/']" class="forgot-password">¿Olvidaste tu contraseña?</a>
-              </div>
-              
-              <button type="submit" class="btn btn-primary">Iniciar sesión</button>
-            </form>
-            
-            <div class="register-redirect">
-              ¿No tienes una cuenta? <a [routerLink]="['/registro']">Regístrate</a>
-            </div>
-          </div>
-          
-          <!-- Administrador -->
-          <div *ngIf="isAdminLogin">
-            <div *ngIf="error" class="error-message">
-              {{ error }}
-            </div>
-            
-            <form class="login-form" (ngSubmit)="login()">
-              <div class="form-group password-group">
-                <label for="adminPassword">Clave de Administrador</label>
-                <div class="password-input">
-                  <input 
-                    [type]="passwordVisible ? 'text' : 'password'" 
-                    id="adminPassword" 
-                    name="adminPassword" 
-                    [(ngModel)]="adminPassword" 
-                    required
-                    placeholder="Ingresa la clave de administrador">
-                  <button type="button" class="toggle-password" (click)="togglePasswordVisibility()">
-                    <i class="fas" [ngClass]="passwordVisible ? 'fa-eye-slash' : 'fa-eye'"></i>
-                  </button>
-                </div>
-              </div>
-              
-              <button type="submit" class="btn btn-primary">Acceder como administrador</button>
-            </form>
-          </div>
+          <a href="#" [routerLink]="['/']">¿Olvidaste tu contraseña?</a>
+          <a
+            href="#"
+            (click)="toggleLoginType(); $event.preventDefault()"
+          >
+            <br>
+            Acceder como administrador
+          </a>
+        </div>
+        <button type="submit" [disabled]="isLoading">
+          <span *ngIf="!isLoading">Iniciar Sesión</span>
+          <span *ngIf="isLoading">Cargando...</span>
+        </button>
+      </form>
+    </div>
+    <!-- Panel lateral con overlay y animación -->
+    <div class="overlay-container">
+      <div class="overlay">
+        <!-- Panel izquierdo (visible cuando está en modo registro) -->
+        <div class="overlay-panel overlay-left">
+          <h1>¡Bienvenido de nuevo!</h1>
+          <p>Para mantenerte conectado con nosotros, inicia sesión con tus datos personales</p>
+          <button class="ghost" (click)="showSignInPanel()">Iniciar Sesión</button>
+        </div>
+        <!-- Panel derecho (visible por defecto) -->
+        <div class="overlay-panel overlay-right">
+          <h1>¡Hola, amigo!</h1>
+          <p>Introduce tus datos personales y comienza tu viaje con nosotros</p>
+          <button class="ghost" (click)="showSignUpPanel()">Registrarse</button>
         </div>
       </div>
-    </section>
+    </div>
   </div>
-</app-nav-footer>
+</div>

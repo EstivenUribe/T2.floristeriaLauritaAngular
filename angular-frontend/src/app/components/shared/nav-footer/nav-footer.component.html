@@ -6,18 +6,18 @@
       <div class="menu-hamburger" (click)="toggleSidebar()">
         <i class="fas fa-bars"></i>
       </div>
-      
+
       <!-- Logo y nombre -->
       <div class="logo-container">
-        <img src="assets\images\general\Logo.png" alt="Floristería Laurita" class="logo">
+        <img src="assets/images/general/Logo.png" alt="Floristería Laurita" class="logo">
         <div class="brand-info">
           <h1>Floristería Laurita</h1>
           <p class="slogan">Belleza natural para cada ocasión</p>
         </div>
       </div>
-      
+
       <!-- Acciones de usuario -->
-      <div class="user-actions">          
+      <div class="user-actions">
         <div class="auth-cart-container">
           <a href="#" class="auth-link" (click)="goToLogin($event)">
             <i class="fas fa-user"></i>
@@ -25,20 +25,21 @@
           </a>
           <a [routerLink]="['/carrito']" class="cart-link">
             <i class="fas fa-shopping-cart"></i>
-            <span class="cart-count">{{ cartItemCount }}</span>
+            <span class="cart-count" *ngIf="cartItemCount > 0">{{ cartItemCount }}</span>
           </a>
         </div>
       </div>
     </div>
   </div>
-  
+
   <!-- Menú principal -->
-  <nav class="main-menu">
+  <nav class="main-menu" [ngClass]="{'fixed': false}">
     <div class="container">
       <ul class="menu-items">
         <li><a [routerLink]="['/']" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">Inicio</a></li>
         <li><a [routerLink]="['/productos']" routerLinkActive="active">Catálogo</a></li>
         <li><a [routerLink]="['/ofertas']" routerLinkActive="active">Ofertas</a></li>
+        <li><a [routerLink]="['/nosotros']" routerLinkActive="active">Nosotros</a></li>
         <li><a [routerLink]="['/contacto']" routerLinkActive="active">Contacto</a></li>
       </ul>
     </div>
@@ -48,7 +49,7 @@
 <!-- Sidebar para menú hamburguesa -->
 <div class="sidebar" [ngClass]="{'active': showSidebar}">
   <div class="sidebar-header">
-    <img src="assets\images\general\Logo.png" alt="Floristería Laurita" class="sidebar-logo">
+    <img src="assets/images/general/Logo.png" alt="Floristería Laurita" class="sidebar-logo">
     <button (click)="toggleSidebar()" class="close-sidebar"><i class="fas fa-times"></i></button>
   </div>
   <ul class="sidebar-menu">
@@ -78,7 +79,7 @@
           <h3>Floristería Laurita</h3>
           <p>Desde 1980, ofreciendo las flores más frescas y hermosos arreglos florales para todos tus momentos especiales.</p>
         </div>
-        
+
         <div class="footer-links">
           <h3>Enlaces rápidos</h3>
           <ul>
@@ -89,7 +90,7 @@
             <li><a [routerLink]="['/privacidad']">Política de privacidad</a></li>
           </ul>
         </div>
-        
+
         <div class="footer-categories">
           <h3>Categorías</h3>
           <ul>
@@ -103,21 +104,18 @@
       </div>
     </div>
   </div>
-  
+
   <div class="footer-bottom">
     <div class="container">
       <div class="footer-bottom-content">
         <p>&copy; 2025 Floristería Laurita. Todos los derechos reservados.</p>
         <div class="social-links">
-          <a href="https://www.facebook.com/p/Floristeria-laurita-100028843076348/?locale=es_LA" target="_blank"><i class="fab fa-facebook-f"></i></a>
-          <a href="https://www.instagram.com/floristeriayviverolaurita/" target="_blank"><i class="fab fa-instagram"></i></a>
-          <a href="https://wa.me/573016324030?text=Vi%20un%20producto%20en%20la%20p%C3%A1gina%20y%20me%20interesar%C3%ADa%20saber%20m%C3%A1s." target="_blank"><i class="fab fa-whatsapp"></i></a>
-          <a href="https://www.waze.com/es-419/live-map/directions/co/antioquia/sabaneta/floristeria-laurita?to=place.ChIJzVDFZt-DRo4RYg7SOvBsh5g" target="_blank"><i class="fab fa-waze-p"></i></a>
+          <a href="https://www.facebook.com/p/Floristeria-laurita-100028843076348/?locale=es_LA" target="_blank" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
+          <a href="https://www.instagram.com/floristeriayviverolaurita/" target="_blank" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+          <a href="https://wa.me/573016324030?text=Vi%20un%20producto%20en%20la%20p%C3%A1gina%20y%20me%20interesar%C3%ADa%20saber%20m%C3%A1s." target="_blank" aria-label="WhatsApp"><i class="fab fa-whatsapp"></i></a>
+          <a href="https://www.waze.com/es-419/live-map/directions/co/antioquia/sabaneta/floristeria-laurita?to=place.ChIJzVDFZt-DRo4RYg7SOvBsh5g" target="_blank" aria-label="Waze"><i class="fab fa-waze"></i></a>
         </div>
       </div>
     </div>
   </div>
 </footer>
-
-<!-- Overlay para el menú móvil -->
-<div class="overlay" [ngClass]="{'active': showMobileMenu}" (click)="closeMobileMenu()"></div>

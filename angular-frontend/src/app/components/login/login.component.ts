@@ -1,4 +1,5 @@
-import { Component } from '@angular/core';
+
+import { Component, OnInit } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
@@ -14,19 +15,27 @@ import { LoginRequest } from '../../models/auth.model';
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.css']
 })
-export class LoginComponent {
+export class LoginComponent implements OnInit {
+  // Formulario de inicio de sesión
   loginForm: LoginRequest = {
     email: '',
     password: '',
     rememberMe: false
   };
-  
+
+  // Variables de estado
   adminPassword = '';
   error = '';
   passwordVisible = false;
   isAdminLogin = false;
   isLoading = false;
   returnUrl: string = '/';
+  isRightPanelActive = false;
+
+  // Campos del formulario de registro
+  registerName = '';
+  registerEmail = '';
+  registerPassword = '';
 
   constructor(
     private router: Router,
@@ -35,28 +44,46 @@ export class LoginComponent {
   ) {
     // Capturar URL de retorno si existe
     this.returnUrl = this.route.snapshot.queryParams['returnUrl'] || '/';
-    
+
     // Suscribirse al estado de carga
     this.authService.isLoading$.subscribe(loading => {
       this.isLoading = loading;
     });
   }
 
-  togglePasswordVisibility() {
+  ngOnInit(): void {
+    // Inicializar el estado del panel
+    this.isRightPanelActive = false;
+  }
+
+  /**
+   * Alterna la visibilidad de la contraseña
+   */
+  togglePasswordVisibility(): void {
     this.passwordVisible = !this.passwordVisible;
   }
-  
-  toggleLoginType() {
+
+  /**
+   * Alterna entre login de usuario y administrador
+   */
+  toggleLoginType(): void {
     this.isAdminLogin = !this.isAdminLogin;
     this.error = '';
   }
 
-  signInWithGoogle() {
+  /**
+   * Iniciar sesión con Google
+   */
+  signInWithGoogle(): void {
     // En un caso real, aquí implementaríamos la autenticación de Google
     console.log('Iniciar sesión con Google');
     alert('Funcionalidad de inicio de sesión con Google será implementada pronto');
   }
 
+  /**
+   * Valida el formulario antes de enviarlo
+   * @returns boolean - Indica si el formulario es válido
+   */
   validateForm(): boolean {
     if (this.isAdminLogin) {
       if (!this.adminPassword) {
@@ -68,33 +95,41 @@ export class LoginComponent {
         this.error = 'Por favor, introduce tu correo electrónico.';
         return false;
       }
-      
+
       if (!this.validateEmail(this.loginForm.email)) {
         this.error = 'Por favor, introduce un correo electrónico válido.';
         return false;
       }
-      
+
       if (!this.loginForm.password) {
         this.error = 'Por favor, introduce tu contraseña.';
         return false;
       }
     }
-    
+
     return true;
   }
-  
+
+  /**
+   * Valida el formato del correo electrónico
+   * @param email - Correo electrónico a validar
+   * @returns boolean - Indica si el correo es válido
+   */
   validateEmail(email: string): boolean {
     const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
     return emailRegex.test(email);
   }
 
+  /**
+   * Proceso de inicio de sesión
+   */
   login(): void {
     if (!this.validateForm()) {
       return;
     }
-    
+
     this.error = '';
-    
+
     if (this.isAdminLogin) {
       // Autenticación de administrador
       this.authService.adminLogin(this.adminPassword)
@@ -119,5 +154,30 @@ export class LoginComponent {
           }
         });
     }
+  }
+
+  /**
+   * Proceso de registro de nuevo usuario
+   */
+  register(): void {
+    // Aquí se implementaría la lógica de registro
+    console.log('Registro con:', this.registerName, this.registerEmail, this.registerPassword);
+    alert('Funcionalidad de registro será implementada pronto');
+  }
+
+  // Funciones para alternar entre paneles
+
+  /**
+   * Muestra el panel de registro
+   */
+  showSignUpPanel(): void {
+    this.isRightPanelActive = true;
+  }
+
+  /**
+   * Muestra el panel de inicio de sesión
+   */
+  showSignInPanel(): void {
+    this.isRightPanelActive = false;
   }
 }

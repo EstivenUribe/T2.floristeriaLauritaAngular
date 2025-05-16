@@ -10,13 +10,14 @@
 
 /* Estilos de filtros */
 .filters-container {
-  background-color: #f8f8f8;
-  border-radius: var(--border-radius-md);
   padding: 20px;
-  box-shadow: var(--shadow-sm);
   position: sticky;
   top: 30px;
   height: max-content;
+  background-color: #fff;
+  border-radius: 10px;
+  box-shadow: 0 14px 28px rgba(128, 128, 128, 0.25), 0 10px 10px rgba(138, 137, 137, 0.22);
+  overflow: hidden;
 }
 
 .filters-container h3 {
@@ -722,17 +723,17 @@
   .products-section {
     grid-template-columns: 1fr;
   }
-  
+
   .filters-container {
     position: relative;
     top: 0;
     margin-bottom: 20px;
   }
-  
+
   .product-modal-content {
     grid-template-columns: 1fr;
   }
-  
+
   .product-modal-image {
     border-radius: 0;
     border-top-left-radius: var(--border-radius-lg);
@@ -746,11 +747,11 @@
     grid-template-columns: repeat(2, 1fr);
     gap: 20px;
   }
-  
+
   .product-modal {
     max-height: 85vh;
   }
-  
+
   .product-modal-details {
     padding: 20px;
   }
@@ -760,11 +761,11 @@
   .products-container {
     grid-template-columns: 1fr;
   }
-  
+
   .producto-box {
     height: 280px;
   }
-  
+
   .product-modal-image {
     height: 300px;
   }
