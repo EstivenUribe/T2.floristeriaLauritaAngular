@@ -1,6 +1,6 @@
 <section class="carousel-section">
   <h2 class="carousel-title">Flores en Oferta</h2>
-  
+
   <div *ngIf="loading" class="loading-container">
     <div class="loading-spinner"></div>
     <p>Cargando flores destacadas...</p>
@@ -19,7 +19,7 @@
       pagination="true"
       autoplay="true"
       class="flower-swiper">
-      
+
       <swiper-slide *ngFor="let producto of products" class="flower-slide">
         <div class="flower-card">
           <div class="flower-img-container">
@@ -33,10 +33,10 @@
           </div>
         </div>
       </swiper-slide>
-      
+
     </swiper-container>
   </div>
-  
+
   <div *ngIf="!loading && !error && products.length === 0" class="no-products">
     <p>No hay flores en oferta en este momento.</p>
   </div>

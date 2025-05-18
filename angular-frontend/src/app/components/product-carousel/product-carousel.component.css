@@ -128,7 +128,7 @@ swiper-button-prev::after {
 }
 
 /* Estado de carga y error */
-.loading-container, 
+.loading-container,
 .error-container,
 .no-products {
   min-height: 300px;
@@ -163,11 +163,11 @@ swiper-button-prev::after {
   .carousel-title {
     font-size: 1.5rem;
   }
-  
+
   .flower-card {
     max-width: 240px;
   }
-  
+
   .flower-img-container {
     height: 160px;
   }
