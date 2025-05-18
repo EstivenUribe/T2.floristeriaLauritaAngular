@@ -3,6 +3,7 @@
   min-height: 100vh;
   display: flex;
   flex-direction: column;
+
 }
 
 .page-header {
@@ -51,8 +52,8 @@
   width: 40px;
   height: 40px;
   border-radius: 50%;
-  background-color: white;
-  border: 2px solid #ddd;
+  background-color: #ffffff;
+  border: 2px solid #a380d6;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -63,15 +64,15 @@
 }
 
 .progress-step.active .step-number {
-  background-color: var(--primary-pink);
   border-color: var(--primary-pink);
-  color: white;
+  color:  #7D56AE;
+  background-color: #e3d1ff;
 }
 
 .progress-step.completed .step-number {
-  background-color: var(--primary-pink);
   border-color: var(--primary-pink);
-  color: white;
+  color:  #7D56AE;
+  background-color: #e3d1ff;
 }
 
 .step-name {
@@ -110,14 +111,17 @@
   gap: 30px;
 }
 
-/* Carrito vacío */
+/* Carrito vacï¿½o */
 .empty-cart {
   text-align: center;
   padding: 60px 0;
-  background-color: white;
   border-radius: var(--border-radius-md);
-  box-shadow: var(--shadow-sm);
   grid-column: 1 / -1;
+  margin-top: 30px;
+  background-color: #fff;
+  box-shadow: 0 14px 28px rgba(128, 128, 128, 0.25), 0 10px 10px rgba(138, 137, 137, 0.22);
+  position: relative;
+  overflow: hidden;
 }
 
 .empty-cart i {
@@ -148,6 +152,7 @@
   border-radius: var(--border-radius-md);
   box-shadow: var(--shadow-sm);
   padding: 30px;
+
 }
 
 .cart-items {
@@ -287,7 +292,7 @@
   background-color: var(--primary-pink-light);
 }
 
-/* Formulario de envío */
+/* Formulario de envï¿½o */
 .shipping-form {
   background-color: white;
   border-radius: var(--border-radius-md);
@@ -345,7 +350,7 @@
   margin-top: 30px;
 }
 
-/* Métodos de pago */
+/* Mï¿½todos de pago */
 .payment-methods {
   background-color: white;
   border-radius: var(--border-radius-md);
@@ -498,7 +503,7 @@
   font-weight: 500;
 }
 
-/* Paso de confirmación */
+/* Paso de confirmaciï¿½n */
 .confirmation-step {
   grid-column: 1 / -1;
 }
@@ -571,7 +576,7 @@
     grid-template-columns: 1fr;
     gap: 20px;
   }
-  
+
   .cart-item {
     grid-template-columns: auto 1fr auto;
     grid-template-areas:
@@ -579,30 +584,30 @@
       "image quantity total";
     gap: 10px;
   }
-  
+
   .item-image {
     grid-area: image;
   }
-  
+
   .item-details {
     grid-area: details;
   }
-  
+
   .item-quantity {
     grid-area: quantity;
     justify-self: start;
   }
-  
+
   .item-total {
     grid-area: total;
     justify-self: end;
   }
-  
+
   .remove-item {
     grid-area: remove;
     justify-self: end;
   }
-  
+
   .payment-options {
     grid-template-columns: 1fr;
   }
@@ -612,54 +617,54 @@
   .page-header {
     padding: 40px 0 30px;
   }
-  
+
   .page-title {
     font-size: 2rem;
   }
-  
+
   .checkout-progress {
     padding: 0;
   }
-  
+
   .step-name {
     display: none;
   }
-  
+
   .progress-line {
     margin-bottom: 0;
   }
-  
+
   .cart-item {
     padding: 15px 0;
   }
-  
+
   .item-image {
     width: 60px;
     height: 60px;
   }
-  
+
   .form-grid {
     grid-template-columns: 1fr;
   }
-  
+
   .form-buttons {
     flex-direction: column;
     gap: 10px;
   }
-  
+
   .form-buttons button {
     width: 100%;
   }
-  
+
   .form-row {
     grid-template-columns: 1fr;
   }
-  
+
   .order-details {
     flex-direction: column;
     gap: 15px;
   }
-  
+
   .order-confirmation {
     padding: 20px;
   }
