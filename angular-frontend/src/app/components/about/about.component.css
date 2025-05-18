@@ -492,3 +492,34 @@
     height: 200px;
   }
 }
+
+/* Estilos para el formulario de reseña en la página 'Nosotros' */
+.review-form-container {
+  max-width: 600px; /* O el ancho que prefieras */
+  margin-left: auto;
+  margin-right: auto;
+  padding: 20px;
+  border: 1px solid #dee2e6; /* Borde suave */
+  border-radius: 0.375rem; /* Bootstrap's default border-radius */
+  background-color: #ffffff; /* Fondo blanco */
+  box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075); /* Sombra suave */
+}
+
+.star-rating-input .star-icon {
+  font-size: 1.5rem; /* Tamaño de las estrellas */
+  color: #e0e0e0;   /* Color de estrella no seleccionada (gris claro) */
+  cursor: pointer;
+  transition: color 0.2s ease-in-out;
+  margin-right: 4px; /* Espacio entre estrellas */
+}
+
+.star-rating-input .star-icon:hover,
+.star-rating-input .star-icon.selected {
+  color: #ffc107;   /* Color de estrella seleccionada/hover (Bootstrap warning yellow) */
+}
+
+/* Asegurar que el feedback de validación para estrellas sea visible */
+.invalid-feedback.d-block {
+  display: block !important; /* Para asegurar que se muestre si la clase está presente */
+}
+

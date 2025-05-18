@@ -14,4 +14,7 @@ router.delete('/:reviewId', verifyToken, reviewController.deleteReview);
 router.get('/', verifyAdmin, reviewController.getAllReviews);
 router.patch('/:reviewId/status', verifyAdmin, reviewController.updateReviewStatus);
 
+// NUEVA RUTA para obtener todos los comentarios aprobados (para la página "Nosotros")
+router.get('/featured', reviewController.getFeaturedReviews); // Es pública
+
 module.exports = router;

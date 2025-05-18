@@ -7,7 +7,6 @@ import { OffersComponent } from './components/offers/offers.component';
 import { AboutComponent } from './components/about/about.component';
 import { ContactComponent } from './components/contact/contact.component';
 import { CartComponent } from './components/cart/cart.component';
-import { RegisterComponent } from './components/register/register.component';
 import { PrivacyComponent } from './components/privacy/privacy.component';
 import { authGuard, adminGuard, noAuthGuard } from './guards/auth.guard';
 
@@ -20,7 +19,7 @@ export const routes: Routes = [
   { path: 'nosotros', component: AboutComponent },
   { path: 'contacto', component: ContactComponent },
   { path: 'carrito', component: CartComponent },
-  { path: 'registro', component: RegisterComponent, canActivate: [noAuthGuard] },
+  
   { path: 'privacidad', component: PrivacyComponent },
   { path: '**', redirectTo: '' }
 ];

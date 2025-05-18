@@ -1,4 +1,5 @@
-<!-- Header con navegación -->
+<ng-container *ngIf="showLayout">
+  <!-- Header con navegación -->
 <header class="main-header">
   <div class="header-top">
     <div class="container header-container">
@@ -19,10 +20,30 @@
       <!-- Acciones de usuario -->
       <div class="user-actions">
         <div class="auth-cart-container">
-          <a href="#" class="auth-link" (click)="goToLogin($event)">
-            <i class="fas fa-user"></i>
-            <span>Iniciar sesión</span>
-          </a>
+          <ng-container *ngIf="!(isAuthenticated$ | async); else userLoggedIn">
+            <a href="#" class="auth-link" (click)="goToLogin($event)">
+              <i class="fas fa-user"></i>
+              <span>Iniciar sesión</span>
+            </a>
+          </ng-container>
+
+          <ng-template #userLoggedIn>
+            <div class="user-menu-container">
+              <button class="user-button lilac-button" (click)="toggleUserMenu()">
+                <i class="fas fa-user"></i>
+                <span>{{ (currentUser$ | async)?.username }}</span>
+                <i class="fas fa-chevron-down" [class.rotated]="isUserMenuOpen"></i>
+              </button>
+              <div class="user-dropdown-menu" *ngIf="isUserMenuOpen">
+                <ul>
+                  <li><a (click)="viewProfile()">Ver perfil</a></li>
+                  <li><a (click)="viewOrderHistory()">Historial de compras</a></li>
+                  <li *ngIf="authService.isAdmin$ | async"><a (click)="navigateToAdmin()">Administrar</a></li>
+                  <li><a (click)="logout()">Cerrar sesión</a></li>
+                </ul>
+              </div>
+            </div>
+          </ng-template>
           <a [routerLink]="['/carrito']" class="cart-link">
             <i class="fas fa-shopping-cart"></i>
             <span class="cart-count" *ngIf="cartItemCount > 0">{{ cartItemCount }}</span>
@@ -60,17 +81,19 @@
     <li><a [routerLink]="['/contacto']" (click)="toggleSidebar()" routerLinkActive="active">Contacto</a></li>
     <li><a [routerLink]="['/carrito']" (click)="toggleSidebar()" routerLinkActive="active">Carrito</a></li>
     <li><a [routerLink]="['/login']" (click)="toggleSidebar()" routerLinkActive="active">Iniciar Sesión</a></li>
-    <li><a [routerLink]="['/registro']" (click)="toggleSidebar()" routerLinkActive="active">Registrarse</a></li>
   </ul>
 </div>
 
 <!-- Overlay para cerrar el sidebar -->
 <div class="sidebar-overlay" [ngClass]="{'active': showSidebar}" (click)="toggleSidebar()"></div>
+</ng-container>
 
 <!-- Contenido de la página va aquí -->
 <ng-content></ng-content>
+<router-outlet></router-outlet>
 
-<!-- Pie de página -->
+<ng-container *ngIf="showLayout">
+  <!-- Pie de página -->
 <footer class="main-footer">
   <div class="footer-top">
     <div class="container">
@@ -119,3 +142,4 @@
     </div>
   </div>
 </footer>
+</ng-container>

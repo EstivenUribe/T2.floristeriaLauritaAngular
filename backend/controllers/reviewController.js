@@ -115,6 +115,25 @@ exports.updateReviewStatus = async (req, res) => {
   }
 };
 
+// Obtener todas las reseñas aprobadas (para la página "Nosotros" o similar)
+exports.getFeaturedReviews = async (req, res) => {
+  try {
+    // Obtener todas las reseñas aprobadas
+    // Populamos 'userId' para obtener el nombre del usuario y 'productId' para el nombre del producto
+    const reviews = await Review.find({ approved: true })
+      .populate('userId', 'username email') // Intentar 'nombre' primero, luego 'username'
+      .populate('productId', 'nombre');    // Asumiendo que el producto tiene un campo 'nombre'
+
+    res.status(200).json(reviews);
+  } catch (error) {
+    console.error('Error al obtener reseñas destacadas:', error);
+    res.status(500).json({ 
+      message: 'Error al obtener las reseñas destacadas',
+      error: error.message 
+    });
+  }
+};
+
 // Eliminar una reseña
 exports.deleteReview = async (req, res) => {
   try {

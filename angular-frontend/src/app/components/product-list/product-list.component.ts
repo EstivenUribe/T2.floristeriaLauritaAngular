@@ -116,6 +116,7 @@ export class ProductListComponent implements OnInit, OnDestroy {
           this.products = response.items;
           this.totalItems = response.total;
           this.totalPages = response.totalPages;
+        console.log('Productos cargados:', this.products); // Para depurar producto.imagen
           this.loading = false;
         },
         error: (err) => {

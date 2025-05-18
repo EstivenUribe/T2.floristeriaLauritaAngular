@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, Validators, ReactiveFormsModule, FormsModule } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators, FormArray, ReactiveFormsModule, FormsModule } from '@angular/forms';
 import { ProductService } from '../../services/product.service';
 import { TeamService } from '../../services/team.service';
 import { BannerService } from '../../services/banner.service';
@@ -8,7 +8,9 @@ import { UploadService } from '../../services/upload.service';
 import { Product, PaginationParams } from '../../models/product.model';
 import { TeamMember } from '../../models/team-member.model';
 import { Banner, BannerSection } from '../../models/banner.model';
-import { CompanyInfo } from '../../models/company-info.model';
+import { CompanyInfo, Valor, Integrante } from '../../models/company-info.model';
+import { Review, UserReviewInfo, ProductReviewInfo } from '../../models/review.model';
+import { ReviewService } from '../../services/review.service';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { HttpClientModule } from '@angular/common/http';
@@ -22,8 +24,30 @@ import { finalize, tap } from 'rxjs/operators';
   styleUrls: ['./admin.component.css']
 })
 export class AdminComponent implements OnInit {
+
+  // Nuevos métodos para la plantilla de reviews
+  getReviewUserName(user: UserReviewInfo | string): string {
+    if (typeof user === 'object' && user !== null && user.nombre) {
+      return user.nombre;
+    }
+    if (typeof user === 'string') {
+      return user; // Devuelve el ID si no es un objeto con nombre
+    }
+    return 'Usuario Desconocido'; // Fallback
+  }
+
+  getReviewProductName(product: ProductReviewInfo | string): string {
+    if (typeof product === 'object' && product !== null && product.nombre) {
+      return product.nombre;
+    }
+    if (typeof product === 'string') {
+      return product; // Devuelve el ID si no es un objeto con nombre
+    }
+    return 'Producto Desconocido'; // Fallback
+  }
+
   // State variables
-  activeTab: 'productos' | 'equipo' | 'banners' | 'configuracion' = 'productos';
+  activeTab: 'productos' | 'equipo' | 'banners' | 'politicas' | 'comentarios' | 'configuracion' = 'productos';
   
   // Productos
   products: Product[] = [];
@@ -68,13 +92,23 @@ export class AdminComponent implements OnInit {
   submittedCompanyInfo = false;
   companyInfo: CompanyInfo | null = null;
 
+  // Historia Image Preview & Upload
+  historiaSelectedFile: File | null = null;
+  historiaImagePreview: string | ArrayBuffer | null = null;
+  uploadingHistoriaImage = false;
+
+  // Reviews
+  reviews: Review[] = [];
+  loadingReviews = false;
+
   constructor(
     private formBuilder: FormBuilder,
     private productService: ProductService,
     private teamService: TeamService,
     private bannerService: BannerService,
     private companyInfoService: CompanyInfoService,
-    private uploadService: UploadService
+    private uploadService: UploadService,
+    private reviewService: ReviewService
   ) {
     // Initialize product form
     this.productForm = this.formBuilder.group({
@@ -127,7 +161,10 @@ export class AdminComponent implements OnInit {
       _id: [''],
       mision: [''],
       vision: [''],
-      integrantes: [[]]
+      historiaTitulo: [''],
+      historiaTexto: [''],
+      historiaImagenUrl: [''], // Se llenará después de subir la imagen
+      valores: this.formBuilder.array([]),
     });
   }
 
@@ -151,10 +188,14 @@ export class AdminComponent implements OnInit {
     this.companyInfoService.isLoading.subscribe(isLoading => {
       this.loadingCompanyInfo = isLoading;
     });
+
+    this.reviewService.isLoading.subscribe(isLoading => {
+      this.loadingReviews = isLoading; // O usar una variable local si se prefiere control más granular
+    });
   }
 
   // Tab Navigation
-  setActiveTab(tab: 'productos' | 'equipo' | 'banners' | 'configuracion'): void {
+  setActiveTab(tab: 'productos' | 'equipo' | 'banners' | 'politicas' | 'comentarios' | 'configuracion'): void {
     this.activeTab = tab;
     this.resetMessages();
     
@@ -175,10 +216,19 @@ export class AdminComponent implements OnInit {
           this.loadBanners();
         }
         break;
-      case 'configuracion':
+      case 'politicas':
         if (!this.companyInfo) {
           this.loadCompanyInfo();
         }
+        break;
+      case 'comentarios':
+        if (this.reviews.length === 0 && !this.loadingReviews) {
+          this.loadReviews();
+        }
+        break;
+      case 'configuracion':
+        // Esta es la nueva pestaña de Configuración, inicialmente vacía
+        console.log('Pestaña Configuración (nueva) seleccionada.');
         break;
     }
   }
@@ -737,8 +787,148 @@ export class AdminComponent implements OnInit {
     
     return sectionNames[section] || section;
   }
-  
-  // COMPANY INFO
+
+  // REVIEWS
+  loadReviews(): void {
+    this.loadingReviews = true;
+    this.reviewService.getReviews().subscribe({
+      next: (data) => {
+        this.reviews = data;
+        this.loadingReviews = false;
+        this.success = 'Comentarios cargados.'; // Opcional
+      },
+      error: (err) => {
+        this.error = 'Error al cargar comentarios.';
+        console.error('Error al cargar comentarios:', err);
+        this.loadingReviews = false;
+      }
+    });
+  }
+
+  deleteReview(id: string): void {
+    if (!id) {
+      console.error('ID de review no proporcionado para eliminar.');
+      this.error = 'No se pudo eliminar el comentario: ID faltante.';
+      return;
+    }
+    if (confirm('¿Estás seguro de que quieres eliminar este comentario?')) {
+      this.reviewService.deleteReview(id).subscribe({
+        next: () => {
+          this.success = 'Comentario eliminado correctamente.';
+          this.loadReviews(); // Recargar la lista después de eliminar
+        },
+        error: (err) => {
+          this.error = 'Error al eliminar comentario.';
+          console.error('Error al eliminar comentario:', err);
+        }
+      });
+    }
+  }
+
+  toggleApproval(reviewToUpdate: Review): void {
+    if (!reviewToUpdate._id) {
+      console.error('Review ID is missing, cannot update.');
+      this.error = 'No se pudo actualizar el comentario: ID faltante.';
+      return;
+    }
+
+    const newReviewData: Partial<Review> = { approved: !reviewToUpdate.approved };
+    const originalApprovedState = reviewToUpdate.approved;
+
+    const index = this.reviews.findIndex(r => r._id === reviewToUpdate._id);
+    if (index !== -1) {
+      this.reviews[index].approved = !originalApprovedState;
+    }
+    
+    this.resetMessages();
+
+    this.reviewService.updateReview(reviewToUpdate._id, newReviewData).subscribe({
+      next: (updatedReview) => {
+        if (index !== -1) {
+          this.reviews[index] = { ...this.reviews[index], ...updatedReview }; 
+        }
+        this.success = `Comentario ${updatedReview.approved ? 'aprobado' : 'desaprobado'} correctamente.`;
+      },
+      error: (err) => {
+        console.error('Error updating review approval:', err);
+        this.error = 'Error al actualizar la aprobación del comentario.';
+        if (index !== -1) {
+          this.reviews[index].approved = originalApprovedState;
+        }
+      }
+    });
+  }
+
+  // Métodos para el FormArray de Valores
+  createValorGroup(valor: Valor = { titulo: '', descripcion: '', icono: '' }): FormGroup {
+    return this.formBuilder.group({
+      titulo: [valor.titulo, Validators.required],
+      descripcion: [valor.descripcion, Validators.required],
+      icono: [valor.icono] // Opcional, puede ser clase de FontAwesome o URL
+    });
+  }
+
+  get valoresFormArray(): FormArray {
+    return this.companyInfoForm.get('valores') as FormArray;
+  }
+
+  addValor(): void {
+    this.valoresFormArray.push(this.createValorGroup());
+  }
+
+  removeValor(index: number): void {
+    if (this.valoresFormArray.length > 1 || confirm('¿Seguro que quieres eliminar este valor? Si es el único, considera editarlo.')) {
+        this.valoresFormArray.removeAt(index);
+    } else if (this.valoresFormArray.length === 1 && index === 0) {
+        // No permitir eliminar el último si se quiere mantener al menos uno, o resetearlo
+        // this.valoresFormArray.at(0).reset({ titulo: '', descripcion: '', icono: '' });
+        // O simplemente no hacer nada si la confirmación es 'no'
+    }
+  }
+
+  // Historia image file handling
+  onHistoriaFileSelected(event: Event): void {
+    const inputElement = event.target as HTMLInputElement;
+    if (inputElement.files && inputElement.files.length > 0) {
+      this.historiaSelectedFile = inputElement.files[0];
+      this.historiaImagePreview = null; // Limpiar previsualización anterior
+      const reader = new FileReader();
+      reader.onload = () => {
+        this.historiaImagePreview = reader.result;
+      };
+      reader.readAsDataURL(this.historiaSelectedFile);
+      // Limpiar la URL de la imagen en el formulario, se establecerá al subir con éxito
+      this.companyInfoForm.patchValue({ historiaImagenUrl: '' });
+    }
+  }
+
+  uploadHistoriaImage(): void {
+    if (!this.historiaSelectedFile) {
+      this.error = 'Por favor, selecciona una imagen para la sección de historia.';
+      return;
+    }
+    this.uploadingHistoriaImage = true;
+    this.resetMessages();
+    // Usar 'company' o 'nosotros' como posible subcarpeta en el backend
+    this.uploadService.uploadImage(this.historiaSelectedFile, 'companyInfo').subscribe({
+      next: (response) => {
+        this.companyInfoForm.patchValue({
+          historiaImagenUrl: response.imagePath
+        });
+        this.historiaImagePreview = response.imagePath; // Actualizar previsualización con la ruta del servidor
+        this.uploadingHistoriaImage = false;
+        this.success = 'Imagen de historia subida correctamente.';
+        this.historiaSelectedFile = null; // Limpiar archivo seleccionado
+      },
+      error: (err) => {
+        this.error = 'Error al subir la imagen de historia.';
+        this.uploadingHistoriaImage = false;
+        console.error('Error al subir imagen de historia:', err);
+      }
+    });
+  }
+
+  // COMPANY INFO (Ahora Políticas)
   loadCompanyInfo(): void {
     this.companyInfoService.getCompanyInfo()
       .subscribe({
@@ -748,8 +938,28 @@ export class AdminComponent implements OnInit {
             _id: data._id,
             mision: data.mision || '',
             vision: data.vision || '',
-            integrantes: data.integrantes || []
+            historiaTitulo: data.historiaTitulo || '',
+            historiaTexto: data.historiaTexto || '',
+            historiaImagenUrl: data.historiaImagenUrl || ''
+            // No parchear 'integrantes' o 'valores' directamente aquí, se manejan por separado
           });
+
+          // Manejar FormArray de Valores
+          this.valoresFormArray.clear();
+          if (data.valores && data.valores.length > 0) {
+            data.valores.forEach(valor => this.valoresFormArray.push(this.createValorGroup(valor)));
+          } else {
+            // Opcional: añadir un valor por defecto si está vacío y se requiere al menos uno
+             this.addValor(); 
+          }
+
+          // La lógica para 'integrantes' ha sido removida ya que se gestiona en la pestaña Equipo.
+
+          if (data.historiaImagenUrl) {
+            this.historiaImagePreview = data.historiaImagenUrl;
+          } else {
+            this.historiaImagePreview = null;
+          }
         },
         error: (err) => {
           this.error = 'Error al cargar información de la empresa.';
@@ -780,22 +990,51 @@ export class AdminComponent implements OnInit {
   
   resetCompanyInfoForm(): void {
     this.submittedCompanyInfo = false;
-    
-    // Reset form to current values
+    this.historiaImagePreview = null;
+    this.historiaSelectedFile = null;
+    this.uploadingHistoriaImage = false;
+
     if (this.companyInfo) {
       this.companyInfoForm.patchValue({
         _id: this.companyInfo._id,
         mision: this.companyInfo.mision || '',
         vision: this.companyInfo.vision || '',
-        integrantes: this.companyInfo.integrantes || []
+        historiaTitulo: this.companyInfo.historiaTitulo || '',
+        historiaTexto: this.companyInfo.historiaTexto || '',
+        historiaImagenUrl: this.companyInfo.historiaImagenUrl || ''
+        // No parchear 'valores' o 'integrantes' directamente aquí
       });
+
+      this.valoresFormArray.clear();
+      if (this.companyInfo.valores && this.companyInfo.valores.length > 0) {
+        this.companyInfo.valores.forEach(valor => this.valoresFormArray.push(this.createValorGroup(valor)));
+      } else {
+        this.addValor(); // Añadir uno vacío por defecto si no hay
+      }
+      
+      const integrantesControl = this.companyInfoForm.get('integrantes') as FormArray;
+      integrantesControl.clear();
+      if (this.companyInfo.integrantes && this.companyInfo.integrantes.length > 0) {
+        // Lógica para repoblar integrantes si es un FormArray editable
+      }
+
+      if (this.companyInfo.historiaImagenUrl) {
+        this.historiaImagePreview = this.companyInfo.historiaImagenUrl;
+      }
     } else {
       this.companyInfoForm.reset({
         _id: '',
         mision: '',
         vision: '',
-        integrantes: []
+        historiaTitulo: '',
+        historiaTexto: '',
+        historiaImagenUrl: '',
+        // No resetear FormArrays aquí, se limpian explícitamente
+        integrantes: [] // Resetear a array vacío si es un campo simple del form, sino manejar el FormArray
       });
+      this.valoresFormArray.clear();
+      this.addValor(); // Añadir uno vacío por defecto
+      (this.companyInfoForm.get('integrantes') as FormArray).clear(); // Si es FormArray
     }
   }
 }

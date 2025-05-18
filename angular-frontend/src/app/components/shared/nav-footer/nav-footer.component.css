@@ -162,6 +162,84 @@
   color: var(--primary-pink);
 }
 
+/* Estilos para el menú de usuario */
+.user-menu-container {
+  position: relative;
+  display: inline-block; /* O flex si se alinea con otros elementos */
+}
+
+.user-button {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 15px;
+  border-radius: 20px; /* Esquinas redondeadas */
+  border: none;
+  cursor: pointer;
+  font-weight: 500;
+  font-size: 0.9rem;
+  transition: background-color 0.3s, box-shadow 0.3s;
+}
+
+.user-button.lilac-button {
+  background-color: var(--primary-purple, #7D56AE); /* Usar variable o fallback */
+  color: var(--primary-white, #FFFFFF);
+}
+
+.user-button.lilac-button:hover {
+  background-color: #6a4895; /* Un tono un poco más oscuro para el hover */
+  box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+}
+
+.user-button .fa-user {
+  margin-right: 5px;
+}
+
+.user-button .fa-chevron-down {
+  margin-left: auto; /* Empuja la flecha a la derecha si el botón es ancho */
+  font-size: 0.8em;
+  transition: transform 0.3s ease;
+}
+
+.user-button .fa-chevron-down.rotated {
+  transform: rotate(180deg);
+}
+
+.user-dropdown-menu {
+  position: absolute;
+  top: 100%; /* Debajo del botón */
+  right: 0; /* Alineado a la derecha del botón */
+  background-color: var(--primary-white, #FFFFFF);
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  min-width: 200px; /* Ancho mínimo del menú */
+  z-index: 100;
+  margin-top: 8px; /* Espacio entre el botón y el menú */
+  overflow: hidden; /* Para que los bordes redondeados afecten a los items */
+}
+
+.user-dropdown-menu ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.user-dropdown-menu li a {
+  display: block;
+  padding: 12px 20px;
+  text-decoration: none;
+  color: var(--color-neutral-dark, #333333);
+  font-size: 0.9rem;
+  transition: background-color 0.2s, color 0.2s;
+  cursor: pointer;
+}
+
+.user-dropdown-menu li a:hover {
+  background-color: #f5f5f5; /* Un gris claro para el hover */
+  color: var(--primary-purple, #7D56AE);
+}
+
 /* Sidebar (menú lateral) */
 .sidebar {
   position: fixed;
@@ -366,70 +444,5 @@
 
 .social-links a:hover {
   background-color: var(--color-secondary);
-  color: #333333; /* Dark text on light background for better contrast */
-  transform: translateY(-3px);
-  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.2);
-}
-
-/* ===== RESPONSIVE ===== */
-@media (max-width: 992px) {
-  .logo {
-    width: 60px;
-    height: 60px;
-  }
-
-  .brand-info h1 {
-    font-size: 1.5rem;
-  }
-
-  .menu-items {
-    display: flex;
-    justify-content: center;
-    flex-wrap: wrap;
-    gap: 15px;
-  }
-
-  .main-menu {
-    padding-bottom: 15px !important; /* Forzar el padding inferior */
-  }
-}
-
-@media (max-width: 768px) {
-  .header-container {
-    grid-template-columns: auto 1fr auto;
-  }
-
-  .user-actions {
-    justify-content: flex-end;
-  }
-
-  .footer-bottom-content {
-    flex-direction: column;
-    gap: 15px;
-    text-align: center;
-  }
-}
-
-@media (max-width: 576px) {
-  .logo-container {
-    flex-direction: column;
-    align-items: flex-start;
-    text-align: left;
-  }
-
-  .brand-info h1 {
-    font-size: 1.3rem;
-  }
-
-  .slogan {
-    font-size: 0.8rem;
-  }
-
-  .auth-cart-container {
-    gap: 10px;
-  }
-
-  .auth-link span {
-    display: none;
-  }
+  border-color: var(--color-secondary);
 }

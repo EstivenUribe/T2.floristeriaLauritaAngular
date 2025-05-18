@@ -6,6 +6,7 @@ import { ProductCarouselComponent } from '../product-carousel/product-carousel.c
 import { CompanyInfoComponent } from '../company-info/company-info.component';
 import { RouterModule } from '@angular/router';
 import {NavFooterComponent} from '../shared/nav-footer/nav-footer.component';
+import { CarouselPrincipalComponent } from '../carousel-principal/carousel-principal.component';
 
 @Component({
   selector: 'app-home',
@@ -16,7 +17,8 @@ import {NavFooterComponent} from '../shared/nav-footer/nav-footer.component';
     ProductCarouselComponent,
     CompanyInfoComponent,
     RouterModule,
-    NavFooterComponent
+    NavFooterComponent,
+    CarouselPrincipalComponent
   ],
   templateUrl: './home.component.html',
   styleUrls: ['./home.component.css']

@@ -6,6 +6,7 @@ import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { NavFooterComponent } from '../shared/nav-footer/nav-footer.component';
 import { AuthService } from '../../services/auth.service';
+import { NotificationService } from '../../services/notification.service'; // Importar NotificationService
 import { LoginRequest } from '../../models/auth.model';
 
 @Component({
@@ -33,14 +34,15 @@ export class LoginComponent implements OnInit {
   isRightPanelActive = false;
 
   // Campos del formulario de registro
-  registerName = '';
+  registerUsername = '';
   registerEmail = '';
   registerPassword = '';
 
   constructor(
     private router: Router,
     private route: ActivatedRoute,
-    private authService: AuthService
+    private authService: AuthService,
+    private notificationService: NotificationService // Inyectar NotificationService
   ) {
     // Capturar URL de retorno si existe
     this.returnUrl = this.route.snapshot.queryParams['returnUrl'] || '/';
@@ -161,7 +163,7 @@ export class LoginComponent implements OnInit {
    */
   register(): void {
     // Validar campos
-    if (!this.registerName || !this.registerEmail || !this.registerPassword) {
+    if (!this.registerUsername || !this.registerEmail || !this.registerPassword) {
       this.error = 'Por favor, completa todos los campos.';
       return;
     }
@@ -177,7 +179,7 @@ export class LoginComponent implements OnInit {
     this.error = '';
     this.isLoading = true;
     this.authService.register({
-      name: this.registerName,
+      username: this.registerUsername,
       email: this.registerEmail,
       password: this.registerPassword,
       termsAccepted: true
@@ -185,13 +187,13 @@ export class LoginComponent implements OnInit {
       next: (response) => {
         // Registro exitoso
         this.isLoading = false;
-        alert('¡Registro exitoso! Ahora puedes iniciar sesión.');
+        this.notificationService.success(`¡Bienvenido, ${response.user.username}! Tu registro ha sido exitoso.`, 'Registro Completo');
+        this.router.navigate(['/']); // Redirigir a la página de inicio
         // Limpiar formulario de registro
-        this.registerName = '';
+        this.registerUsername = '';
         this.registerEmail = '';
         this.registerPassword = '';
-        // Cambiar al panel de login
-        this.showSignInPanel();
+        
       },
       error: (err) => {
         this.isLoading = false;

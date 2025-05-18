@@ -9,7 +9,7 @@ import { Router } from '@angular/router';
   providedIn: 'root'
 })
 export class AuthService {
-  private apiUrl = '/api/auth';
+  private apiUrl = 'http://localhost:3000/api/auth'; // Asegúrate de que el puerto 3000 sea correcto para tu backend
   private tokenKey = 'auth_token';
   private userKey = 'auth_user';
   
@@ -37,7 +37,7 @@ export class AuthService {
   login(credentials: LoginRequest): Observable<AuthResponse> {
     this.isLoadingSubject.next(true);
     
-    return this.http.post<AuthResponse>(`${this.apiUrl}/login`, credentials).pipe(
+    return this.http.post<AuthResponse>(`${this.apiUrl}/signin`, credentials).pipe(
       tap(response => this.handleAuthResponse(response, credentials.rememberMe)),
       catchError(this.handleError),
       finalize(() => this.isLoadingSubject.next(false))
@@ -56,7 +56,7 @@ export class AuthService {
         token: 'admin_token',
         user: {
           _id: 'admin',
-          name: 'Administrador',
+          username: 'Administrador',
           email: 'admin@example.com',
           role: 'admin'
         }
