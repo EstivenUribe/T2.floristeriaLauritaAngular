@@ -9,7 +9,7 @@
   >
     <!-- Panel de Registro -->
     <div class="form-container sign-up-container">
-      <form (ngSubmit)="register()">
+      <form [formGroup]="registerForm" (ngSubmit)="register()">
         <h1>Crear Cuenta</h1>
         <!-- Botón para regresar al inicio -->
         <div class="home-link">
@@ -34,23 +34,17 @@
         <input
           type="text"
           placeholder="Nombre"
-          [(ngModel)]="registerName"
-          name="registerName"
-          required
+          formControlName="name"
         />
         <input
           type="email"
           placeholder="Correo electrónico"
-          [(ngModel)]="registerEmail"
-          name="registerEmail"
-          required
+          formControlName="email"
         />
         <input
           [type]="passwordVisible ? 'text' : 'password'"
           placeholder="Contraseña"
-          [(ngModel)]="registerPassword"
-          name="registerPassword"
-          required
+          formControlName="password"
         />
         <button type="submit">Registrarse</button>
       </form>
@@ -158,12 +152,8 @@
             <label for="rememberMe">Recordarme</label>
           </div>
           <a href="#" [routerLink]="['/']">¿Olvidaste tu contraseña?</a>
-          <a
-            href="#"
-            (click)="toggleLoginType(); $event.preventDefault()"
-          >
-            <br>
-            Acceder como administrador
+          <a href="#"(click)="toggleLoginType(); $event.preventDefault()">
+            Aceder como administrador
           </a>
         </div>
         <button type="submit" [disabled]="isLoading">

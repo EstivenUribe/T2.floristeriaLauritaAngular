@@ -10,31 +10,21 @@
     <p>{{ error }}</p>
   </div>
 
-  <div *ngIf="!loading && !error && products.length > 0" class="carousel-container">
-    <swiper-container
-      init="true"
-      slides-per-view="1"
-      space-between="10"
-      navigation="true"
-      pagination="true"
-      autoplay="true"
-      class="flower-swiper">
-
-      <swiper-slide *ngFor="let producto of products" class="flower-slide">
-        <div class="flower-card">
-          <div class="flower-img-container">
-            <img [src]="producto.imagen || 'assets/images/placeholder.jpg'" [alt]="producto.nombre" class="flower-image">
-            <div *ngIf="producto.rebaja" class="discount-badge">Oferta</div>
-          </div>
-          <div class="flower-details">
-            <h3 class="flower-name">{{ producto.nombre }}</h3>
-            <p class="flower-price">{{ formatPrice(producto.precio) }}</p>
-            <a [routerLink]="['/product', producto._id]" class="view-details-btn">Ver detalles</a>
-          </div>
-        </div>
-      </swiper-slide>
-
-    </swiper-container>
+  <div *ngIf="!loading && !error && products.length > 0" class="carousel-wrapper">
+    <div class="carousel-container" id="container">
+      <div class="left-col" id="left-col">
+        <ul class="nav">
+          <li class="slide-up">
+            <a href="#" id="up_button" (click)="prevSlide($event)">&lt;</a>
+          </li>
+          <li class="slide-down">
+            <a href="#" id="down_button" (click)="nextSlide($event)">&gt;</a>
+          </li>
+        </ul>
+        <!-- Las diapositivas se generan dinámicamente en el componente TS -->
+      </div>
+      <!-- Los captions se generan dinámicamente en el componente TS -->
+    </div>
   </div>
 
   <div *ngIf="!loading && !error && products.length === 0" class="no-products">
