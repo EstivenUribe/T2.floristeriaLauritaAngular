@@ -8,13 +8,22 @@ const JWT_SECRET = process.env.JWT_SECRET || 'development_fallback_key';
 exports.protect = (req, res, next) => {
   // Obtener token del encabezado Authorization
   const authHeader = req.headers['authorization'];
-  const token = authHeader && authHeader.split(' ')[1]; // formato: "Bearer TOKEN"
+  let token;
+  if (authHeader && authHeader.startsWith('Bearer ')) {
+    token = authHeader.split(' ')[1];
+  }
 
   // También buscar el token en las cookies para CSRF protection
   const cookieToken = req.cookies?.token;
 
   // Usar el token del header o de las cookies
   const activeToken = token || cookieToken;
+
+    // --- TEMPORARY DEBUG LOG --- 
+  // Log the token being used for verification. 
+  // REMOVE THIS IN PRODUCTION or when debugging is complete.
+  console.log('Attempting to verify token:', activeToken ? `Type: ${typeof activeToken}, Value: ${activeToken.substring(0, 20)}... (truncated)` : activeToken);
+  // --- END TEMPORARY DEBUG LOG ---
 
   if (!activeToken) {
     return res.status(401).json({ message: 'Acceso denegado. Token no proporcionado' });

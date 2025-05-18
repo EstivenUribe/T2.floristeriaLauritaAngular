@@ -160,9 +160,44 @@ export class LoginComponent implements OnInit {
    * Proceso de registro de nuevo usuario
    */
   register(): void {
-    // Aquí se implementaría la lógica de registro
-    console.log('Registro con:', this.registerName, this.registerEmail, this.registerPassword);
-    alert('Funcionalidad de registro será implementada pronto');
+    // Validar campos
+    if (!this.registerName || !this.registerEmail || !this.registerPassword) {
+      this.error = 'Por favor, completa todos los campos.';
+      return;
+    }
+    if (!this.validateEmail(this.registerEmail)) {
+      this.error = 'Por favor, introduce un correo electrónico válido.';
+      return;
+    }
+    if (this.registerPassword.length < 6) {
+      this.error = 'La contraseña debe tener al menos 6 caracteres.';
+      return;
+    }
+
+    this.error = '';
+    this.isLoading = true;
+    this.authService.register({
+      name: this.registerName,
+      email: this.registerEmail,
+      password: this.registerPassword,
+      termsAccepted: true
+    }).subscribe({
+      next: (response) => {
+        // Registro exitoso
+        this.isLoading = false;
+        alert('¡Registro exitoso! Ahora puedes iniciar sesión.');
+        // Limpiar formulario de registro
+        this.registerName = '';
+        this.registerEmail = '';
+        this.registerPassword = '';
+        // Cambiar al panel de login
+        this.showSignInPanel();
+      },
+      error: (err) => {
+        this.isLoading = false;
+        this.error = err?.error?.message || 'Error al registrar usuario';
+      }
+    });
   }
 
   // Funciones para alternar entre paneles

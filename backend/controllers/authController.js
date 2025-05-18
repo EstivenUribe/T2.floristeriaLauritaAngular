@@ -42,14 +42,20 @@ const cookieConfig = {
 // Registro de nuevo usuario
 exports.signup = async (req, res) => {
   try {
-    const { username, email, password } = req.body;
+    const { username, email, password, role } = req.body;
 
     // Verificar si el usuario ya existe
     const existingUser = await User.findOne({ $or: [{ email }, { username }] });
     if (existingUser) {
       return res.status(400).json({ 
-        message: 'El usuario o email ya está registrado' 
+        message: 'El usuario o email ya está registrado. Si olvidaste tu contraseña, utiliza la opción de recuperación.' 
       });
+    }
+
+    // Permitir solo 'user' o 'admin' como roles, por seguridad
+    let assignedRole = 'user';
+    if (role && ['admin', 'user'].includes(role)) {
+      assignedRole = role;
     }
 
     // Crear un nuevo usuario
@@ -57,7 +63,7 @@ exports.signup = async (req, res) => {
       username,
       email,
       password,
-      // Por defecto, el rol es 'user'
+      role: assignedRole
     });
 
     // Guardar el usuario en la base de datos

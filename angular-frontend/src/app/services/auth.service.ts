@@ -75,7 +75,7 @@ export class AuthService {
   register(userData: RegisterRequest): Observable<AuthResponse> {
     this.isLoadingSubject.next(true);
     
-    return this.http.post<AuthResponse>(`${this.apiUrl}/register`, userData).pipe(
+    return this.http.post<AuthResponse>(`${this.apiUrl}/signup`, userData).pipe(
       tap(response => this.handleAuthResponse(response, false)),
       catchError(this.handleError),
       finalize(() => this.isLoadingSubject.next(false))

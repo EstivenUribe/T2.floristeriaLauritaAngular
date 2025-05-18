@@ -1,4 +1,6 @@
 const Product = require('../models/product');
+const fs = require('fs');
+const path = require('path');
 
 // Obtener productos con paginación y filtros
 exports.getAllProducts = async (req, res) => {
@@ -146,7 +148,11 @@ exports.getProductById = async (req, res) => {
 // Crear un nuevo producto
 exports.createProduct = async (req, res) => {
   try {
-    const producto = new Product(req.body);
+    const productData = { ...req.body };
+    if (req.file) {
+      productData.imagen = `/uploads/products/${req.file.filename}`;
+    }
+    const producto = new Product(productData);
     const nuevoProducto = await producto.save();
     res.status(201).json(nuevoProducto);
   } catch (error) {
@@ -159,17 +165,43 @@ exports.createProduct = async (req, res) => {
 
 // Actualizar un producto por ID
 exports.updateProduct = async (req, res) => {
+  const { id } = req.params;
+  const updateData = { ...req.body };
+
   try {
+    if (req.file) {
+      // If a new image is uploaded, prepare to update the image path
+      updateData.imagen = `/uploads/products/${req.file.filename}`;
+
+      // Find the existing product to delete the old image
+      const existingProduct = await Product.findById(id);
+      if (existingProduct && existingProduct.imagen) {
+        // Construct the path to the old image file
+        const oldImagePath = path.join(__dirname, '..', existingProduct.imagen);
+        // Check if the file exists and delete it
+        if (fs.existsSync(oldImagePath)) {
+          fs.unlink(oldImagePath, (err) => {
+            if (err) {
+              console.error('Error al eliminar la imagen antigua:', err);
+              // Log error but continue, or handle more gracefully
+            }
+          });
+        }
+      }
+    }
+
     const productoActualizado = await Product.findByIdAndUpdate(
-      req.params.id, 
-      req.body, 
+      id,
+      updateData,
       { new: true, runValidators: true }
     );
+
     if (!productoActualizado) {
       return res.status(404).json({ message: 'Producto no encontrado' });
     }
     res.json(productoActualizado);
   } catch (error) {
+    console.error('Error en updateProduct:', error); // Log the detailed error
     res.status(400).json({ 
       message: 'Error al actualizar producto', 
       error: error.message 
@@ -179,13 +211,29 @@ exports.updateProduct = async (req, res) => {
 
 // Eliminar un producto por ID
 exports.deleteProduct = async (req, res) => {
+  const { id } = req.params;
   try {
-    const productoEliminado = await Product.findByIdAndDelete(req.params.id);
+    const productoEliminado = await Product.findByIdAndDelete(id);
     if (!productoEliminado) {
       return res.status(404).json({ message: 'Producto no encontrado' });
     }
+
+    // If the product had an image, delete it from the server
+    if (productoEliminado.imagen) {
+      const imagePath = path.join(__dirname, '..', productoEliminado.imagen);
+      if (fs.existsSync(imagePath)) {
+        fs.unlink(imagePath, (err) => {
+          if (err) {
+            console.error('Error al eliminar la imagen del producto:', err);
+            // Log error, but proceed with successful deletion response for the product data
+          }
+        });
+      }
+    }
+
     res.json({ message: 'Producto eliminado correctamente' });
   } catch (error) {
+    console.error('Error en deleteProduct:', error); // Log the detailed error
     res.status(500).json({ 
       message: 'Error al eliminar producto', 
       error: error.message 

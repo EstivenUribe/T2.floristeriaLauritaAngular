@@ -24,6 +24,7 @@ const shouldCompress = (req, res) => {
 };
 
 // Middleware de seguridad
+// Consider reviewing Content Security Policy directives, especially 'unsafe-inline' and 'unsafe-eval' for enhanced security.
 app.use(helmet({
   contentSecurityPolicy: {
     directives: {
@@ -136,32 +137,6 @@ app.use('/assets', express.static(
   staticOptions(cacheTime.images)
 ));
 
-// Servir archivos de Angular con diferentes configuraciones de caché según el tipo
-app.use(express.static(
-  path.join(__dirname, 'angular-frontend/dist/angular-frontend/browser'),
-  {
-    setHeaders: (res, filePath) => {
-      // Archivos de contenido dinámico (HTML) - Sin caché
-      if (filePath.endsWith('.html')) {
-        res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate');
-        res.setHeader('Pragma', 'no-cache');
-        res.setHeader('Expires', '0');
-      } 
-      // Assets versionados (con hash en el nombre)
-      else if (filePath.match(/\.(js|css|jpe?g|png|gif|ico|svg|webp|woff2?)(\?[a-z0-9=]*)?$/)) {
-        // Archivos con hash pueden tener una caché larga
-        if (filePath.match(/\.[a-f0-9]{8,}\.(js|css|jpe?g|png|gif|svg|webp|woff2?)$/)) {
-          res.setHeader('Cache-Control', `public, max-age=${cacheTime.assets}, immutable`);
-        } 
-        // Recursos sin hash - caché moderada
-        else {
-          res.setHeader('Cache-Control', `public, max-age=${cacheTime.assets / 10}, stale-while-revalidate=86400`);
-        }
-      }
-    }
-  }
-));
-
 // Middleware de fallback para rutas de API en caso de error de BD
 app.use('/api/*', (req, res, next) => {
   // Si la base de datos está conectada, continuar con la siguiente ruta
@@ -174,9 +149,205 @@ app.use('/api/*', (req, res, next) => {
   next();
 });
 
-// Ruta para manejar HTML5 History Mode (para SPA)
-app.get('*', (req, res) => {
-  res.sendFile(path.join(__dirname, 'angular-frontend/dist/angular-frontend/browser', 'index.html'));
+// Root path serves admin login page
+app.get('/', (req, res) => {
+  res.setHeader('Content-Type', 'text/html');
+  res.send(`
+    <!DOCTYPE html>
+    <html lang="es">
+    <head>
+      <meta charset="UTF-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <title>Floristería Laurita - Panel de Administración</title>
+      <style>
+        :root {
+          --primary-color: #7e57c2;  /* Lila principal */
+          --primary-dark: #5e35b1;   /* Lila oscuro */
+          --primary-light: #b39ddb;  /* Lila claro */
+          --background: #f3e5f5;     /* Fondo lila muy claro */
+          --text: #4a148c;           /* Texto morado oscuro */
+        }
+        
+        body {
+          font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+          background-color: var(--background);
+          margin: 0;
+          padding: 0;
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          height: 100vh;
+          color: var(--text);
+          background-image: linear-gradient(135deg, #f3e5f5 0%, #e1bee7 100%);
+        }
+        
+        .container {
+          background-color: white;
+          border-radius: 12px;
+          box-shadow: 0 8px 24px rgba(126, 87, 194, 0.2);
+          padding: 2.5rem;
+          width: 100%;
+          max-width: 380px;
+          text-align: center;
+          border: 1px solid rgba(126, 87, 194, 0.1);
+        }
+        
+        .logo {
+          margin-bottom: 1.5rem;
+        }
+        
+        h1 {
+          color: var(--primary-color);
+          margin: 0 0 0.5rem 0;
+          font-weight: 700;
+          font-size: 1.8rem;
+        }
+        
+        h2 {
+          color: var(--primary-dark);
+          margin: 0 0 1.5rem 0;
+          font-weight: 500;
+          font-size: 1.2rem;
+        }
+        
+        .login-form {
+          display: flex;
+          flex-direction: column;
+        }
+        
+        .form-group {
+          margin-bottom: 1.25rem;
+          text-align: left;
+        }
+        
+        label {
+          display: block;
+          margin-bottom: 0.5rem;
+          font-weight: 500;
+          color: var(--text);
+        }
+        
+        input {
+          width: 100%;
+          padding: 0.75rem 1rem;
+          border: 2px solid #e1bee7;
+          border-radius: 6px;
+          font-size: 16px;
+          box-sizing: border-box;
+          transition: border-color 0.3s, box-shadow 0.3s;
+        }
+        
+        input:focus {
+          outline: none;
+          border-color: var(--primary-color);
+          box-shadow: 0 0 0 3px rgba(126, 87, 194, 0.2);
+        }
+        
+        button {
+          background-color: var(--primary-color);
+          color: white;
+          border: none;
+          border-radius: 6px;
+          padding: 0.85rem;
+          font-size: 16px;
+          font-weight: 600;
+          cursor: pointer;
+          transition: all 0.3s;
+          margin-top: 0.5rem;
+          text-transform: uppercase;
+          letter-spacing: 0.5px;
+        }
+        
+        button:hover {
+          background-color: var(--primary-dark);
+          transform: translateY(-2px);
+          box-shadow: 0 4px 12px rgba(126, 87, 194, 0.3);
+        }
+        
+        button:active {
+          transform: translateY(0);
+        }
+        
+        .status {
+          margin: 1.25rem 0;
+          padding: 0.75rem 1rem;
+          border-radius: 6px;
+          font-size: 14px;
+          display: none;
+          line-height: 1.5;
+        }
+        
+        .error {
+          background-color: #fce4ec;
+          color: #c2185b;
+          border-left: 4px solid #c2185b;
+        }
+        
+        .success {
+          background-color: #f1f8e9;
+          color: #2e7d32;
+          border-left: 4px solid #2e7d32;
+        }
+        
+        .footer {
+          margin-top: 2rem;
+          font-size: 13px;
+          color: #9c27b0;
+          opacity: 0.8;
+        }
+        
+        .footer p {
+          margin: 0.25rem 0;
+        }
+      </style>
+    </head>
+    <body>
+      <div class="container">
+        <div class="logo">
+  <h1>🌸 Floristería Laurita</h1>
+  <h2>Panel de Administración</h2>
+</div>
+        <div id="status" class="status"></div>
+        <form id="loginForm" class="login-form">
+          <div class="form-group">
+            <label for="password">Contraseña de Administrador</label>
+            <input type="password" id="password" name="password" required autofocus>
+          </div>
+          <button type="submit" class="login-button">Acceder</button>
+        </form>
+        <div class="footer">
+  <p>Acceso exclusivo para personal autorizado</p>
+  <p> ${new Date().getFullYear()} Floristería Laurita</p>
+</div>
+      </div>
+
+      <script>
+        const loginForm = document.getElementById('loginForm');
+loginForm.addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const password = document.getElementById('password').value;
+  const statusEl = document.getElementById('status');
+  try {
+    if (password === 'admin123') {
+      statusEl.textContent = 'Acceso concedido. Redirigiendo...';
+      statusEl.className = 'status success';
+      setTimeout(() => {
+        window.location.replace('http://localhost:4200/admin');
+      }, 800);
+    } else {
+      statusEl.textContent = 'Acceso denegado. Se requieren permisos de administrador.';
+      statusEl.className = 'status error';
+    }
+  } catch (error) {
+    statusEl.textContent = 'Error al conectar con el servidor. Intenta nuevamente.';
+    statusEl.className = 'status error';
+    console.error('Error:', error);
+  }
+});
+      </script>
+    </body>
+    </html>
+  `);
 });
 
 // Exportar la app configurada
