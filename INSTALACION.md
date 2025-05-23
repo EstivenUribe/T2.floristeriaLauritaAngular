@@ -99,8 +99,7 @@ Alternativamente, puedes compilar el frontend y luego iniciar el servidor:
 ```bash
 cd angular-frontend
 npm run build
-cd ..
-NODE_ENV=production npm start
+
 ```
 
 ## Verificación de la Instalación
