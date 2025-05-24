@@ -11,7 +11,6 @@ img {
   top: 50%;
   left: 8rem;
   z-index: 9;
-  transform: translateY(-50%);
   opacity: 0;
   transition: 500ms ease opacity, 500ms ease transform;
   transform: translateY(60px);
@@ -64,12 +63,12 @@ img {
 .container {
   width: 100vw; /* Full viewport width */
   height: auto; /* Adjust height based on content */
-  padding-top: 2rem; /* Space above the left-col */
-  padding-bottom: 2rem; /* Space below the left-col */
+  /* Space above the left-col */
+  padding: 2rem 100% 2rem 0;
   background-color: #2C302E;
   color: #d6f9dd; /* Color de texto original del body del carrusel */
   font-family: 'Lato', sans-serif; /* Asegurar fuente Lato */
-  display: flex;
+
   justify-content: center; /* Center .left-col if .container is wider */
   align-items: center; /* Center .left-col vertically */
   position: relative;
@@ -82,7 +81,7 @@ img {
 }
 .left-col {
   /* height: 75vh; --- Height is now derived from width and aspect-ratio */
-  width: 95vw;   /* Make slide area almost full viewport width */
+  width: 100vw;   /* Make slide area almost full viewport width */
   /* max-width: 95vw; --- This is effectively the width now */
   aspect-ratio: 21 / 9; /* Mantiene la proporción 21:9 */
 
