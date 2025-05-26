@@ -66,6 +66,12 @@ Para iniciar la aplicación en modo desarrollo con reinicio automático:
 npm run dev
 ```
 
+Para iniciar la aplicacion de forma completa:
+
+```bash
+npm run dev:both
+```
+
 Este comando:
 1. Inicia el servidor backend con nodemon
 2. Espera a que el servidor se inicie y se conecte a MongoDB
