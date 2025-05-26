@@ -8,12 +8,14 @@ img {
 }
 .caption {
   position: absolute;
-  top: 50%;
+  top: 30%;
   left: 5%;
   z-index: 9;
   opacity: 0;
   transition: 500ms ease opacity, 500ms ease transform;
-  transform: translateY(-50%);
+  transform: translateY(-30%);
+  color: white;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.7); /* Sombra para mejor legibilidad */
 }
 .caption.current-caption {
   transition-delay: 1000ms;
@@ -33,22 +35,24 @@ img {
   text-indent: -0.2rem;
   letter-spacing: 0.2rem;
   font-weight: 300;
+  color: white;
 }
 .caption .caption-subhead {
   font-size: 1rem;
   font-weight: 300;
   text-transform: uppercase;
   color: white;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.7); /* Sombra para mejor legibilidad */
   letter-spacing: 4px;
   word-spacing: 0.1rem;
   margin-bottom: 2.5rem;
   display: block;
 }
 .caption a.btn {
-  color: #333;
+  color: rgb(44, 48, 46);
   font-size: 0.8rem;
   text-decoration: none;
-  background-color: white;
+  background-color: #fbdede;
   padding: 0.5rem 1rem;
   text-transform: uppercase;
   letter-spacing: 0.2rem;
@@ -57,18 +61,19 @@ img {
   transition: 250ms ease-in background-color, 500ms ease-in color;
 }
 .caption a.btn:hover {
-  background-color: black;
-  color: white;
+  background-color: #66c1b6;
 }
 .container {
   width: 100vw; /* Full viewport width */
   height: auto; /* Adjust height based on content */
   /* Space above the left-col */
-  padding: 2rem 100% 2rem 0;
+  padding-right: 100%;
+  padding-top: 2rem;
+  padding-bottom: 1.2rem;
   background-color: #2C302E;
   color: #d6f9dd; /* Color de texto original del body del carrusel */
   font-family: 'Lato', sans-serif; /* Asegurar fuente Lato */
-
+  box-sizing: border-box;
   justify-content: center; /* Center .left-col if .container is wider */
   align-items: center; /* Center .left-col vertically */
   position: relative;
@@ -92,6 +97,17 @@ img {
     height: 40vh; /* Más pequeño en móviles pero proporcionado */
   }
 }
+@media (max-width: 768px) {
+  .caption {
+    top: 15%;
+    transform: translateY(-15%);
+  }
+
+  .caption .caption-subhead {
+    margin-bottom: 1.5rem; /* reduce espacio bajo el subtítulo */
+  }
+}
+
 .left-col .slide {
   filter: grayscale(100%);
   position: absolute;
@@ -152,7 +168,7 @@ img {
 .nav a {
   color: rgba(250, 250, 250, 1);
   font-size: 3rem;
-  text-shadow: 1px 1px 4px rgba(0, 0, 0, 0.4);
+  text-shadow: 1px 1px 4px rgba(126, 186, 136, 0.4);
 }
 .nav:hover .slide-up,
 .nav:hover .slide-down {
@@ -188,3 +204,14 @@ img {
   right: 0;
   transform: translateX(100%);
 }
+.caption {
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.5s ease;
+}
+
+.caption.current-caption {
+  pointer-events: auto;
+  opacity: 1;
+}
+
