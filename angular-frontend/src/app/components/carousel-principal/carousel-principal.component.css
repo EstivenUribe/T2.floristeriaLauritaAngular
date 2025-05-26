@@ -9,11 +9,11 @@ img {
 .caption {
   position: absolute;
   top: 50%;
-  left: 8rem;
+  left: 5%;
   z-index: 9;
   opacity: 0;
   transition: 500ms ease opacity, 500ms ease transform;
-  transform: translateY(60px);
+  transform: translateY(-50%);
 }
 .caption.current-caption {
   transition-delay: 1000ms;
@@ -27,7 +27,7 @@ img {
   transition: 500ms ease-in all;
 }
 .caption .caption-heading h1 {
-  font-size: 4rem;
+  font-size: clamp(2rem, 4vw, 4rem); /* Responsive font size */
   margin-bottom: 1.5rem;
   text-transform: uppercase;
   text-indent: -0.2rem;
@@ -80,15 +80,17 @@ img {
   /* height: calc(100% - 4rem); Removed to allow aspect-ratio for .left-col */
 }
 .left-col {
-  /* height: 75vh; --- Height is now derived from width and aspect-ratio */
-  width: 100vw;   /* Make slide area almost full viewport width */
-  /* max-width: 95vw; --- This is effectively the width now */
-  aspect-ratio: 21 / 9; /* Mantiene la proporción 21:9 */
+  width: 100vw;
+  height: 50vh; /* Altura fija en lugar de aspect-ratio para mejor control responsive */
+  margin: 0;
+  position: relative;
+  overflow: hidden;
+}
 
-  margin: 0; /* Centering is handled by parent flex container if container is wider */
-  position: relative; /* Necesario para los slides con posición absoluta */
-  overflow: hidden;   /* Necesario para recortar los slides durante la transición */
-  /* background-color: red !important; Removed temporary background */
+@media (max-width: 768px) {
+  .left-col {
+    height: 40vh; /* Más pequeño en móviles pero proporcionado */
+  }
 }
 .left-col .slide {
   filter: grayscale(100%);
