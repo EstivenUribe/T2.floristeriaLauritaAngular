@@ -6,7 +6,7 @@
 }
 
 .page-header {
-  background-color: #cf519d;
+  background-color: #9071af;
   padding: 60px 0 40px;
   text-align: center;
   margin-bottom: 40px;
@@ -86,11 +86,11 @@
     flex-direction: column;
     align-items: flex-start;
   }
-  
+
   .filter-group {
     width: 100%;
   }
-  
+
   .filter-select, .search-box {
     width: 100%;
   }
@@ -100,7 +100,7 @@
   .page-header {
     padding: 40px 0 30px;
   }
-  
+
   .page-title {
     font-size: 2rem;
   }

@@ -6,7 +6,7 @@
 }
 
 .page-header {
-  background-color: #f9f4f7;
+  background-color: #9071af;
   padding: 60px 0 40px;
   text-align: center;
   margin-bottom: 40px;
@@ -368,7 +368,7 @@
 }
 
 .btn-primary {
-  background-color: var(--primary-pink);
+  background-color: #fb4f89;
   color: white;
   border: none;
   padding: 12px 25px;
@@ -379,7 +379,7 @@
 }
 
 .btn-primary:hover {
-  background-color: #e6407e;
+  background-color: #f4005c;
 }
 
 /* Reconocimientos */

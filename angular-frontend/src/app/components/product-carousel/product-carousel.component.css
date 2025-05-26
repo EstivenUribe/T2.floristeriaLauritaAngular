@@ -104,10 +104,9 @@ swiper-container {
 .view-details-btn {
   display: inline-block;
   background-color: #6a0dad;
-  color: white;
+  color: black !important;
   padding: 8px 16px;
   border-radius: 25px;
-  text-decoration: none;
   font-weight: 500;
   transition: background-color 0.3s;
 }
