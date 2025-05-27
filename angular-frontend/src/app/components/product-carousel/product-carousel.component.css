@@ -7,7 +7,7 @@
 
 .carousel-title {
   text-align: center;
-  color: #ff4d8d;
+  color: #ff679d;
   font-size: 2rem;
   margin-bottom: 1.5rem;
   font-family: 'Playfair Display', serif;
@@ -41,7 +41,8 @@ swiper-container {
   box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
   transition: transform 0.3s ease, box-shadow 0.3s ease;
   width: 100%;
-  max-width: 280px;
+  max-width: 320px;
+  min-height: 400px;
 }
 
 .flower-card:hover {
@@ -68,9 +69,9 @@ swiper-container {
 
 .discount-badge {
   position: absolute;
-  top: 10px;
+  top: 18px;
   right: 10px;
-  background-color: #ff4d8d;
+  background-color: #ff99c6;
   color: white;
   padding: 5px 10px;
   border-radius: 20px;
@@ -103,8 +104,8 @@ swiper-container {
 
 .view-details-btn {
   display: inline-block;
-  background-color: #6a0dad;
-  color: black !important;
+  background-color: #b19cd9;
+  color: white !important;
   padding: 8px 16px;
   border-radius: 25px;
   font-weight: 500;
@@ -112,7 +113,7 @@ swiper-container {
 }
 
 .view-details-btn:hover {
-  background-color: #4e0a9f;
+  background-color: #845fd3;
 }
 
 /* Personalización de los botones de navegación de Swiper */

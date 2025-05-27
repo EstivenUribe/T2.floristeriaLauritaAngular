@@ -311,6 +311,15 @@
   transform: translateY(0);
   opacity: 1;
 }
+.view-details-btn:hover {
+  background-color: #ff4d8d;
+  transform: scale(1.05);
+}
+
+.producto-box:hover .view-details-btn:hover {
+  background-color: #ff4d8d;
+  transform: translateY(0) scale(1.05);
+}
 
 .rebaja-tag {
   position: absolute;

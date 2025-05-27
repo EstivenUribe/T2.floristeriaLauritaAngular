@@ -88,6 +88,15 @@ export class NavFooterComponent implements OnInit, OnDestroy, AfterViewInit {
     this.router.navigate(['/']); // O a la página de login
   }
 
+  goToHomeE() {
+    this.router.navigate(['/']);
+  }
+
+  goToHomeAndCloseSidebar() {
+    this.goToHomeE();
+    this.toggleSidebar();
+  }
+
   ngOnDestroy(): void {
     if (this.cartSubscription) {
       this.cartSubscription.unsubscribe();
