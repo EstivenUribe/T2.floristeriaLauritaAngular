@@ -1,0 +1,253 @@
+<div class="admin-orders-container container-fluid p-4">
+  <!-- Spinner de carga -->
+  <div *ngIf="loading" class="loading-spinner d-flex justify-content-center align-items-center" style="min-height: 200px;">
+    <div class="spinner-border text-primary" role="status">
+      <span class="sr-only">Cargando...</span>
+    </div>
+  </div>
+  
+  <!-- Mensaje de error -->
+  <div *ngIf="error && !loading" class="alert alert-danger shadow-sm">
+    <i class="fas fa-exclamation-triangle me-2"></i> {{ error }}
+    <button (click)="loadAllOrders()" class="btn btn-sm btn-outline-danger ml-2">
+      <i class="fas fa-sync-alt"></i> Reintentar
+    </button>
+  </div>
+  
+  <!-- Vista de lista de pedidos -->
+  <div *ngIf="displayMode === 'list' && !loading && !error" class="orders-list-view">
+    <h2 class="section-title">Gestión de Pedidos</h2>
+    
+    <!-- Filtros y búsqueda -->
+    <div class="filters-container">
+      <div class="row align-items-center">
+        <div class="col-md-3">
+          <div class="form-group">
+            <label for="statusFilter">Filtrar por estado:</label>
+            <select id="statusFilter" class="form-control" [(ngModel)]="statusFilter" (change)="applyFilters()">
+              <option value="">Todos los estados</option>
+              <option *ngFor="let status of orderStatuses" [value]="status">{{ status }}</option>
+            </select>
+          </div>
+        </div>
+        
+        <div class="col-md-3">
+          <div class="form-group">
+            <label for="dateFilter">Filtrar por fecha:</label>
+            <input type="date" id="dateFilter" class="form-control" [(ngModel)]="dateFilter" (change)="applyFilters()">
+          </div>
+        </div>
+        
+        <div class="col-md-4">
+          <div class="form-group">
+            <label for="searchText">Buscar:</label>
+            <input type="text" id="searchText" class="form-control" [(ngModel)]="searchText" 
+                   placeholder="ID, cliente, ciudad..." (keyup)="applyFilters()">
+          </div>
+        </div>
+        
+        <div class="col-md-2 d-flex align-items-end">
+          <button class="btn btn-secondary btn-block" (click)="resetFilters()">
+            <i class="fas fa-eraser"></i> Limpiar
+          </button>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Tabla de pedidos -->
+    <div class="table-responsive mt-3">
+      <table class="table table-hover">
+        <thead class="thead-dark">
+          <tr>
+            <th>ID Pedido</th>
+            <th>Fecha</th>
+            <th>Cliente</th>
+            <th>Total</th>
+            <th>Productos</th>
+            <th>Estado</th>
+            <th>Acciones</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngIf="filteredOrders.length === 0">
+            <td colspan="7" class="text-center py-4">
+              No se encontraron pedidos con los filtros aplicados
+            </td>
+          </tr>
+          <tr *ngFor="let order of filteredOrders">
+            <td>{{ order?.orderNumber || 'N/A' }}</td>
+            <td>{{ order?.date ? formatDate(order.date) : 'N/A' }}</td>
+            <td>{{ order?.userId || 'N/A' }}</td>
+            <td>${{ order?.totalAmount ? order.totalAmount.toFixed(2) : '0.00' }}</td>
+            <td>{{ getTotalItems(order) }} items</td>
+            <td>
+              <span class="badge" [ngClass]="getStatusClass(order?.status || '')">
+                {{ order?.status || 'Desconocido' }}
+              </span>
+            </td>
+            <td>
+              <div class="btn-group">
+                <button class="btn btn-sm btn-info" (click)="viewOrderDetails(order)">
+                  <i class="fas fa-eye"></i>
+                </button>
+                <button class="btn btn-sm btn-success" (click)="markAsPaid(order?._id || '')" 
+                        [disabled]="order?.status === OrderStatus.CANCELLED">
+                  <i class="fas fa-dollar-sign"></i>
+                </button>
+                <button class="btn btn-sm btn-primary" (click)="markAsDelivered(order?._id || '')"
+                        [disabled]="order?.status === OrderStatus.CANCELLED">
+                  <i class="fas fa-shipping-fast"></i>
+                </button>
+                <div class="btn-group" appClickOutside (appClickOutside)="order.showStatusDropdown = false">
+                  <button class="btn btn-sm btn-secondary dropdown-toggle" type="button" (click)="order.showStatusDropdown = !order.showStatusDropdown">
+                    <i class="fas fa-cog"></i>
+                  </button>
+                  <div class="dropdown-menu" [class.show]="order.showStatusDropdown">
+                    <button *ngFor="let status of orderStatuses" 
+                            class="dropdown-item" 
+                            (click)="order._id && updateOrderStatus(order._id, status); order.showStatusDropdown = false"
+                            [disabled]="order.status === status || !order._id">
+                      Cambiar a: {{ status }}
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+  
+  <!-- Vista detallada de un pedido -->
+  <div *ngIf="displayMode === 'detail' && selectedOrder && !loading && !error" class="order-detail-view shadow-sm p-4 bg-white rounded">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+      <h2 class="section-title">Detalle del Pedido #{{ selectedOrder.orderNumber || 'N/A' }}</h2>
+      <button class="btn btn-secondary" (click)="backToList()">
+        <i class="fas fa-arrow-left"></i> Volver a la lista
+      </button>
+    </div>
+    
+    <div class="row">
+      <!-- Información básica del pedido -->
+      <div class="col-md-6">
+        <div class="card mb-4">
+          <div class="card-header bg-dark text-white">
+            <h5 class="mb-0">Información del Pedido</h5>
+          </div>
+          <div class="card-body">
+            <p><strong>ID Pedido:</strong> {{ selectedOrder._id || 'N/A' }}</p>
+            <p><strong>Fecha:</strong> {{ selectedOrder.date ? formatDate(selectedOrder.date) : 'N/A' }}</p>
+            <p><strong>ID Cliente:</strong> {{ selectedOrder.userId || 'N/A' }}</p>
+            <p><strong>Estado:</strong> 
+              <span class="badge" [ngClass]="getStatusClass(selectedOrder.status || '')">
+                {{ selectedOrder.status || 'Desconocido' }}
+              </span>
+            </p>
+            <p><strong>Método de Pago:</strong> {{ selectedOrder.paymentMethod || 'N/A' }}</p>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Dirección de envío -->
+      <div class="col-md-6">
+        <div class="card mb-4">
+          <div class="card-header bg-dark text-white">
+            <h5 class="mb-0">Dirección de Envío</h5>
+          </div>
+          <div class="card-body">
+            <p><strong>Calle:</strong> {{ selectedOrder.shippingAddress?.street || 'N/A' }}</p>
+            <p><strong>Ciudad:</strong> {{ selectedOrder.shippingAddress?.city || 'N/A' }}</p>
+            <p><strong>Estado/Provincia:</strong> {{ selectedOrder.shippingAddress?.state || 'N/A' }}</p>
+            <p><strong>Código Postal:</strong> {{ selectedOrder.shippingAddress?.zipCode || 'N/A' }}</p>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Productos del pedido -->
+    <div class="card mb-4">
+      <div class="card-header bg-dark text-white">
+        <h5 class="mb-0">Productos</h5>
+      </div>
+      <div class="card-body p-0">
+        <div class="table-responsive">
+          <table class="table mb-0">
+            <thead class="thead-light">
+              <tr>
+                <th>Imagen</th>
+                <th>Producto</th>
+                <th>Precio</th>
+                <th>Cantidad</th>
+                <th>Subtotal</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let item of selectedOrder.products || []">
+                <td>
+                  <img *ngIf="item.imageUrl" [src]="item.imageUrl" alt="{{ item.name }}" class="product-thumbnail">
+                  <div *ngIf="!item.imageUrl" class="no-image">Sin imagen</div>
+                </td>
+                <td>{{ item.name }}</td>
+                <td>${{ item.price ? item.price.toFixed(2) : '0.00' }}</td>
+                <td>{{ item.quantity }}</td>
+                <td>${{ item.price ? (item.price * item.quantity).toFixed(2) : '0.00' }}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Resumen del pedido -->
+    <div class="card mb-4">
+      <div class="card-header bg-dark text-white">
+        <h5 class="mb-0">Resumen</h5>
+      </div>
+      <div class="card-body">
+        <div class="d-flex justify-content-between mb-2">
+          <span>Subtotal:</span>
+          <span>${{ selectedOrder.totalAmount ? (selectedOrder.totalAmount - (selectedOrder.shippingPrice || 0)).toFixed(2) : '0.00' }}</span>
+        </div>
+        <div class="d-flex justify-content-between mb-2">
+          <span>Envío:</span>
+          <span>${{ selectedOrder.shippingPrice ? selectedOrder.shippingPrice.toFixed(2) : '0.00' }}</span>
+    <!-- Acciones para el pedido -->
+    <div class="card mb-4">
+      <div class="card-header bg-dark text-white">
+        <h5 class="mb-0">Acciones</h5>
+      </div>
+      <div class="card-body">
+        <div class="row">
+          <div class="col-md-6 mb-3">
+            <div class="form-group">
+              <label for="changeStatus">Cambiar estado:</label>
+              <div class="input-group">
+                <select id="changeStatus" class="form-control" [(ngModel)]="selectedOrder.status">
+                  <option *ngFor="let status of orderStatuses" [value]="status">{{ status }}</option>
+                </select>
+                <div class="input-group-append">
+                  <button class="btn btn-primary" (click)="updateOrderStatus(selectedOrder._id || '', selectedOrder.status || '')">
+                    Actualizar
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="d-flex justify-content-end">
+              <button class="btn btn-success mr-2" (click)="markAsPaid(selectedOrder._id || '')"
+                      [disabled]="selectedOrder.status === OrderStatus.CANCELLED">
+                <i class="fas fa-dollar-sign"></i> Marcar como Pagado
+              </button>
+              <button class="btn btn-primary" (click)="markAsDelivered(selectedOrder._id || '')"
+                      [disabled]="selectedOrder.status === OrderStatus.CANCELLED">
+                <i class="fas fa-shipping-fast"></i> Marcar como Entregado
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

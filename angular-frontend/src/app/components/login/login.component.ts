@@ -4,7 +4,7 @@ import { Router, ActivatedRoute } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
-import { NavFooterComponent } from '../shared/nav-footer/nav-footer.component';
+// import { NavFooterComponent } from '../shared/nav-footer/nav-footer.component'; // No utilizado en el template
 import { AuthService } from '../../services/auth.service';
 import { NotificationService } from '../../services/notification.service'; // Importar NotificationService
 import { LoginRequest } from '../../models/auth.model';
@@ -12,7 +12,7 @@ import { LoginRequest } from '../../models/auth.model';
 @Component({
   selector: 'app-login',
   standalone: true,
-  imports: [FormsModule, CommonModule, RouterModule, NavFooterComponent],
+  imports: [FormsModule, CommonModule, RouterModule], // NavFooterComponent no utilizado
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.css']
 })
@@ -37,6 +37,14 @@ export class LoginComponent implements OnInit {
   registerUsername = '';
   registerEmail = '';
   registerPassword = '';
+  registerFirstName = '';
+  registerLastName = '';
+  registerAddress = '';
+  registerCity = '';
+  registerState = '';
+  registerZipCode = '';
+  registerPhone = '';
+  registerAvatarId = 1; // Avatar predeterminado
 
   constructor(
     private router: Router,
@@ -56,6 +64,12 @@ export class LoginComponent implements OnInit {
   ngOnInit(): void {
     // Inicializar el estado del panel
     this.isRightPanelActive = false;
+    
+    // Verificar si hay una ruta de redirección guardada
+    const redirectPath = localStorage.getItem('redirectAfterLogin');
+    if (redirectPath) {
+      this.returnUrl = redirectPath;
+    }
   }
 
   /**
@@ -148,8 +162,16 @@ export class LoginComponent implements OnInit {
       this.authService.login(this.loginForm)
         .subscribe({
           next: () => {
-            // Navegar a la URL de retorno o página principal
-            this.router.navigateByUrl(this.returnUrl);
+            // Verificar si hay una ruta de redirección guardada en localStorage
+            const redirectPath = localStorage.getItem('redirectAfterLogin');
+            if (redirectPath) {
+              // Eliminar la redirección después de usarla
+              localStorage.removeItem('redirectAfterLogin');
+              this.router.navigateByUrl(redirectPath);
+            } else {
+              // Navegar a la URL de retorno o página principal
+              this.router.navigateByUrl(this.returnUrl);
+            }
           },
           error: (err) => {
             this.error = err.message;
@@ -182,6 +204,14 @@ export class LoginComponent implements OnInit {
       username: this.registerUsername,
       email: this.registerEmail,
       password: this.registerPassword,
+      firstName: this.registerFirstName,
+      lastName: this.registerLastName,
+      address: this.registerAddress,
+      city: this.registerCity,
+      state: this.registerState,
+      zipCode: this.registerZipCode,
+      phone: this.registerPhone,
+      avatarId: this.registerAvatarId,
       termsAccepted: true
     }).subscribe({
       next: (response) => {

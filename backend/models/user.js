@@ -2,6 +2,7 @@ const mongoose = require('mongoose');
 const bcrypt = require('bcryptjs');
 
 const userSchema = new mongoose.Schema({
+  // Campos básicos de identificación
   username: {
     type: String,
     required: true,
@@ -21,12 +22,38 @@ const userSchema = new mongoose.Schema({
     type: String,
     required: true
   },
+  
+  // Campos de información personal (añadidos para coincidir con el frontend)
+  firstName: String,
+  lastName: String,
+  address: String,
+  city: String,
+  state: String,
+  zipCode: String,
+  phone: String,
+  birthDate: Date,
+  
+  // Campos de perfil y configuración
+  avatarId: Number,
+  profilePicture: String,
+  emailVerified: {
+    type: Boolean,
+    default: false
+  },
+  
+  // Campos de rol y estado
   role: {
     type: String,
     enum: ['user', 'admin'],
     default: 'user',
     index: true
   },
+  isActive: {
+    type: Boolean,
+    default: true
+  },
+  
+  // Gestión de sesiones
   refreshTokens: [{
     token: String,
     expiresAt: Date,
@@ -39,21 +66,9 @@ const userSchema = new mongoose.Schema({
   }],
   lastLogin: {
     type: Date
-  },
-  isActive: {
-    type: Boolean,
-    default: true
-  },
-  createdAt: {
-    type: Date,
-    default: Date.now
-  },
-  updatedAt: {
-    type: Date,
-    default: Date.now
   }
 }, { 
-  timestamps: true 
+  timestamps: true // Esto ya maneja createdAt y updatedAt automáticamente
 });
 
 // Índices compuestos

@@ -38,6 +38,7 @@
                 <ul>
                   <li><a (click)="viewProfile()">Ver perfil</a></li>
                   <li><a (click)="viewOrderHistory()">Historial de compras</a></li>
+                  <li *ngIf="authService.isAdmin$ | async"><a (click)="navigateToAdminOrders()">Gestionar órdenes</a></li>
                   <li *ngIf="authService.isAdmin$ | async"><a (click)="navigateToAdmin()">Administrar</a></li>
                   <li><a (click)="logout()">Cerrar sesión</a></li>
                 </ul>
@@ -80,7 +81,19 @@
     <li><a [routerLink]="['/nosotros']" (click)="toggleSidebar()" routerLinkActive="active">Nosotros</a></li>
     <li><a [routerLink]="['/contacto']" (click)="toggleSidebar()" routerLinkActive="active">Contacto</a></li>
     <li><a [routerLink]="['/carrito']" (click)="toggleSidebar()" routerLinkActive="active">Carrito</a></li>
-    <li><a [routerLink]="['/login']" (click)="toggleSidebar()" routerLinkActive="active">Iniciar Sesión</a></li>
+    
+    <!-- Opciones para usuarios no autenticados -->
+    <ng-container *ngIf="!(isAuthenticated$ | async)">
+      <li><a [routerLink]="['/login']" (click)="toggleSidebar()" routerLinkActive="active">Iniciar Sesión</a></li>
+    </ng-container>
+    
+    <!-- Opciones para usuarios autenticados -->
+    <ng-container *ngIf="isAuthenticated$ | async">
+      <li><a [routerLink]="['/perfil']" (click)="toggleSidebar()" routerLinkActive="active">Mi Perfil</a></li>
+      <li><a [routerLink]="['/historial-compras']" (click)="toggleSidebar()" routerLinkActive="active">Historial de Compras</a></li>
+      <li *ngIf="authService.isAdmin$ | async"><a [routerLink]="['/admin']" (click)="toggleSidebar()" routerLinkActive="active">Administrar</a></li>
+      <li><a href="#" (click)="logout(); toggleSidebar()">Cerrar Sesión</a></li>
+    </ng-container>
   </ul>
 </div>
 

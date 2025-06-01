@@ -9,7 +9,7 @@
   >
     <!-- Panel de Registro -->
     <div class="form-container sign-up-container">
-      <form (ngSubmit)="register()">
+      <form (ngSubmit)="register()" class="register-form">
         <h1>Crear Cuenta</h1>
         <!-- Botón para regresar al inicio -->
         <div class="home-link">
@@ -30,29 +30,124 @@
           </a>
         </div>
         <span>o usa tu correo para registrarte</span>
-        <!-- Campos del formulario de registro -->
-        <input
-          type="text"
-          placeholder="Nombre de Usuario"
-          [(ngModel)]="registerUsername"
-          name="registerUsername"
-          required
-        />
-        <input
-          type="email"
-          placeholder="Correo electrónico"
-          [(ngModel)]="registerEmail"
-          name="registerEmail"
-          required
-        />
-        <input
-          [type]="passwordVisible ? 'text' : 'password'"
-          placeholder="Contraseña"
-          [(ngModel)]="registerPassword"
-          name="registerPassword"
-          required
-        />
-        <button type="submit">Registrarse</button>
+        <!-- Sección de información de cuenta -->
+        <div class="form-section">
+          <h3>Información de Cuenta</h3>
+          <input
+            type="text"
+            placeholder="Nombre de Usuario"
+            [(ngModel)]="registerUsername"
+            name="registerUsername"
+            required
+          />
+          <input
+            type="email"
+            placeholder="Correo electrónico"
+            [(ngModel)]="registerEmail"
+            name="registerEmail"
+            required
+          />
+          <div class="password-input">
+            <input
+              [type]="passwordVisible ? 'text' : 'password'"
+              placeholder="Contraseña"
+              [(ngModel)]="registerPassword"
+              name="registerPassword"
+              required
+            />
+            <button
+              type="button"
+              class="toggle-password"
+              (click)="togglePasswordVisibility()"
+            >
+              <i class="fas" [ngClass]="passwordVisible ? 'fa-eye-slash' : 'fa-eye'"></i>
+            </button>
+          </div>
+        </div>
+        
+        <!-- Sección de información personal -->
+        <div class="form-section">
+          <h3>Información Personal</h3>
+          <input
+            type="text"
+            placeholder="Nombre"
+            [(ngModel)]="registerFirstName"
+            name="registerFirstName"
+            required
+          />
+          <input
+            type="text"
+            placeholder="Apellido"
+            [(ngModel)]="registerLastName"
+            name="registerLastName"
+            required
+          />
+          <input
+            type="text"
+            placeholder="Teléfono"
+            [(ngModel)]="registerPhone"
+            name="registerPhone"
+          />
+        </div>
+        
+        <!-- Sección de dirección -->
+        <div class="form-section">
+          <h3>Dirección</h3>
+          <input
+            type="text"
+            placeholder="Dirección"
+            [(ngModel)]="registerAddress"
+            name="registerAddress"
+          />
+          <div class="address-row">
+            <input
+              type="text"
+              placeholder="Ciudad"
+              [(ngModel)]="registerCity"
+              name="registerCity"
+              class="city-input"
+            />
+            <input
+              type="text"
+              placeholder="Estado/Provincia"
+              [(ngModel)]="registerState"
+              name="registerState"
+              class="state-input"
+            />
+            <input
+              type="text"
+              placeholder="Código Postal"
+              [(ngModel)]="registerZipCode"
+              name="registerZipCode"
+              class="zip-input"
+            />
+          </div>
+        </div>
+        
+        <!-- Sección de avatar -->
+        <div class="form-section avatar-section">
+          <h3>Elige tu avatar</h3>
+          <div class="avatar-options">
+            <div *ngFor="let i of [1, 2, 3, 4, 5, 6]" 
+                 class="avatar-option" 
+                 [class.selected]="registerAvatarId === i"
+                 (click)="registerAvatarId = i">
+              <img src="assets/avatars/avatar-{{i}}.svg" alt="Avatar {{i}}" class="avatar-img">
+            </div>
+          </div>
+        </div>
+        
+        <div class="terms-container">
+          <label>
+            <input type="checkbox" required>
+            Acepto los <a [routerLink]="['/terminos']">Términos y Condiciones</a> y la <a [routerLink]="['/privacidad']">Política de Privacidad</a>
+          </label>
+        </div>
+        
+        <button type="submit" [disabled]="isLoading">
+          <span *ngIf="!isLoading">Registrarse</span>
+          <span *ngIf="isLoading">Cargando...</span>
+        </button>
       </form>
     </div>
     <!-- Panel de Inicio de Sesión -->

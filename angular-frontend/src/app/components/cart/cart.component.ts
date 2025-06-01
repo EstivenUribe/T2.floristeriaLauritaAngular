@@ -2,8 +2,9 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule, Router } from '@angular/router';
 import { FormsModule } from '@angular/forms';
-import { NavFooterComponent } from '../shared/nav-footer/nav-footer.component';
+// import { NavFooterComponent } from '../shared/nav-footer/nav-footer.component'; // No utilizado en el template
 import { CartService } from '../../services/cart.service';
+import { AuthService } from '../../services/auth.service';
 import { CartItem, PaymentMethod, ShippingInfo } from '../../models/cart.model';
 
 @Component({
@@ -12,11 +13,11 @@ import { CartItem, PaymentMethod, ShippingInfo } from '../../models/cart.model';
   imports: [
     CommonModule,
     RouterModule,
-    FormsModule,
-    NavFooterComponent
+    FormsModule
+    // NavFooterComponent // No utilizado en el template
   ],
   templateUrl: './cart.component.html',
-  styleUrl: './cart.component.css'
+  styleUrls: ['./cart.component.css']
 })
 export class CartComponent implements OnInit {
   cartItems: CartItem[] = [];
@@ -28,7 +29,7 @@ export class CartComponent implements OnInit {
   isLoading = false;
   isProcessingOrder = false;
   error = '';
-  
+  isAuthenticated = false;
   // Hacer Math accesible en la plantilla
   Math = Math;
   
@@ -55,10 +56,16 @@ export class CartComponent implements OnInit {
   
   constructor(
     private router: Router,
-    private cartService: CartService
+    private cartService: CartService,
+    private authService: AuthService
   ) {}
   
-  ngOnInit() {
+  ngOnInit(): void {
+    // Verificar si el usuario está autenticado
+    this.authService.isAuthenticated$.subscribe(isAuth => {
+      this.isAuthenticated = isAuth;
+    });
+
     // Suscribirse a los cambios en el carrito
     this.cartService.items.subscribe(items => {
       this.cartItems = items;
@@ -72,19 +79,15 @@ export class CartComponent implements OnInit {
       }
     });
     
-    // Obtener métodos de pago
+    // Obtener métodos de pago disponibles
     this.paymentMethods = this.cartService.getPaymentMethods();
     
     // Obtener costo de envío
     this.shippingCost = this.cartService.getShippingCost();
     
-    // Suscribirse a estados de carga
-    this.cartService.isLoading.subscribe(loading => {
-      this.isLoading = loading;
-    });
-    
-    this.cartService.isProcessingOrder.subscribe(processing => {
-      this.isProcessingOrder = processing;
+    // Suscribirse a estado de carga de la orden
+    this.cartService.isProcessingOrder.subscribe(isProcessing => {
+      this.isProcessingOrder = isProcessing;
     });
   }
   
@@ -155,6 +158,19 @@ export class CartComponent implements OnInit {
   }
   
   placeOrder() {
+    // Verificar si el usuario está autenticado
+    if (!this.isAuthenticated) {
+      // Redirigir al login con la URL de retorno
+      this.error = 'Debes iniciar sesión para completar tu compra';
+      // Guardar estado actual para volver después
+      localStorage.setItem('redirectAfterLogin', '/cart');
+      
+      setTimeout(() => {
+        this.router.navigate(['/login']);
+      }, 1500);
+      return;
+    }
+
     if (!this.validatePaymentForm()) {
       this.error = 'Por favor completa la información de pago';
       return;
@@ -171,7 +187,16 @@ export class CartComponent implements OnInit {
         this.nextStep();
       },
       error: (err) => {
-        this.error = err.message || 'Error al procesar la orden';
+        if (err.status === 401) {
+          // Error de autenticación
+          this.error = 'Tu sesión ha expirado. Por favor, inicia sesión nuevamente.';
+          localStorage.setItem('redirectAfterLogin', '/cart');
+          setTimeout(() => {
+            this.router.navigate(['/login']);
+          }, 1500);
+        } else {
+          this.error = err.message || 'Error al procesar la orden';
+        }
       }
     });
   }

@@ -14,11 +14,15 @@ router.get('/csrf-token', authController.getCsrfToken);
 router.get('/profile', verifyToken, authController.getProfile);
 router.get('/verify', verifyToken, authController.verifyToken);
 
-// Rutas protegidas con CSRF
-router.post('/update-profile', [verifyToken, csrfProtection], (req, res) => {
-  // Placeholder para actualización de perfil de usuario
-  res.status(200).json({ message: 'Perfil actualizado correctamente' });
-});
+// Ruta para actualizar perfil - añadida la ruta PUT que coincide con la petición del frontend
+// Opción 1: Con CSRF Protection (recomendado para producción)
+router.put('/profile', [verifyToken, csrfProtection], authController.updateProfile);
+
+// Opción 2: Sin CSRF Protection (para propósitos de depuración) - Comentado por defecto
+// router.put('/profile', verifyToken, authController.updateProfile);
+
+// Mantenemos las rutas anteriores por compatibilidad
+router.post('/update-profile', [verifyToken, csrfProtection], authController.updateProfile);
 
 router.post('/change-password', [verifyToken, csrfProtection], (req, res) => {
   // Placeholder para cambio de contraseña

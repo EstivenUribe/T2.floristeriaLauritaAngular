@@ -66,15 +66,18 @@ export class NavFooterComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   viewProfile(): void {
-    alert('Opción "Ver perfil" en implementación.');
+    this.router.navigate(['/perfil']);
     this.isUserMenuOpen = false;
-    // this.router.navigate(['/profile']); // Futura implementación
   }
 
   viewOrderHistory(): void {
-    alert('Opción "Historial de compras" en implementación.');
+    this.router.navigate(['/historial-compras']);
     this.isUserMenuOpen = false;
-    // this.router.navigate(['/order-history']); // Futura implementación
+  }
+
+  navigateToAdminOrders(): void {
+    this.router.navigate(['/admin-orders']);
+    this.isUserMenuOpen = false;
   }
 
   navigateToAdmin(): void {

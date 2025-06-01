@@ -2,10 +2,10 @@ import { Component, HostListener } from '@angular/core';
 import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { ProductListComponent } from '../product-list/product-list.component';
-import { ProductCarouselComponent } from '../product-carousel/product-carousel.component';
+// import { ProductCarouselComponent } from '../product-carousel/product-carousel.component'; // No utilizado en el template
 import { CompanyInfoComponent } from '../company-info/company-info.component';
 import { RouterModule } from '@angular/router';
-import {NavFooterComponent} from '../shared/nav-footer/nav-footer.component';
+// import {NavFooterComponent} from '../shared/nav-footer/nav-footer.component'; // No utilizado en el template
 import { CarouselPrincipalComponent } from '../carousel-principal/carousel-principal.component';
 
 @Component({
@@ -14,10 +14,10 @@ import { CarouselPrincipalComponent } from '../carousel-principal/carousel-princ
   imports: [
     CommonModule,
     ProductListComponent,
-    ProductCarouselComponent,
+    // ProductCarouselComponent, // No utilizado en el template
     CompanyInfoComponent,
     RouterModule,
-    NavFooterComponent,
+    // NavFooterComponent, // No utilizado en el template
     CarouselPrincipalComponent
   ],
   templateUrl: './home.component.html',

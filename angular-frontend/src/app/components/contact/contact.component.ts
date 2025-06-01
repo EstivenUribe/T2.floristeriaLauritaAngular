@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
-import { NavFooterComponent } from '../shared/nav-footer/nav-footer.component';
+// import { NavFooterComponent } from '../shared/nav-footer/nav-footer.component'; // No utilizado en el template
 import { FormsModule } from '@angular/forms';
 
 @Component({
@@ -10,7 +10,7 @@ import { FormsModule } from '@angular/forms';
   imports: [
     CommonModule,
     RouterModule,
-    NavFooterComponent,
+    // NavFooterComponent, // No utilizado en el template
     FormsModule
   ],
   templateUrl: './contact.component.html',

@@ -4,7 +4,7 @@ import { ProductService } from '../../services/product.service';
 import { Product, PaginatedResponse } from '../../models/product.model';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
-import { NavFooterComponent } from '../shared/nav-footer/nav-footer.component';
+// import { NavFooterComponent } from '../shared/nav-footer/nav-footer.component'; // No utilizado en el template
 import { CompanyInfoComponent } from '../company-info/company-info.component';
 
 // NUEVAS IMPORTACIONES
@@ -18,7 +18,7 @@ import { ReviewService } from '../../services/review.service';
     CommonModule,
     RouterModule,
     ReactiveFormsModule, // Añadido para el formulario reactivo
-    NavFooterComponent,
+    // NavFooterComponent, // No utilizado en el template
     CompanyInfoComponent
   ],
   templateUrl: './about.component.html',

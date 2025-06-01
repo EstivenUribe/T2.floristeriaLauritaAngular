@@ -1,0 +1,173 @@
+/* Estilos generales para la página de términos y condiciones */
+.terms-container {
+  font-family: 'Montserrat', sans-serif;
+  color: #333;
+  line-height: 1.6;
+}
+
+/* Encabezado de la página */
+.terms-header {
+  background: linear-gradient(to right, #3e2a61, #782fcd);
+  color: white;
+  padding: 3rem 0;
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+.terms-header h1 {
+  font-size: 2.5rem;
+  margin-bottom: 0.5rem;
+  font-weight: 700;
+}
+
+.terms-header p {
+  font-size: 1.2rem;
+  opacity: 0.9;
+}
+
+/* Contenido principal */
+.terms-content {
+  padding: 2rem 0 4rem;
+}
+
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 1.5rem;
+}
+
+/* Secciones de términos */
+.terms-section {
+  margin-bottom: 2.5rem;
+  padding-bottom: 1.5rem;
+  border-bottom: 1px solid #eee;
+}
+
+.terms-section:last-child {
+  border-bottom: none;
+}
+
+.terms-section h2 {
+  color: #782fcd;
+  font-size: 1.6rem;
+  margin-bottom: 1rem;
+  font-weight: 600;
+}
+
+.terms-section p {
+  margin-bottom: 1rem;
+  color: #555;
+}
+
+/* Listas en términos */
+.terms-list {
+  padding-left: 1.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.terms-list li {
+  margin-bottom: 0.75rem;
+  position: relative;
+}
+
+.terms-list li::before {
+  content: '•';
+  color: #782fcd;
+  font-weight: bold;
+  display: inline-block;
+  width: 1em;
+  margin-left: -1em;
+}
+
+/* Información de contacto */
+.contact-info {
+  background-color: #f9f9f9;
+  padding: 1.5rem;
+  border-radius: 0.5rem;
+  margin-top: 1rem;
+}
+
+.contact-info p {
+  margin-bottom: 0.5rem;
+  display: flex;
+  align-items: center;
+}
+
+.contact-info i {
+  color: #782fcd;
+  margin-right: 0.5rem;
+  font-size: 1.1rem;
+  width: 24px;
+  text-align: center;
+}
+
+/* Pie de términos */
+.terms-footer {
+  margin-top: 3rem;
+  text-align: center;
+  padding-top: 2rem;
+  border-top: 1px solid #eee;
+}
+
+.terms-footer p {
+  color: #888;
+  margin-bottom: 1rem;
+  font-size: 0.9rem;
+}
+
+/* Botón de regreso */
+.btn {
+  display: inline-block;
+  padding: 0.75rem 1.5rem;
+  font-size: 1rem;
+  font-weight: 600;
+  text-align: center;
+  text-decoration: none;
+  cursor: pointer;
+  border-radius: 30px;
+  transition: all 0.3s ease;
+}
+
+.btn-outline {
+  color: #782fcd;
+  background-color: transparent;
+  border: 2px solid #782fcd;
+}
+
+.btn-outline:hover {
+  background-color: #782fcd;
+  color: white;
+}
+
+/* Responsive */
+@media screen and (max-width: 768px) {
+  .terms-header {
+    padding: 2rem 0;
+  }
+  
+  .terms-header h1 {
+    font-size: 2rem;
+  }
+  
+  .terms-header p {
+    font-size: 1rem;
+  }
+  
+  .terms-section h2 {
+    font-size: 1.4rem;
+  }
+  
+  .container {
+    padding: 0 1rem;
+  }
+}
+
+@media screen and (max-width: 480px) {
+  .terms-header h1 {
+    font-size: 1.75rem;
+  }
+  
+  .terms-section h2 {
+    font-size: 1.25rem;
+  }
+}

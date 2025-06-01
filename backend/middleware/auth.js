@@ -6,38 +6,55 @@ const JWT_SECRET = process.env.JWT_SECRET || 'development_fallback_key';
 
 // Proteger rutas (verificar token JWT)
 exports.protect = (req, res, next) => {
-  // Obtener token del encabezado Authorization
+  // Obtener token de múltiples fuentes posibles
+  let token = null;
+  
+  // 1. Obtener token del encabezado Authorization
   const authHeader = req.headers['authorization'];
-  let token;
   if (authHeader && authHeader.startsWith('Bearer ')) {
     token = authHeader.split(' ')[1];
   }
+  
+  // 2. Obtener token de las cookies
+  if (!token && req.cookies && req.cookies.token) {
+    token = req.cookies.token;
+  }
+  
+  // 3. Obtener token del body (para APIs)
+  if (!token && req.body && req.body.token) {
+    token = req.body.token;
+  }
+  
+  // 4. Obtener token del query param (para callbacks, verificaciones por email, etc.)
+  if (!token && req.query && req.query.token) {
+    token = req.query.token;
+  }
+  
+  // Log para depuración (quitar en producción)
+  console.log('Token source:', token ? 
+    `${authHeader ? 'Header' : req.cookies?.token ? 'Cookie' : req.body?.token ? 'Body' : 'Query'}` : 
+    'No token found');
 
-  // También buscar el token en las cookies para CSRF protection
-  const cookieToken = req.cookies?.token;
-
-  // Usar el token del header o de las cookies
-  const activeToken = token || cookieToken;
-
-    // --- TEMPORARY DEBUG LOG --- 
-  // Log the token being used for verification. 
-  // REMOVE THIS IN PRODUCTION or when debugging is complete.
-  console.log('Attempting to verify token:', activeToken ? `Type: ${typeof activeToken}, Value: ${activeToken.substring(0, 20)}... (truncated)` : activeToken);
-  // --- END TEMPORARY DEBUG LOG ---
-
-  if (!activeToken) {
-    return res.status(401).json({ message: 'Acceso denegado. Token no proporcionado' });
+  // Si no hay token en ninguna fuente, denegar acceso
+  if (!token) {
+    console.log('No se encontró token de autenticación');
+    return res.status(401).json({ 
+      message: 'Acceso denegado. Token no proporcionado',
+      error: 'no_token'
+    });
   }
 
   try {
     // Verificar token
-    const decoded = jwt.verify(activeToken, JWT_SECRET);
+    const decoded = jwt.verify(token, JWT_SECRET);
     
     // Verificar expiración
     if (decoded.exp && decoded.exp * 1000 < Date.now()) {
+      console.log('Token expirado');
       return res.status(401).json({ 
         message: 'Token expirado', 
-        expired: true 
+        expired: true,
+        error: 'token_expired' 
       });
     }
     
@@ -46,19 +63,33 @@ exports.protect = (req, res, next) => {
     req.userRole = decoded.role;
     req.user = decoded;
     
+    // Log exitoso
+    console.log(`Usuario autenticado: ID=${decoded.id}, Role=${decoded.role}`);
+    
     next();
   } catch (error) {
-    console.error('Error al verificar token:', error);
+    console.error('Error al verificar token:', error.message);
     
     // Mensajes de error específicos
     if (error.name === 'TokenExpiredError') {
       return res.status(401).json({ 
         message: 'Token expirado', 
-        expired: true 
+        expired: true,
+        error: 'token_expired'
       });
     }
     
-    res.status(401).json({ message: 'Token inválido o expirado' });
+    if (error.name === 'JsonWebTokenError') {
+      return res.status(401).json({ 
+        message: 'Token inválido', 
+        error: 'invalid_token'
+      });
+    }
+    
+    res.status(401).json({ 
+      message: 'Error de autenticación', 
+      error: error.message 
+    });
   }
 };
 

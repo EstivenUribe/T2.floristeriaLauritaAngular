@@ -239,31 +239,110 @@ exports.signout = (req, res) => {
   res.status(200).json({ message: 'Sesión cerrada correctamente' });
 };
 
+// Verificar token
+exports.verifyToken = (req, res) => {
+  try {
+    // El token ya fue verificado por el middleware
+    res.status(200).json({
+      message: 'Token válido',
+      user: req.user
+    });
+  } catch (error) {
+    res.status(500).json({ message: 'Error al verificar el token', error: error.message });
+  }
+};
+
 // Obtener perfil del usuario
 exports.getProfile = async (req, res) => {
   try {
-    const user = await User.findById(req.userId).select('-password');
+    // El ID del usuario se obtiene del middleware de autenticación
+    const userId = req.user.id;
+    
+    // Buscar usuario en la base de datos excluyendo campos sensibles
+    const user = await User.findById(userId).select('-password -refreshTokens');
+    
     if (!user) {
       return res.status(404).json({ message: 'Usuario no encontrado' });
     }
+
+    // Enviar datos del perfil
     res.status(200).json(user);
   } catch (error) {
-    console.error('Error al obtener perfil:', error);
     res.status(500).json({ 
-      message: 'Error al obtener el perfil del usuario',
+      message: 'Error al obtener información del perfil', 
       error: error.message 
     });
   }
 };
 
-// Verificar que el token es válido
-exports.verifyToken = (req, res) => {
-  // Si llegamos aquí, el token es válido (verificado por el middleware)
-  res.status(200).json({ 
-    valid: true,
-    userId: req.userId,
-    role: req.userRole
-  });
+// Actualizar perfil de usuario
+exports.updateProfile = async (req, res) => {
+  try {
+    const userId = req.user.id;
+    
+    // Obtener los campos actualizables del body
+    const {
+      username,
+      email,
+      firstName,
+      lastName,
+      address,
+      city,
+      state,
+      zipCode,
+      phone,
+      birthDate,
+      avatarId,
+      currentPassword,
+      newPassword
+    } = req.body;
+    
+    // Encontrar al usuario
+    const user = await User.findById(userId);
+    if (!user) {
+      return res.status(404).json({ message: 'Usuario no encontrado' });
+    }
+    
+    // Si se proporcionó la contraseña actual y una nueva, actualizar la contraseña
+    if (currentPassword && newPassword) {
+      const isPasswordValid = await user.comparePassword(currentPassword);
+      if (!isPasswordValid) {
+        return res.status(401).json({ message: 'La contraseña actual es incorrecta' });
+      }
+      
+      user.password = newPassword;
+    }
+    
+    // Actualizar los campos del usuario si se proporcionaron
+    if (username) user.username = username;
+    if (email) user.email = email;
+    if (firstName !== undefined) user.firstName = firstName;
+    if (lastName !== undefined) user.lastName = lastName;
+    if (address !== undefined) user.address = address;
+    if (city !== undefined) user.city = city;
+    if (state !== undefined) user.state = state;
+    if (zipCode !== undefined) user.zipCode = zipCode;
+    if (phone !== undefined) user.phone = phone;
+    if (birthDate !== undefined) user.birthDate = birthDate;
+    if (avatarId !== undefined) user.avatarId = avatarId;
+    
+    // Guardar los cambios
+    await user.save();
+    
+    // Responder con el usuario actualizado (sin incluir la contraseña)
+    const updatedUser = await User.findById(userId).select('-password -refreshTokens');
+    
+    res.status(200).json({
+      message: 'Perfil actualizado correctamente',
+      user: updatedUser
+    });
+  } catch (error) {
+    console.error('Error al actualizar perfil:', error);
+    res.status(500).json({ 
+      message: 'Error al actualizar el perfil',
+      error: error.message 
+    });
+  }
 };
 
 // Generar nuevo CSRF token

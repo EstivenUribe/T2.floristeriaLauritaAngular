@@ -43,15 +43,33 @@ app.use(helmet({
 // Compresión para mejorar el rendimiento
 app.use(compression({ filter: shouldCompress }));
 
-// Middleware de CORS
+// Middleware de CORS - configuración mejorada
 const corsOptions = {
-  origin: process.env.CORS_ORIGIN || 'http://localhost:4200',
-  credentials: true,
-  exposedHeaders: ['X-CSRF-Token'],
+  // Permitir tanto localhost:4200 (Angular dev server) como localhost:3000 (backend)
+  origin: function(origin, callback) {
+    const allowedOrigins = [process.env.CORS_ORIGIN || 'http://localhost:4200', 'http://localhost:3000'];
+    // Permitir solicitudes sin origen (como llamadas de API móviles o Postman)
+    if (!origin || allowedOrigins.indexOf(origin) !== -1) {
+      callback(null, true);
+    } else {
+      console.error(`CORS blocked request from: ${origin}`);
+      callback(new Error(`CORS policy: origen ${origin} no permitido`));
+    }
+  },
+  credentials: true, // Permitir cookies en solicitudes cross-origin
+  exposedHeaders: ['X-CSRF-Token', 'Content-Type'],
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS', 'PATCH'],
-  allowedHeaders: ['Content-Type', 'Authorization', 'X-CSRF-Token', 'X-Requested-With']
+  allowedHeaders: ['Content-Type', 'Authorization', 'X-CSRF-Token', 'X-Requested-With', 'Accept', 'Origin']
 };
+
+// Aplicar configuración CORS
 app.use(cors(corsOptions));
+
+// Middleware para depurar solicitudes CORS
+app.use((req, res, next) => {
+  console.log(`${req.method} ${req.path} - Origin: ${req.headers.origin || 'No origin'}, Content-Type: ${req.headers['content-type'] || 'No content-type'}`);
+  next();
+});
 
 // Parser para JSON y cookies
 app.use(express.json());
@@ -79,6 +97,8 @@ const cartRoutes = require('./backend/routes/cart');
 const uploadRoutes = require('./backend/routes/uploads');
 const teamRoutes = require('./backend/routes/team');
 const bannerRoutes = require('./backend/routes/banners');
+const orderRoutes = require('./backend/routes/orders');
+const csrfRoutes = require('./backend/routes/csrf');
 
 // Rutas API
 app.use('/api/productos', productRoutes);
@@ -89,6 +109,8 @@ app.use('/api/cart', cartRoutes);
 app.use('/api/uploads', uploadRoutes);
 app.use('/api/team', teamRoutes);
 app.use('/api/banners', bannerRoutes);
+app.use('/api/orders', orderRoutes);
+app.use('/api/csrf', csrfRoutes);
 
 // Configuración para caché
 const cacheTime = {

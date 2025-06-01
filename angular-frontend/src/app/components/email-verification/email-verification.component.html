@@ -1,0 +1,43 @@
+<div class="verification-container">
+  <!-- Estado de carga -->
+  <div *ngIf="isLoading" class="loading-state">
+    <div class="spinner"></div>
+    <h2>Verificando tu correo electrónico...</h2>
+    <p>Por favor espera mientras procesamos tu solicitud.</p>
+  </div>
+
+  <!-- Estado de éxito -->
+  <div *ngIf="!isLoading && isSuccess" class="success-state">
+    <div class="success-icon">
+      <i class="fas fa-check-circle"></i>
+    </div>
+    <h2>¡Correo verificado con éxito!</h2>
+    <p>Tu dirección de correo electrónico ha sido verificada correctamente.</p>
+    <p>Ahora puedes disfrutar de todas las funciones de Floristería Laurita.</p>
+    <div class="button-group">
+      <button class="btn-primary" (click)="goToProfile()">
+        <i class="fas fa-user"></i> Ir a mi perfil
+      </button>
+      <button class="btn-secondary" (click)="goToHome()">
+        <i class="fas fa-home"></i> Ir al inicio
+      </button>
+    </div>
+  </div>
+
+  <!-- Estado de error -->
+  <div *ngIf="!isLoading && !isSuccess && errorMessage" class="error-state">
+    <div class="error-icon">
+      <i class="fas fa-exclamation-circle"></i>
+    </div>
+    <h2>No se pudo verificar tu correo</h2>
+    <p>{{ errorMessage }}</p>
+    <div class="button-group">
+      <button class="btn-primary" (click)="resendVerification()" [disabled]="isLoading">
+        <i class="fas fa-envelope"></i> Reenviar correo de verificación
+      </button>
+      <button class="btn-secondary" (click)="goToHome()">
+        <i class="fas fa-home"></i> Ir al inicio
+      </button>
+    </div>
+  </div>
+</div>

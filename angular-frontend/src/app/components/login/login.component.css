@@ -1,3 +1,5 @@
+@import url("https://fonts.googleapis.com/css?family=Montserrat:400,800");
+
 /* Estilos para el enlace de regreso al inicio */
 .home-link {
   margin: 5px 0 15px;
@@ -50,7 +52,6 @@
 }
 
 /* Resto de los estilos existentes */
-@import url("https://fonts.googleapis.com/css?family=Montserrat:400,800");
 
 * {
   box-sizing: border-box;
@@ -119,21 +120,102 @@ button.ghost {
 }
 /* Formulario */
 form {
-  background-color: #ffffff;
   display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
-  flex-direction: column;
+  text-align: center;
   padding: 0 50px;
   height: 100%;
-  text-align: center;
+  overflow-y: auto;
 }
-input {
-  background-color: #eee;
-  border: none;
-  padding: 12px 15px;
-  margin: 8px 0;
+
+/* Estilos específicos para el formulario de registro */
+.register-form {
+  padding: 0 30px;
+  max-height: 100%;
+  overflow-y: auto;
   width: 100%;
+}
+
+.register-form .form-section {
+  width: 100%;
+  margin-bottom: 15px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.register-form h3 {
+  font-size: 14px;
+  margin: 10px 0;
+  color: #333;
+  text-align: left;
+  font-weight: 600;
+}
+
+.register-form .address-row {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  width: 100%;
+}
+
+.register-form .city-input,
+.register-form .state-input,
+.register-form .zip-input {
+  flex: 1;
+  min-width: 0;
+}
+
+/* Estilos para selección de avatar */
+.avatar-section {
+  width: 100%;
+}
+
+.avatar-options {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 10px;
+  margin: 10px 0;
+}
+
+.avatar-option {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  overflow: hidden;
+  cursor: pointer;
+  border: 2px solid transparent;
+  transition: all 0.2s ease;
+}
+
+.avatar-option.selected {
+  border-color: #FF4B2B;
+  transform: scale(1.1);
+}
+
+.avatar-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* Estilos para términos y condiciones */
+.terms-container {
+  width: 100%;
+  text-align: left;
+  margin: 10px 0;
+  font-size: 12px;
+}
+
+.terms-container a {
+  color: #FF4B2B;
+  text-decoration: none;
+}
+
+.terms-container a:hover {
+  text-decoration: underline;
 }
 /* Contenedor principal */
 .container {
@@ -160,6 +242,8 @@ input {
 }
 .container.right-panel-active .sign-in-container {
   transform: translateX(100%);
+  visibility: hidden;
+  opacity: 0;
 }
 /* Contenedor de registro */
 .sign-up-container {
@@ -167,11 +251,13 @@ input {
   width: 50%;
   opacity: 0;
   z-index: 1;
+  visibility: hidden;
 }
 .container.right-panel-active .sign-up-container {
   transform: translateX(100%);
   opacity: 1;
   z-index: 5;
+  visibility: visible;
   animation: show 0.6s;
 }
 @keyframes show {
@@ -179,11 +265,13 @@ input {
   49.99% {
     opacity: 0;
     z-index: 1;
+    visibility: hidden;
   }
   50%,
   100% {
     opacity: 1;
     z-index: 5;
+    visibility: visible;
   }
 }
 /* Contenedor de overlay */

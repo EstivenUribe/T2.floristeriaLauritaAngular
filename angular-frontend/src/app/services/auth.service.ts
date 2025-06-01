@@ -100,19 +100,20 @@ export class AuthService {
   }
   
   // Obtener información del usuario actual
-  getCurrentUser(): Observable<User | null> {
-    // Si ya tenemos usuario en el estado, devolverlo
-    if (this.currentUserSubject.value) {
+  getCurrentUser(forceRefresh: boolean = false): Observable<User | null> {
+    // Si ya tenemos usuario en el estado y no se pide refresh, devolverlo
+    if (this.currentUserSubject.value && !forceRefresh) {
       return of(this.currentUserSubject.value);
     }
     
-    // Si tenemos token pero no usuario, obtener usuario desde API
+    // Si tenemos token, obtener usuario desde API
     const token = this.getToken();
     if (token) {
       this.isLoadingSubject.next(true);
       
-      return this.http.get<User>(`${this.apiUrl}/me`).pipe(
+      return this.http.get<User>(`${this.apiUrl}/profile`).pipe(
         tap(user => {
+          console.log('Usuario recuperado del servidor:', user);
           this.currentUserSubject.next(user);
           this.isAuthenticatedSubject.next(true);
           this.isAdminSubject.next(user.role === 'admin');
@@ -121,8 +122,11 @@ export class AuthService {
           this.saveUser(user);
         }),
         catchError(error => {
-          // Si hay error al obtener usuario, cerrar sesión
-          this.logout();
+          console.error('Error al obtener perfil de usuario:', error);
+          // Solo cerrar sesión si hay error de autenticación
+          if (error.status === 401) {
+            this.logout();
+          }
           return throwError(() => error);
         }),
         finalize(() => this.isLoadingSubject.next(false))
@@ -146,6 +150,19 @@ export class AuthService {
         // Actualizar almacenamiento
         this.saveUser({ ...currentUser, ...updatedUser } as User);
       }),
+      catchError(this.handleError),
+      finalize(() => this.isLoadingSubject.next(false))
+    );
+  }
+  
+  // Cambiar contraseña del usuario
+  changePassword(currentPassword: string, newPassword: string): Observable<any> {
+    this.isLoadingSubject.next(true);
+    
+    return this.http.post<any>(`${this.apiUrl}/change-password`, {
+      currentPassword,
+      newPassword
+    }).pipe(
       catchError(this.handleError),
       finalize(() => this.isLoadingSubject.next(false))
     );
@@ -178,6 +195,35 @@ export class AuthService {
   // Obtener token actual
   getToken(): string | null {
     return localStorage.getItem(this.tokenKey) || sessionStorage.getItem(this.tokenKey);
+  }
+  
+  // Verificación de correo electrónico
+  sendVerificationEmail(): Observable<any> {
+    this.isLoadingSubject.next(true);
+    
+    return this.http.post<any>(`${this.apiUrl}/send-verification-email`, {}).pipe(
+      catchError(this.handleError),
+      finalize(() => this.isLoadingSubject.next(false))
+    );
+  }
+  
+  // Verificar correo electrónico con token
+  verifyEmail(token: string): Observable<any> {
+    this.isLoadingSubject.next(true);
+    
+    return this.http.post<any>(`${this.apiUrl}/verify-email`, { token }).pipe(
+      tap(response => {
+        // Actualizar el estado del usuario si la verificación es exitosa
+        const currentUser = this.currentUserSubject.value;
+        if (currentUser) {
+          const updatedUser = { ...currentUser, emailVerified: true };
+          this.currentUserSubject.next(updatedUser);
+          this.saveUser(updatedUser);
+        }
+      }),
+      catchError(this.handleError),
+      finalize(() => this.isLoadingSubject.next(false))
+    );
   }
   
   // Métodos privados

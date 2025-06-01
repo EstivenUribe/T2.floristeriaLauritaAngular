@@ -235,7 +235,7 @@
               <div class="form-group">
                 <label>Integrantes (Información General)</label>
                 <p *ngIf="companyInfo && companyInfo.integrantes && companyInfo.integrantes.length > 0">
-                  Hay {{ companyInfo?.integrantes?.length }} integrante(s) registrados. Gestionar en la pestaña 'Equipo'.
+                  Hay {{ companyInfo.integrantes.length }} integrante(s) registrados. Gestionar en la pestaña 'Equipo'.
                 </p>
                 <p *ngIf="!companyInfo || !companyInfo.integrantes || companyInfo.integrantes.length === 0">
                   No hay integrantes registrados. Gestionar en la pestaña 'Equipo'.

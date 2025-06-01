@@ -8,7 +8,8 @@ import { CartItem, Order, ShippingInfo, PaymentInfo, PaymentMethod } from '../mo
   providedIn: 'root'
 })
 export class CartService {
-  private apiUrl = '/api/cart';
+  private apiUrl = 'http://localhost:3000/api/cart';
+  private ordersUrl = 'http://localhost:3000/api/orders';
   
   // Estado del carrito
   private cartItems = new BehaviorSubject<CartItem[]>([]);
@@ -130,18 +131,60 @@ export class CartService {
   
   // Procesar pedido
   placeOrder(paymentInfo: PaymentInfo): Observable<Order> {
-    const order: Order = {
-      items: this.cartItems.value,
-      shipping: this.shippingInfo.value as ShippingInfo,
-      payment: paymentInfo,
-      subtotal: this.getSubtotal(),
-      shippingCost: this.shippingCost,
-      total: this.getTotal()
+    // Extraer nombre y apellido del nombre completo
+    const fullNameParts = this.shippingInfo.value?.fullName.split(' ') || ['', ''];
+    const firstName = fullNameParts[0];
+    const lastName = fullNameParts.slice(1).join(' ') || fullNameParts[0];
+    
+    // Mapear método de pago a uno de los valores permitidos en el backend
+    let backendPaymentMethod = 'transferencia'; // Valor predeterminado
+    
+    // Mapear métodos de pago frontend a backend
+    if (paymentInfo.method === 'credit_card' || paymentInfo.method === 'debit_card') {
+      backendPaymentMethod = 'tarjeta';
+    } else if (paymentInfo.method === 'pse') {
+      backendPaymentMethod = 'transferencia';
+    } else if (paymentInfo.method === 'paypal') {
+      backendPaymentMethod = 'transferencia';
+    }
+    
+    // Adaptamos nuestro modelo de orden al formato que espera el backend
+    const orderData = {
+      orderItems: this.cartItems.value.map(item => ({
+        product: item.productId,
+        name: item.name,
+        image: item.image,
+        price: item.price,
+        quantity: item.quantity
+        // Eliminamos selectedVariations que no está en el modelo del backend
+      })),
+      shippingAddress: {
+        firstName: firstName,
+        lastName: lastName,
+        address: this.shippingInfo.value?.address,
+        city: this.shippingInfo.value?.city,
+        state: this.shippingInfo.value?.province, // Mapear province a state
+        zipCode: this.shippingInfo.value?.postalCode, // Mapear postalCode a zipCode
+        country: 'Colombia', // Valor fijo para país
+        phone: this.shippingInfo.value?.phone
+        // No enviamos email ni notes que no están en el modelo del backend
+      },
+      paymentMethod: backendPaymentMethod,
+      paymentResult: {
+        id: Date.now().toString(), // ID temporal para el resultado del pago
+        status: 'pending',
+        update_time: new Date().toISOString(),
+        email_address: this.shippingInfo.value?.email || ''
+      },
+      itemsPrice: this.getSubtotal(),
+      shippingPrice: this.shippingCost,
+      taxPrice: 0, // Si necesitas calcular impuestos
+      totalPrice: this.getTotal()
     };
     
     this.processingOrder.next(true);
     
-    return this.http.post<Order>(`${this.apiUrl}/orders`, order).pipe(
+    return this.http.post<Order>(this.ordersUrl, orderData).pipe(
       tap(() => {
         // Limpiar carrito después de un pedido exitoso
         this.clearCart();

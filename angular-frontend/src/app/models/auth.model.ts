@@ -2,9 +2,19 @@ export interface User {
   _id?: string;
   username: string;
   email: string;
+  firstName?: string;
+  lastName?: string;
   password?: string;
   role?: string;
   profilePicture?: string;
+  emailVerified?: boolean;
+  address?: string;
+  city?: string;
+  state?: string;
+  zipCode?: string;
+  phone?: string;
+  birthDate?: Date;
+  avatarId?: number; // Para selección de avatares predefinidos
   createdAt?: Date;
   updatedAt?: Date;
 }
@@ -20,6 +30,14 @@ export interface RegisterRequest {
   email: string;
   password: string;
   confirmPassword?: string;
+  firstName: string;
+  lastName: string;
+  address?: string;
+  city?: string;
+  state?: string;
+  zipCode?: string;
+  phone?: string;
+  avatarId?: number;
   termsAccepted: boolean;
 }
 
