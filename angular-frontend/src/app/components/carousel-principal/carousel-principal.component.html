@@ -1,0 +1,33 @@
+<!-- Mostrar indicador de carga mientras se cargan los banners -->
+<div *ngIf="isLoading" class="loading-container">
+  <div class="spinner-border text-primary" role="status">
+    <span class="visually-hidden">Cargando...</span>
+  </div>
+  <p class="loading-text">Cargando banners...</p>
+</div>
+
+<!-- Mostrar mensaje de error si hay problemas al cargar los banners -->
+<div *ngIf="error && !isLoading" class="error-container alert alert-danger">
+  <p>{{ error }}</p>
+</div>
+
+<!-- Mostrar el carrusel solo si hay banners y no hay errores -->
+<div *ngIf="!isLoading && !error && slide_data.length > 0" class="container" id="container" #container>
+  <div class="left-col" id="left-col" #leftCol>
+    <!-- Slides are programmatically appended here by initSlider() -->
+    <ul class="nav">
+      <li class="slide-up">
+        <a href="#" id="up_button" #upButton>&lt;</a>
+      </li>
+      <li class="slide-down">
+        <a href="#" id="down_button" #down_button>&gt;</a>
+      </li>
+    </ul>
+  </div>
+  <!-- Captions are programmatically appended to container by initSlider() -->
+</div>
+
+<!-- Mensaje cuando no hay banners para mostrar -->
+<div *ngIf="!isLoading && !error && slide_data.length === 0" class="no-banners-container">
+  <p>No hay banners disponibles para mostrar.</p>
+</div>

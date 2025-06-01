@@ -1,33 +1,84 @@
-<section id="acerca-de">
-  <h2>Acerca de Nosotros</h2>
+<section id="acerca-de" class="container my-5">
+  <h2 class="text-center mb-4">Acerca de Nosotros</h2>
   
-  <div *ngIf="loading" class="loading">
-    <p>Cargando información...</p>
+  <div *ngIf="loading" class="loading text-center py-5">
+    <div class="spinner-border text-primary" role="status">
+      <span class="visually-hidden">Cargando...</span>
+    </div>
+    <p class="mt-2">Cargando información...</p>
   </div>
   
-  <div *ngIf="error" class="error">
+  <div *ngIf="error" class="error alert alert-danger">
     <p>{{ error }}</p>
   </div>
   
-  <div *ngIf="!loading && !error && companyInfo">
-    <div id="info-integrantes">
-      <h3>Nuestro Equipo</h3>
-      <ul *ngIf="companyInfo.integrantes && companyInfo.integrantes.length > 0">
-        <li *ngFor="let integrante of companyInfo.integrantes">
-          {{ integrante.nombre }} {{ integrante.apellido }}
-        </li>
-      </ul>
-      <p *ngIf="!companyInfo.integrantes || companyInfo.integrantes.length === 0">
-        Información de integrantes no disponible.
-      </p>
+  <div *ngIf="!loading && !error && companyInfo" class="row">
+    <!-- NUESTRA HISTORIA -->
+    <div *ngIf="companyInfo.historiaTitulo || companyInfo.historiaTexto" class="col-md-12 mb-5">
+      <div class="card border-0 shadow-sm">
+        <div class="row g-0">
+          <div *ngIf="companyInfo.historiaImagenUrl" class="col-md-4">
+            <img [src]="companyInfo.historiaImagenUrl" class="img-fluid rounded-start" alt="Nuestra Historia">
+          </div>
+          <div [ngClass]="companyInfo.historiaImagenUrl ? 'col-md-8' : 'col-md-12'">
+            <div class="card-body">
+              <h3 class="card-title">{{ companyInfo.historiaTitulo || 'Nuestra Historia' }}</h3>
+              <p class="card-text">{{ companyInfo.historiaTexto || 'Información no disponible.' }}</p>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
     
-    <div id="mision-vision">
-      <h3>Nuestra Misión</h3>
-      <p>{{ companyInfo.mision || 'Misión no disponible.' }}</p>
-      
-      <h3>Nuestra Visión</h3>
-      <p>{{ companyInfo.vision || 'Visión no disponible.' }}</p>
+    <!-- MISIÓN Y VISIÓN -->
+    <div class="col-md-6 mb-4">
+      <div class="card border-0 shadow-sm h-100">
+        <div class="card-body">
+          <h3 class="card-title">Nuestra Misión</h3>
+          <p class="card-text">{{ companyInfo.mision || 'Misión no disponible.' }}</p>
+        </div>
+      </div>
+    </div>
+    
+    <div class="col-md-6 mb-4">
+      <div class="card border-0 shadow-sm h-100">
+        <div class="card-body">
+          <h3 class="card-title">Nuestra Visión</h3>
+          <p class="card-text">{{ companyInfo.vision || 'Visión no disponible.' }}</p>
+        </div>
+      </div>
+    </div>
+    
+    <!-- NUESTROS VALORES -->
+    <div *ngIf="companyInfo.valores && companyInfo.valores.length > 0" class="col-md-12 mb-5">
+      <h3 class="text-center mb-4">Nuestros Valores</h3>
+      <div class="row">
+        <div *ngFor="let valor of companyInfo.valores" class="col-md-4 mb-4">
+          <div class="card border-0 shadow-sm h-100">
+            <div class="card-body text-center">
+              <div *ngIf="valor.icono" class="mb-3">
+                <i [class]="valor.icono" style="font-size: 2.5rem; color: #28a745;"></i>
+              </div>
+              <h4 class="card-title">{{ valor.titulo }}</h4>
+              <p class="card-text">{{ valor.descripcion }}</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- NUESTRO EQUIPO -->
+    <div *ngIf="companyInfo.integrantes && companyInfo.integrantes.length > 0" class="col-md-12 mb-5">
+      <h3 class="text-center mb-4">Nuestro Equipo</h3>
+      <div class="row">
+        <div *ngFor="let integrante of companyInfo.integrantes" class="col-md-3 col-sm-6 mb-4 text-center">
+          <div class="team-member card border-0 shadow-sm h-100">
+            <div class="card-body">
+              <h5 class="card-title">{{ integrante.nombre }} {{ integrante.apellido }}</h5>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 </section>

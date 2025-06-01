@@ -5,6 +5,12 @@ import { ProductListComponent } from '../product-list/product-list.component';
 import { ProductCarouselComponent } from '../product-carousel/product-carousel.component';
 import { CompanyInfoComponent } from '../company-info/company-info.component';
 import { RouterModule } from '@angular/router';
+<<<<<<< Updated upstream
+=======
+// import {NavFooterComponent} from '../shared/nav-footer/nav-footer.component'; // No utilizado en el template
+import { CarouselPrincipalComponent } from '../carousel-principal/carousel-principal.component';
+import { TestimonialsComponent } from '../testimonials/testimonials.component';
+>>>>>>> Stashed changes
 
 @Component({
   selector: 'app-home',
@@ -14,7 +20,14 @@ import { RouterModule } from '@angular/router';
     ProductListComponent, 
     ProductCarouselComponent, 
     CompanyInfoComponent,
+<<<<<<< Updated upstream
     RouterModule
+=======
+    RouterModule,
+    // NavFooterComponent, // No utilizado en el template
+    CarouselPrincipalComponent,
+    TestimonialsComponent
+>>>>>>> Stashed changes
   ],
   templateUrl: './home.component.html',
   styleUrls: ['./home.component.css']

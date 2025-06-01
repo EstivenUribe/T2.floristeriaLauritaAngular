@@ -1,0 +1,170 @@
+<div class="terms-container">
+  <!-- Indicador de carga -->
+  <div *ngIf="isLoading" class="loading-container text-center py-5">
+    <div class="spinner-border text-primary" role="status">
+      <span class="visually-hidden">Cargando...</span>
+    </div>
+    <p class="mt-2">Cargando términos y condiciones...</p>
+  </div>
+
+  <!-- Mensaje de error -->
+  <div *ngIf="error && !isLoading" class="error-container alert alert-danger mt-4">
+    <p>{{ error }}</p>
+  </div>
+
+  <!-- Contenido cuando está cargado -->
+  <ng-container *ngIf="!isLoading && !error">
+    <!-- Encabezado de la página -->
+    <header class="terms-header">
+      <div class="container">
+        <h1>{{ companyInfo?.terminosTitulo || 'Términos y Condiciones' }}</h1>
+        <p *ngIf="companyInfo?.terminosActualizacion">Última actualización: {{ formatDate(companyInfo?.terminosActualizacion) }}</p>
+      </div>
+    </header>
+
+  <!-- Contenido principal -->
+  <main class="terms-content">
+    <div class="container">
+      <!-- Introducción si existe -->
+      <section class="terms-section" *ngIf="companyInfo?.terminosIntroduccion">
+        <p [innerHTML]="companyInfo?.terminosIntroduccion"></p>
+      </section>
+
+      <!-- Mostrar secciones dinámicas si existen -->
+      <ng-container *ngIf="companyInfo && companyInfo.terminosSecciones && companyInfo.terminosSecciones.length > 0">
+        <section class="terms-section" *ngFor="let seccion of companyInfo.terminosSecciones; let i = index">
+          <h2>{{ i + 1 }}. {{ seccion.titulo }}</h2>
+          <div [innerHTML]="seccion.contenido"></div>
+        </section>
+      </ng-container>
+
+      <!-- Contenido estático de respaldo si no hay datos dinámicos -->
+      <ng-container *ngIf="!companyInfo || !companyInfo.terminosSecciones || companyInfo.terminosSecciones.length === 0">
+        <section class="terms-section">
+          <h2>1. Introducción</h2>
+          <p>Bienvenido a Floristería Laurita. Estos Términos y Condiciones rigen el uso de nuestro sitio web y la compra de productos a través de él. Al acceder a nuestro sitio y realizar compras, aceptas estos términos en su totalidad. Si no estás de acuerdo con alguna parte de estos términos, te pedimos que no utilices nuestro sitio.</p>
+        </section>
+
+        <section class="terms-section">
+          <h2>2. Definiciones</h2>
+          <ul class="terms-list">
+            <li><strong>"Nosotros", "nuestro" y "Floristería Laurita"</strong> se refieren a Floristería Laurita S.A.S.</li>
+            <li><strong>"Sitio"</strong> se refiere a nuestro sitio web, aplicaciones móviles y plataformas digitales.</li>
+            <li><strong>"Usuario", "tú" y "cliente"</strong> se refiere a cualquier persona que acceda o utilice nuestro sitio.</li>
+            <li><strong>"Productos"</strong> se refiere a los arreglos florales, plantas y otros artículos disponibles para compra.</li>
+            <li><strong>"Pedido"</strong> se refiere a la solicitud de compra de productos realizada por un cliente.</li>
+          </ul>
+        </section>
+
+        <section class="terms-section">
+          <h2>3. Cuenta de Usuario</h2>
+          <p>Para realizar compras en nuestro sitio, puedes crear una cuenta o comprar como invitado. Si creas una cuenta, eres responsable de mantener la confidencialidad de tus credenciales y de todas las actividades realizadas bajo tu cuenta.</p>
+          <p>Debes proporcionar información precisa, completa y actualizada durante el proceso de registro y mantenerla actualizada. Nos reservamos el derecho de suspender o terminar cuentas que contengan información falsa o incompleta.</p>
+        </section>
+
+        <section class="terms-section">
+          <h2>4. Productos y Precios</h2>
+          <p>Nos esforzamos por mostrar imágenes precisas de nuestros productos, sin embargo, no podemos garantizar que la visualización de colores en tu dispositivo refleje con exactitud los colores reales de las flores.</p>
+          <p>Debido a la naturaleza de nuestros productos:</p>
+          <ul class="terms-list">
+            <li>Las flores y plantas son productos naturales que pueden variar en tamaño, forma y color.</li>
+            <li>Nos reservamos el derecho de sustituir flores o recipientes por alternativas de valor similar si los originales no están disponibles.</li>
+            <li>Los precios están sujetos a cambios sin previo aviso.</li>
+            <li>Todos los precios incluyen IVA cuando aplique.</li>
+          </ul>
+        </section>
+
+        <section class="terms-section">
+          <h2>5. Pedidos</h2>
+          <p>Al realizar un pedido, recibirás una confirmación por correo electrónico. Esta confirmación constituye la aceptación de tu pedido por nuestra parte.</p>
+          <p>Nos reservamos el derecho de rechazar o cancelar pedidos en cualquier momento por razones que incluyen, pero no se limitan a:</p>
+          <ul class="terms-list">
+            <li>Disponibilidad de producto</li>
+            <li>Errores en la descripción o precio del producto</li>
+            <li>Errores en tu pedido</li>
+            <li>Sospecha de fraude</li>
+          </ul>
+        </section>
+
+        <section class="terms-section">
+          <h2>6. Entrega</h2>
+          <p>Haremos todo lo posible para entregar tu pedido en la fecha y hora especificadas. Sin embargo, las entregas están sujetas a:</p>
+          <ul class="terms-list">
+            <li>Disponibilidad de transporte</li>
+            <li>Condiciones climáticas</li>
+            <li>Accesibilidad a la dirección de entrega</li>
+            <li>Presencia de alguien para recibir el pedido (cuando sea necesario)</li>
+          </ul>
+          <p>No nos hacemos responsables por retrasos debidos a circunstancias fuera de nuestro control razonable.</p>
+        </section>
+
+        <section class="terms-section">
+          <h2>7. Pagos y Seguridad</h2>
+          <p>Aceptamos varias formas de pago, incluyendo tarjetas de crédito, débito y transferencias bancarias. Todas las transacciones se procesan a través de sistemas de pago seguros.</p>
+          <p>Al proporcionar información de pago, garantizas que:</p>
+          <ul class="terms-list">
+            <li>Estás autorizado a utilizar el método de pago proporcionado</li>
+            <li>La información de pago proporcionada es verdadera y precisa</li>
+          </ul>
+        </section>
+
+        <section class="terms-section">
+          <h2>8. Devoluciones y Reembolsos</h2>
+          <p>Debido a la naturaleza perecedera de nuestros productos, no aceptamos devoluciones. Sin embargo, si no estás satisfecho con la calidad de tu pedido, contáctanos dentro de las 24 horas posteriores a la entrega con fotos del producto recibido.</p>
+          <p>En caso de productos defectuosos o dañados, podemos ofrecer:</p>
+          <ul class="terms-list">
+            <li>Reemplazo del producto</li>
+            <li>Crédito para futuras compras</li>
+            <li>Reembolso parcial o total</li>
+          </ul>
+          <p>La decisión final sobre reembolsos o reemplazos queda a nuestra discreción.</p>
+        </section>
+
+        <section class="terms-section">
+          <h2>9. Propiedad Intelectual</h2>
+          <p>Todo el contenido de nuestro sitio, incluyendo textos, gráficos, logos, imágenes, videos y software, está protegido por leyes de propiedad intelectual y nos pertenece o tenemos licencia para usarlo.</p>
+          <p>No puedes reproducir, distribuir, modificar o crear trabajos derivados de nuestro contenido sin nuestro consentimiento explícito por escrito.</p>
+        </section>
+
+        <section class="terms-section">
+          <h2>10. Limitación de Responsabilidad</h2>
+          <p>En la medida permitida por la ley, Floristería Laurita no será responsable por:</p>
+          <ul class="terms-list">
+            <li>Daños indirectos, incidentales, especiales o consecuentes</li>
+            <li>Pérdida de ganancias, ingresos, datos o uso</li>
+            <li>Interrupciones en el servicio del sitio web</li>
+            <li>Daños causados por virus o código malicioso</li>
+          </ul>
+          <p>Nuestra responsabilidad total, si la hubiera, por cualquier daño no excederá el monto pagado por el producto específico que causó dicho daño.</p>
+        </section>
+
+        <section class="terms-section">
+          <h2>11. Cambios a estos Términos</h2>
+          <p>Nos reservamos el derecho de modificar estos términos en cualquier momento. Los cambios entrarán en vigor inmediatamente después de su publicación en nuestro sitio. Tu uso continuado del sitio después de tales modificaciones constituirá tu aceptación de los nuevos términos.</p>
+        </section>
+
+        <section class="terms-section">
+          <h2>12. Ley Aplicable</h2>
+          <p>Estos términos se regirán e interpretarán de acuerdo con las leyes de Colombia, sin tener en cuenta sus disposiciones sobre conflictos de leyes.</p>
+          <p>Cualquier disputa relacionada con estos términos estará sujeta a la jurisdicción exclusiva de los tribunales de Medellín, Antioquia, Colombia.</p>
+        </section>
+
+        <section class="terms-section">
+          <h2>13. Contacto</h2>
+          <p>Si tienes preguntas sobre estos Términos y Condiciones, por favor contáctanos:</p>
+          <div class="contact-info">
+            <p><i class="fas fa-envelope"></i> Email: legal&#64;floristerialaurita.com</p>
+            <p><i class="fas fa-phone-alt"></i> Teléfono: +57 (604) 301-5555</p>
+            <p><i class="fas fa-map-marker-alt"></i> Dirección: Calle 65 Sur #45-25, Sabaneta, Antioquia, Colombia</p>
+          </div>
+        </section>
+
+        <div class="terms-footer">
+          <p>Última actualización: Mayo 2025</p>
+          <a href="/" class="btn btn-outline">Volver al inicio</a>
+        </div>
+      </ng-container>
+    </div>
+  </main>
+</ng-container>
+</div>

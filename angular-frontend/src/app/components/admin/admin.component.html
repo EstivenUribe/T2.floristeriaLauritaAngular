@@ -32,7 +32,7 @@
         {{ error }}
       </div>
       
-      <form [formGroup]="productForm" (ngSubmit)="onSubmit()">
+      <form [formGroup]="productForm" (ngSubmit)="submitProduct()">
         <div class="form-group">
           <label for="nombre">Nombre:</label>
           <input type="text" id="nombre" formControlName="nombre" class="form-control" 
@@ -488,8 +488,96 @@
           <label for="vision">Visión:</label>
           <textarea id="vision" formControlName="vision" class="form-control" rows="4"></textarea>
         </div>
+<<<<<<< Updated upstream
+=======
+        <hr>
+
+        <!-- Sección Nuestros Valores -->
+        <h4>Nuestros Valores</h4>
+        <div formArrayName="valores">
+          <div *ngFor="let valorCtrl of valoresFormArray.controls; let i=index" [formGroupName]="i" class="valor-item mb-3 p-3 border rounded bg-light">
+            <h5>Valor {{ i + 1 }}</h5>
+            <div class="form-group">
+              <label for="valorTitulo{{i}}">Título del Valor:</label>
+              <input type="text" id="valorTitulo{{i}}" class="form-control" formControlName="titulo">
+            </div>
+            <div class="form-group">
+              <label for="valorDescripcion{{i}}">Descripción del Valor:</label>
+              <textarea id="valorDescripcion{{i}}" class="form-control" formControlName="descripcion" rows="3"></textarea>
+            </div>
+            <div class="form-group">
+              <label for="valorIcono{{i}}">Icono del Valor (ej: 'fas fa-lightbulb', 'icon-cogs'):</label>
+              <input type="text" id="valorIcono{{i}}" class="form-control" formControlName="icono">
+              <small class="form-text text-muted">Puedes usar clases de Font Awesome o nombres de iconos personalizados.</small>
+            </div>
+            <button type="button" class="btn btn-danger btn-sm" (click)="removeValor(i)">Eliminar Valor</button>
+          </div>
+        </div>
+        <button type="button" class="btn btn-success btn-sm my-2" (click)="addValor()">
+          <i class="fas fa-plus"></i> Añadir Valor
+        </button>
+>>>>>>> Stashed changes
         
-        <div class="form-buttons">
+        <hr>
+        
+        <!-- Sección Términos y Condiciones -->
+        <h4>Términos y Condiciones</h4>
+        <div class="form-group">
+          <label for="terminosTitulo">Título de Términos y Condiciones:</label>
+          <input type="text" id="terminosTitulo" class="form-control" formControlName="terminosTitulo">
+        </div>
+        
+        <div class="form-group">
+          <label for="terminosIntroduccion">Introducción:</label>
+          <textarea id="terminosIntroduccion" class="form-control" formControlName="terminosIntroduccion" rows="4"></textarea>
+          <small class="form-text text-muted">Texto introductorio que aparecerá al inicio de la página de términos y condiciones.</small>
+        </div>
+        
+        <div class="form-group">
+          <label for="terminosActualizacion">Fecha de última actualización:</label>
+          <input type="date" id="terminosActualizacion" class="form-control" formControlName="terminosActualizacion">
+        </div>
+        
+        <div formArrayName="terminosSecciones">
+          <h5>Secciones de Términos y Condiciones</h5>
+          <p class="text-muted">Añade secciones para organizar tu documento de términos y condiciones. Puedes reordenarlas según sea necesario.</p>
+          
+          <div *ngFor="let seccionCtrl of terminosSeccionesFormArray.controls; let i=index" [formGroupName]="i" class="terminos-seccion mb-4 p-3 border rounded bg-light">
+            <div class="d-flex justify-content-between align-items-center mb-2">
+              <h5>Sección {{ i + 1 }}</h5>
+              <div class="btn-group">
+                <button type="button" class="btn btn-sm btn-outline-secondary" [disabled]="i === 0" (click)="moveTerminoSeccion(i, 'up')">
+                  <i class="fas fa-arrow-up"></i>
+                </button>
+                <button type="button" class="btn btn-sm btn-outline-secondary" [disabled]="i === terminosSeccionesFormArray.length - 1" (click)="moveTerminoSeccion(i, 'down')">
+                  <i class="fas fa-arrow-down"></i>
+                </button>
+                <button type="button" class="btn btn-sm btn-danger" (click)="removeTerminoSeccion(i)">
+                  <i class="fas fa-trash"></i>
+                </button>
+              </div>
+            </div>
+            
+            <div class="form-group">
+              <label for="seccionTitulo{{i}}">Título de la sección:</label>
+              <input type="text" id="seccionTitulo{{i}}" class="form-control" formControlName="titulo">
+            </div>
+            
+            <div class="form-group">
+              <label for="seccionContenido{{i}}">Contenido:</label>
+              <textarea id="seccionContenido{{i}}" class="form-control" formControlName="contenido" rows="5"></textarea>
+              <small class="form-text text-muted">Puedes usar HTML básico como &lt;b&gt;, &lt;i&gt;, &lt;ul&gt;, &lt;li&gt; para dar formato al texto.</small>
+            </div>
+            
+            <input type="hidden" formControlName="orden">
+          </div>
+          
+          <button type="button" class="btn btn-success btn-sm my-2" (click)="addTerminoSeccion()">
+            <i class="fas fa-plus"></i> Añadir Sección
+          </button>
+        </div>
+        
+        <div class="form-buttons mt-4">
           <button type="submit" class="btn btn-primary" [disabled]="loadingCompanyInfo">
             Guardar Información
           </button>
@@ -500,4 +588,317 @@
       </form>
     </section>
   </main>
+<<<<<<< Updated upstream
+=======
+
+  <!-- Pestaña de Banners -->
+  <main *ngIf="activeTab === 'banners'" class="admin-banners">
+    <section id="formulario-banner">
+      <h2>{{ isEditingBanner ? 'Editar' : 'Agregar' }} Banner</h2>
+      
+      <div *ngIf="success" class="alert alert-success">
+        {{ success }}
+      </div>
+      
+      <div *ngIf="error" class="alert alert-danger">
+        {{ error }}
+      </div>
+      
+      <form [formGroup]="bannerForm" (ngSubmit)="onSubmitBanner()">
+        <div class="form-group">
+          <label for="seccion">Sección:</label>
+          <select id="seccion" formControlName="seccion" class="form-control" 
+                  [ngClass]="{ 'is-invalid': submittedBanner && bannerForm.controls['seccion'].errors }">
+            <option value="">Seleccionar sección</option>
+            <option value="inicio">Página de Inicio</option>
+            <option value="productos">Página de Productos</option>
+            <option value="ofertas">Página de Ofertas</option>
+            <option value="ocasiones">Página de Ocasiones</option>
+            <option value="nosotros">Página de Nosotros</option>
+            <option value="contacto">Página de Contacto</option>
+          </select>
+          <div *ngIf="submittedBanner && bannerForm.controls['seccion'].errors" class="invalid-feedback">
+            <div *ngIf="bannerForm.controls['seccion'].errors['required']">La sección es obligatoria</div>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="titulo">Título:</label>
+          <input type="text" id="titulo" formControlName="titulo" class="form-control"
+                 [ngClass]="{ 'is-invalid': submittedBanner && bannerForm.controls['titulo'].errors }">
+          <div *ngIf="submittedBanner && bannerForm.controls['titulo'].errors" class="invalid-feedback">
+            <div *ngIf="bannerForm.controls['titulo'].errors['required']">El título es obligatorio</div>
+          </div>
+        </div>
+        
+        <div class="form-group">
+          <label for="subtitulo">Subtítulo:</label>
+          <input type="text" id="subtitulo" formControlName="subtitulo" class="form-control">
+        </div>
+        
+        <div class="form-group">
+          <label>Imagen del Banner:</label>
+          <div class="upload-container">
+            <div class="image-preview" *ngIf="bannerImagePreview">
+              <img [src]="bannerImagePreview" alt="Vista previa del banner">
+            </div>
+            <div class="upload-controls">
+              <input type="file" id="bannerFileInput" accept="image/*" (change)="onBannerFileSelected($event)" class="file-input">
+              <label for="bannerFileInput" class="file-input-label">Seleccionar Imagen</label>
+              <button type="button" class="upload-btn" 
+                      [disabled]="!bannerSelectedFile || uploadingBannerImage" 
+                      (click)="uploadBannerImage()">
+                {{ uploadingBannerImage ? 'Subiendo...' : 'Subir Imagen' }}
+              </button>
+            </div>
+          </div>
+          <div class="form-group mt-3">
+            <label for="imagen_banner">Ruta de Imagen:</label>
+            <input type="text" id="imagen_banner" formControlName="imagen" class="form-control" readonly
+                   [ngClass]="{ 'is-invalid': submittedBanner && bannerForm.controls['imagen'].errors }">
+            <div *ngIf="submittedBanner && bannerForm.controls['imagen'].errors" class="invalid-feedback">
+              <div *ngIf="bannerForm.controls['imagen'].errors['required']">La imagen es obligatoria</div>
+            </div>
+          </div>
+        </div>
+        
+        <div class="form-group">
+          <label for="url">URL de Destino:</label>
+          <input type="text" id="url" formControlName="url" class="form-control">
+          <small class="form-text text-muted">URL a la que dirigirá el banner al hacer clic.</small>
+        </div>
+        
+        <div class="form-group">
+          <label for="textoBoton">Texto del Botón:</label>
+          <input type="text" id="textoBoton" formControlName="textoBoton" class="form-control">
+        </div>
+        
+        <div class="row">
+          <div class="col-md-6">
+            <div class="form-group">
+              <label for="fechaInicio">Fecha de Inicio:</label>
+              <input type="date" id="fechaInicio" formControlName="fechaInicio" class="form-control">
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="form-group">
+              <label for="fechaFin">Fecha de Fin (opcional):</label>
+              <input type="date" id="fechaFin" formControlName="fechaFin" class="form-control">
+            </div>
+          </div>
+        </div>
+        
+        <div class="row">
+          <div class="col-md-6">
+            <div class="form-group">
+              <label for="posicionTexto">Posición del Texto:</label>
+              <select id="posicionTexto" formControlName="posicionTexto" class="form-control">
+                <option value="left">Izquierda</option>
+                <option value="center">Centro</option>
+                <option value="right">Derecha</option>
+              </select>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="form-group">
+              <label for="animacion">Animación:</label>
+              <select id="animacion" formControlName="animacion" class="form-control">
+                <option value="none">Ninguna</option>
+                <option value="fade">Desvanecimiento</option>
+                <option value="slide">Deslizamiento</option>
+                <option value="zoom">Zoom</option>
+              </select>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Colores del Banner -->
+        <div formGroupName="color" class="mt-3">
+          <h5>Colores del Banner</h5>
+          <div class="row">
+            <div class="col-md-6">
+              <div class="form-group">
+                <label for="textoPrincipal">Color del Texto Principal:</label>
+                <input type="color" id="textoPrincipal" formControlName="textoPrincipal" class="form-control">
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="form-group">
+                <label for="textoSecundario">Color del Texto Secundario:</label>
+                <input type="color" id="textoSecundario" formControlName="textoSecundario" class="form-control">
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-6">
+              <div class="form-group">
+                <label for="boton">Color del Botón:</label>
+                <input type="color" id="boton" formControlName="boton" class="form-control">
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="form-group">
+                <label for="overlay">Color del Overlay:</label>
+                <input type="text" id="overlay" formControlName="overlay" class="form-control" placeholder="rgba(0,0,0,0.3)">
+                <small class="form-text text-muted">Formato: rgba(r,g,b,a) donde 'a' es la opacidad (0-1)</small>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <div class="form-check mt-3">
+          <input type="checkbox" id="activo" formControlName="activo" class="form-check-input">
+          <label for="activo" class="form-check-label">Banner Activo</label>
+        </div>
+        
+        <div class="form-buttons mt-3">
+          <button type="submit" class="btn btn-primary" [disabled]="loadingBanners">
+            {{ isEditingBanner ? 'Actualizar' : 'Guardar' }} Banner
+          </button>
+          <button type="button" class="btn btn-secondary" (click)="resetBannerForm()" [disabled]="loadingBanners">
+            Limpiar Formulario
+          </button>
+        </div>
+      </form>
+    </section>
+    
+    <section id="lista-banners">
+      <h2>Lista de Banners</h2>
+      
+      <div class="filter-section mb-3">
+        <label for="bannerFilter" class="me-2">Filtrar por sección:</label>
+        <select id="bannerFilter" [(ngModel)]="bannerFilter" (change)="filterBanners()" class="form-select d-inline-block w-auto">
+          <option value="all">Todos</option>
+          <option value="inicio">Inicio</option>
+          <option value="productos">Productos</option>
+          <option value="ofertas">Ofertas</option>
+          <option value="ocasiones">Ocasiones</option>
+          <option value="nosotros">Nosotros</option>
+          <option value="contacto">Contacto</option>
+        </select>
+      </div>
+      
+      <div *ngIf="loadingBanners" class="loading">
+        <p>Cargando banners...</p>
+      </div>
+      
+      <div *ngIf="!loadingBanners && filteredBanners.length === 0" class="no-items">
+        <p>No hay banners {{ bannerFilter !== 'all' ? 'en esta sección' : '' }} para mostrar.</p>
+      </div>
+      
+      <div *ngIf="!loadingBanners && filteredBanners.length > 0" class="table-responsive">
+        <table class="table table-striped">
+          <thead>
+            <tr>
+              <th>Imagen</th>
+              <th>Título</th>
+              <th>Sección</th>
+              <th>Fechas</th>
+              <th>Estado</th>
+              <th>Acciones</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let banner of filteredBanners" [class.inactive]="!banner.activo">
+              <td>
+                <img [src]="banner.imagen" alt="{{ banner.titulo }}" style="width: 100px; height: 60px; object-fit: cover;">
+              </td>
+              <td>{{ banner.titulo }}
+                <small *ngIf="banner.subtitulo" class="d-block text-muted">{{ banner.subtitulo }}</small>
+              </td>
+              <td>{{ banner.seccion | titlecase }}</td>
+              <td>
+                <small>Inicio: {{ banner.fechaInicio | date:'dd/MM/yyyy' }}</small>
+                <small *ngIf="banner.fechaFin" class="d-block">Fin: {{ banner.fechaFin | date:'dd/MM/yyyy' }}</small>
+              </td>
+              <td>
+                <span [ngClass]="banner.activo ? 'badge bg-success' : 'badge bg-secondary'">{{ banner.activo ? 'Activo' : 'Inactivo' }}</span>
+              </td>
+              <td>
+                <div class="btn-group">
+                  <button class="btn btn-sm btn-outline-primary" (click)="editBanner(banner)">
+                    <i class="fas fa-edit"></i> Editar
+                  </button>
+                  <button class="btn btn-sm" [ngClass]="banner.activo ? 'btn-outline-warning' : 'btn-outline-success'" (click)="toggleBannerStatus(banner._id!)">
+                    <i class="fas" [ngClass]="banner.activo ? 'fa-eye-slash' : 'fa-eye'"></i>
+                    {{ banner.activo ? 'Desactivar' : 'Activar' }}
+                  </button>
+                  <button class="btn btn-sm btn-outline-danger" (click)="deleteBanner(banner._id!)">
+                    <i class="fas fa-trash"></i> Eliminar
+                  </button>
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+  </main>
+
+  <!-- Pestaña de Comentarios -->
+  <main *ngIf="activeTab === 'comentarios'" class="admin-comentarios">
+    <section id="gestion-comentarios">
+      <h2>Gestión de Comentarios</h2>
+
+      <div *ngIf="loadingReviews" class="loading-indicator">
+        <p>Cargando comentarios...</p>
+        <!-- Podrías añadir un spinner aquí -->
+      </div>
+
+      <div *ngIf="!loadingReviews && reviews.length === 0" class="empty-state">
+        <p>No hay comentarios para mostrar.</p>
+      </div>
+
+      <div *ngIf="!loadingReviews && reviews.length > 0" class="table-responsive">
+        <table class="table table-striped">
+          <thead>
+            <tr>
+              <th>Usuario</th>
+              <th>Producto</th>
+              <th>Calificación</th>
+              <th>Comentario</th>
+              <th>Fecha</th>
+              <th>Estado</th>
+              <th>Acciones</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let review of reviews">
+              <td>{{ getReviewUserName(review.user) }}</td>
+              <td>{{ getReviewProductName(review.product) }}</td>
+              <td>{{ review.rating }} <i class="fas fa-star"></i></td>
+              <td>{{ review.comment }}</td>
+              <td>{{ review.createdAt | date:'dd/MM/yyyy HH:mm' }}</td>
+              <td> <!-- Celda para Estado -->
+                <span *ngIf="review.approved" class="badge bg-success">Aprobado</span>
+                <span *ngIf="!review.approved" class="badge bg-warning text-dark">Pendiente</span>
+              </td>
+              <td> <!-- Celda para Acciones MODIFICADA -->
+                <button (click)="toggleApproval(review)" 
+                        class="btn btn-sm me-1"  
+                        [ngClass]="review.approved ? 'btn-outline-warning' : 'btn-outline-success'">
+                  <i class="fas" [ngClass]="review.approved ? 'fa-times-circle' : 'fa-check-circle'"></i>
+                  {{ review.approved ? 'Desaprobar' : 'Aprobar' }}
+                </button>
+                <button (click)="deleteReview(review._id!)" class="btn btn-danger btn-sm">
+                  <i class="fas fa-trash"></i> Eliminar
+                </button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+  </main>
+
+  <!-- Pestaña de Configuración (Nueva) -->
+  <main *ngIf="activeTab === 'configuracion'" class="admin-configuracion-nueva">
+    <section id="configuracion-general">
+      <h2>Configuración General</h2>
+      <p>Esta sección está destinada a futuras opciones de configuración general del sitio.</p>
+      <!-- Contenido vacío o placeholder -->
+    </section>
+  </main>
+
+>>>>>>> Stashed changes
 </div>

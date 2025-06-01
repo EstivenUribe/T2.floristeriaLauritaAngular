@@ -1,0 +1,47 @@
+<div class="testimonials-container">
+  <!-- Indicador de carga -->
+  <div *ngIf="isLoading" class="loading-container text-center py-4">
+    <div class="spinner-border text-primary" role="status">
+      <span class="visually-hidden">Cargando...</span>
+    </div>
+    <p class="mt-2">Cargando reseñas...</p>
+  </div>
+
+  <!-- Mensaje de error -->
+  <div *ngIf="error && !isLoading" class="error-container alert alert-danger">
+    <p>{{ error }}</p>
+  </div>
+
+  <!-- Mensaje cuando no hay reseñas -->
+  <div *ngIf="!isLoading && !error && reviews.length === 0" class="empty-message text-center py-4">
+    <p>Aún no hay reseñas de clientes disponibles.</p>
+  </div>
+
+  <!-- Carrusel de testimonios -->
+  <div *ngIf="!isLoading && !error && reviews.length > 0" class="testimonials-slider">
+    <div class="row justify-content-center">
+      <div *ngFor="let review of reviews" class="col-md-4 col-sm-6 mb-4">
+        <div class="testimonial-card shadow-sm p-4 h-100">
+          <div class="testimonial-rating mb-2">
+            <ng-container *ngFor="let star of [1, 2, 3, 4, 5]">
+              <i class="fas fa-star" [ngClass]="{
+                'text-warning': star <= review.rating,
+                'text-muted': star > review.rating
+              }"></i>
+            </ng-container>
+          </div>
+          <p class="testimonial-text mb-4">"{{ review.comment }}"</p>
+          <div class="testimonial-author d-flex align-items-center">
+            <div class="author-avatar me-3">
+              <i class="fas fa-user-circle fa-2x text-primary"></i>
+            </div>
+            <div>
+              <h5 class="author-name mb-0">{{ getUserName(review.user) }}</h5>
+              <small class="text-muted">{{ review.createdAt | date:'mediumDate' }}</small>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
