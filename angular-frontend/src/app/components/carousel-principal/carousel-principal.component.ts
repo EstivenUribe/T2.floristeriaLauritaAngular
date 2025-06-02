@@ -23,22 +23,22 @@ export class CarouselPrincipalComponent implements OnInit, AfterViewInit, OnDest
 
   slide_data: SlideData[] = [
     {
-      src: 'https://images.unsplash.com/photo-1506765336936-bb05e7e06295?ixlib=rb-0.3.5&s=d40582dbbbb66c7e0812854374194c2e&auto=format&fit=crop&w=1050&q=80',
+      src: 'https://www.10wallpaper.com/wallpaper/3840x2160/1804/Blue_flowers_petals_water_drops_4k_close-up_3840x2160.jpg',
       title: 'PRECIOS QUE SE TE AJUSTAN',
       copy: 'Calidad garantizada sin pagar de más.'
     },
     {
-      src: 'https://images.unsplash.com/photo-1496309732348-3627f3f040ee?ixlib=rb-0.3.5&s=4d04f3d5a488db4031d90f5a1fbba42d&auto=format&fit=crop&w=1050&q=80',
+      src: 'https://img2.wallspic.com/crops/3/4/8/7/2/127843/127843-rojo-fabrica-las_rosas_de_jardin-la_floracion_de_la_planta-ramo_de_flores-3840x2160.jpg',
       title: 'CALIDAD SUPERIOR EN CADA DETALLE',
       copy: 'Seleccionamos lo mejor para tu hogar.'
     },
     {
-      src: 'https://images.unsplash.com/photo-1504271863819-d279190bf871?ixlib=rb-0.3.5&s=7a2b986d405a04b3f9be2e56b2be40dc&auto=format&fit=crop&w=334&q=80',
+      src: 'https://static.vecteezy.com/ti/fotos-gratis/p2/48627643-campo-do-tulipas-as-nascer-do-sol-natureza-fundo-gratis-foto.jpg',
       title: 'DURABILIDAD QUE IMPRESIONA',
       copy: 'Nuestros productos resisten el paso del tiempo.'
     },
     {
-      src: 'https://images.unsplash.com/photo-1478728073286-db190d3d8ce6?ixlib=rb-0.3.5&s=87131a6b538ed72b25d9e0fc4bf8df5b&auto=format&fit=crop&w=1050&q=80',
+      src: 'https://wallpapershome.com/images/pages/pic_h/3787.jpg',
       title: 'ENORME VARIEDAD DE FLORES',
       copy: 'Colores, formas y aromas para cada ocasión.'
     },
