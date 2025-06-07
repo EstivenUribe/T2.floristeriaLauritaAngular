@@ -5,7 +5,7 @@
         <p class="page-description">Revisa tus productos y completa tu compra</p>
       </div>
     </div>
-    
+
     <section class="cart-section section">
       <div class="container">
         <div class="checkout-container">
@@ -31,7 +31,7 @@
               <div class="step-name">Confirmación</div>
             </div>
           </div>
-          
+
           <!-- Contenido basado en el paso actual -->
           <div class="checkout-content">
             <!-- Paso 1: Carrito -->
@@ -42,7 +42,7 @@
                 <p>Parece que aún no has agregado ningún producto a tu carrito.</p>
                 <button (click)="continueShopping()" class="btn btn-primary">Ver productos</button>
               </div>
-              
+
               <div class="cart-details" *ngIf="cartItems.length > 0">
                 <div class="cart-items">
                   <div class="cart-item" *ngFor="let item of cartItems; let i = index">
@@ -66,7 +66,7 @@
                     </button>
                   </div>
                 </div>
-                
+
                 <div class="cart-summary">
                   <h3>Resumen del pedido</h3>
                   <div class="summary-row">
@@ -86,107 +86,156 @@
                 </div>
               </div>
             </div>
-            
+
             <!-- Paso 2: Información de envío -->
             <div class="checkout-step" *ngIf="currentStep === 2">
               <div class="shipping-form">
                 <h2>Información de envío</h2>
                 <p>Completa tus datos para el envío de los productos.</p>
-                
+
                 <div class="form-grid">
                   <div class="form-group">
                     <label for="fullName">Nombre completo *</label>
-                    <input 
-                      type="text" 
-                      id="fullName" 
-                      name="fullName" 
-                      [(ngModel)]="shippingForm.fullName" 
+                    <input
+                      type="text"
+                      id="fullName"
+                      name="fullName"
+                      [(ngModel)]="shippingForm.fullName"
                       required
-                      placeholder="Tu nombre completo">
+                      placeholder="Tu nombre completo"
+                      [class.error]="shippingErrors.fullName"
+                      (blur)="validateFullName()"
+                      (input)="validateFullName()">
+                    <div class="error-message" *ngIf="shippingErrors.fullName">
+                      {{ shippingErrors.fullName }}
+                    </div>
                   </div>
-                  
+
                   <div class="form-group">
                     <label for="email">Correo electrónico *</label>
-                    <input 
-                      type="email" 
-                      id="email" 
-                      name="email" 
-                      [(ngModel)]="shippingForm.email" 
+                    <input
+                      type="email"
+                      id="email"
+                      name="email"
+                      [(ngModel)]="shippingForm.email"
                       required
-                      placeholder="ejemplo@correo.com">
+                      placeholder="ejemplo@correo.com"
+                      [class.error]="shippingErrors.email"
+                      (blur)="validateEmail()"
+                      (input)="validateEmail()">
+                    <div class="error-message" *ngIf="shippingErrors.email">
+                      {{ shippingErrors.email }}
+                    </div>
                   </div>
-                  
+
                   <div class="form-group">
                     <label for="phone">Teléfono *</label>
-                    <input 
-                      type="tel" 
-                      id="phone" 
-                      name="phone" 
-                      [(ngModel)]="shippingForm.phone" 
+                    <input
+                      type="tel"
+                      id="phone"
+                      name="phone"
+                      [(ngModel)]="shippingForm.phone"
                       required
-                      placeholder="Tu número de teléfono">
+                      placeholder="Ej: 3123456789"
+                      [class.error]="shippingErrors.phone"
+                      (blur)="validatePhone()"
+                      (input)="validatePhone()">
+                    <div class="error-message" *ngIf="shippingErrors.phone">
+                      {{ shippingErrors.phone }}
+                    </div>
                   </div>
-                  
+
                   <div class="form-group full-width">
                     <label for="address">Dirección *</label>
-                    <input 
-                      type="text" 
-                      id="address" 
-                      name="address" 
-                      [(ngModel)]="shippingForm.address" 
+                    <input
+                      type="text"
+                      id="address"
+                      name="address"
+                      [(ngModel)]="shippingForm.address"
                       required
-                      placeholder="Dirección completa">
+                      placeholder="Ej: Calle 123 #45-67, Apto 8B"
+                      [class.error]="shippingErrors.address"
+                      (blur)="validateAddress()"
+                      (input)="validateAddress()">
+                    <div class="error-message" *ngIf="shippingErrors.address">
+                      {{ shippingErrors.address }}
+                    </div>
                   </div>
-                  
+
                   <div class="form-group">
                     <label for="city">Ciudad *</label>
-                    <input 
-                      type="text" 
-                      id="city" 
-                      name="city" 
-                      [(ngModel)]="shippingForm.city" 
+                    <input
+                      type="text"
+                      id="city"
+                      name="city"
+                      [(ngModel)]="shippingForm.city"
                       required
-                      placeholder="Ciudad">
+                      placeholder="Ej: Medellín"
+                      [class.error]="shippingErrors.city"
+                      (blur)="validateCity()"
+                      (input)="validateCity()">
+                    <div class="error-message" *ngIf="shippingErrors.city">
+                      {{ shippingErrors.city }}
+                    </div>
                   </div>
-                  
+
                   <div class="form-group">
                     <label for="province">Departamento *</label>
-                    <input 
-                      type="text" 
-                      id="province" 
-                      name="province" 
-                      [(ngModel)]="shippingForm.province" 
+                    <input
+                      type="text"
+                      id="province"
+                      name="province"
+                      [(ngModel)]="shippingForm.province"
                       required
-                      placeholder="Departamento">
+                      placeholder="Ej: Antioquia"
+                      [class.error]="shippingErrors.province"
+                      (blur)="validateProvince()"
+                      (input)="validateProvince()">
+                    <div class="error-message" *ngIf="shippingErrors.province">
+                      {{ shippingErrors.province }}
+                    </div>
                   </div>
-                  
+
                   <div class="form-group">
                     <label for="postalCode">Código postal</label>
-                    <input 
-                      type="text" 
-                      id="postalCode" 
-                      name="postalCode" 
-                      [(ngModel)]="shippingForm.postalCode" 
-                      placeholder="Código postal (opcional)">
+                    <input
+                      type="text"
+                      id="postalCode"
+                      name="postalCode"
+                      [(ngModel)]="shippingForm.postalCode"
+                      placeholder="Ej: 050001"
+                      maxlength="6"
+                      [class.error]="shippingErrors.postalCode"
+                      (blur)="validatePostalCode()"
+                      (input)="validatePostalCode()">
+                    <div class="error-message" *ngIf="shippingErrors.postalCode">
+                      {{ shippingErrors.postalCode }}
+                    </div>
                   </div>
-                  
+
                   <div class="form-group full-width">
                     <label for="notes">Notas adicionales</label>
-                    <textarea 
-                      id="notes" 
-                      name="notes" 
-                      [(ngModel)]="shippingForm.notes" 
+                    <textarea
+                      id="notes"
+                      name="notes"
+                      [(ngModel)]="shippingForm.notes"
                       rows="3"
-                      placeholder="Instrucciones especiales para la entrega (opcional)"></textarea>
+                      placeholder="Instrucciones especiales para la entrega (opcional)"
+                      maxlength="500"></textarea>
                   </div>
                 </div>
-                
+
                 <div class="form-buttons">
                   <button (click)="prevStep()" class="btn btn-outline">Volver al carrito</button>
-                  <button (click)="nextStep()" class="btn btn-primary">Continuar al pago</button>
+                  <button
+                    (click)="nextStep()"
+                    class="btn btn-primary"
+                    [disabled]="!isShippingFormValid">
+                    Continuar al pago
+                  </button>
                 </div>
               </div>
-              
+
               <div class="order-summary">
                 <h3>Resumen del pedido</h3>
                 <div class="order-items">
@@ -211,96 +260,96 @@
                 </div>
               </div>
             </div>
-            
+
             <!-- Paso 3: Método de pago -->
             <div class="checkout-step" *ngIf="currentStep === 3">
               <div class="payment-methods">
                 <h2>Método de pago</h2>
                 <p>Selecciona tu método de pago preferido y completa la información.</p>
-                
+
                 <div class="payment-options">
-                  <div 
-                    *ngFor="let method of paymentMethods" 
-                    class="payment-option" 
+                  <div
+                    *ngFor="let method of paymentMethods"
+                    class="payment-option"
                     [ngClass]="{'selected': selectedPaymentMethod === method.id}"
                     (click)="setPaymentMethod(method.id)">
                     <i class="fas" [ngClass]="method.icon"></i>
                     <span>{{ method.name }}</span>
                   </div>
                 </div>
-                
+
                 <div class="payment-form" *ngIf="selectedPaymentMethod === 'credit_card' || selectedPaymentMethod === 'debit_card'">
                   <div class="form-group">
                     <label for="cardNumber">Número de tarjeta *</label>
-                    <input 
-                      type="text" 
-                      id="cardNumber" 
-                      name="cardNumber" 
-                      [(ngModel)]="paymentForm.cardNumber" 
+                    <input
+                      type="text"
+                      id="cardNumber"
+                      name="cardNumber"
+                      [(ngModel)]="paymentForm.cardNumber"
                       required
                       placeholder="1234 5678 9012 3456">
                   </div>
-                  
+
                   <div class="form-group">
                     <label for="cardName">Nombre en la tarjeta *</label>
-                    <input 
-                      type="text" 
-                      id="cardName" 
-                      name="cardName" 
-                      [(ngModel)]="paymentForm.cardName" 
+                    <input
+                      type="text"
+                      id="cardName"
+                      name="cardName"
+                      [(ngModel)]="paymentForm.cardName"
                       required
                       placeholder="Nombre como aparece en la tarjeta">
                   </div>
-                  
+
                   <div class="form-row">
                     <div class="form-group">
                       <label for="expiryDate">Fecha de expiración *</label>
-                      <input 
-                        type="text" 
-                        id="expiryDate" 
-                        name="expiryDate" 
-                        [(ngModel)]="paymentForm.expiryDate" 
+                      <input
+                        type="text"
+                        id="expiryDate"
+                        name="expiryDate"
+                        [(ngModel)]="paymentForm.expiryDate"
                         required
                         placeholder="MM/AA">
                     </div>
-                    
+
                     <div class="form-group">
                       <label for="cvv">CVV *</label>
-                      <input 
-                        type="text" 
-                        id="cvv" 
-                        name="cvv" 
-                        [(ngModel)]="paymentForm.cvv" 
+                      <input
+                        type="text"
+                        id="cvv"
+                        name="cvv"
+                        [(ngModel)]="paymentForm.cvv"
                         required
                         placeholder="123">
                     </div>
                   </div>
                 </div>
-                
+
                 <div class="payment-info" *ngIf="selectedPaymentMethod === 'pse'">
                   <p>Serás redirigido a PSE para completar el pago de manera segura.</p>
                 </div>
-                
+
                 <div class="payment-info" *ngIf="selectedPaymentMethod === 'paypal'">
                   <p>Serás redirigido a PayPal para completar el pago de manera segura.</p>
                 </div>
-                
+
                 <div class="secure-payment">
                   <i class="fas fa-lock"></i>
                   <span>Pagos seguros y protegidos con encriptación SSL.</span>
                 </div>
-                
+
                 <div class="form-buttons">
                   <button (click)="prevStep()" class="btn btn-outline">Volver al envío</button>
-                  <button 
-                    (click)="placeOrder()" 
+                  <button
+                    (click)="placeOrder()"
                     class="btn btn-primary"
                     [disabled]="!selectedPaymentMethod">
                     Realizar pedido
                   </button>
                 </div>
               </div>
-              
+
               <div class="order-summary">
                 <h3>Resumen del pedido</h3>
                 <div class="summary-section">
@@ -333,7 +382,7 @@
                 </div>
               </div>
             </div>
-            
+
             <!-- Paso 4: Confirmación -->
             <div class="checkout-step confirmation-step" *ngIf="currentStep === 4">
               <div class="order-confirmation">
@@ -342,7 +391,7 @@
                 </div>
                 <h2>¡Pedido confirmado!</h2>
                 <p class="confirmation-message">Tu pedido ha sido realizado con éxito. Hemos enviado un correo electrónico con los detalles de tu compra.</p>
-                
+
                 <div class="order-details">
                   <div class="order-number">
                     <span>Número de pedido:</span>
@@ -353,7 +402,7 @@
                     <span>{{ currentDate | date:'dd/MM/yyyy' }}</span>
                   </div>
                 </div>
-                
+
                 <div class="summary-section">
                   <h4>Detalles de envío:</h4>
                   <p>{{ shippingForm.fullName }}</p>
@@ -361,10 +410,10 @@
                   <p>{{ shippingForm.city }}, {{ shippingForm.province }}</p>
                   <p>{{ shippingForm.phone }}</p>
                 </div>
-                
+
                 <div class="summary-section">
                   <h4>Detalles de pago:</h4>
-                  <p>Método: {{ 
+                  <p>Método: {{
                     selectedPaymentMethod === 'credit_card' ? 'Tarjeta de Crédito' :
                     selectedPaymentMethod === 'debit_card' ? 'Tarjeta de Débito' :
                     selectedPaymentMethod === 'pse' ? 'PSE' :
@@ -375,7 +424,7 @@
                   </p>
                   <p>Total: {{ getTotal() | currency:'COP':'symbol':'1.0-0' }}</p>
                 </div>
-                
+
                 <div class="confirmation-buttons">
                   <button (click)="continueShopping()" class="btn btn-primary">Seguir comprando</button>
                 </div>

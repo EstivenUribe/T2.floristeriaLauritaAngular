@@ -447,4 +447,5 @@
 .social-links a:hover {
   background-color: var(--color-secondary);
   border-color: var(--color-secondary);
+  text-decoration: none;
 }

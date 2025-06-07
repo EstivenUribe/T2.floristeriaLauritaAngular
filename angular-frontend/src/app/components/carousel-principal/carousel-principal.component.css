@@ -61,15 +61,15 @@ img {
   transition: 250ms ease-in background-color, 500ms ease-in color;
 }
 .caption a.btn:hover {
-  background-color: #66c1b6;
+  background-color: #f4a1a1;
 }
 .container {
   width: 100vw; /* Full viewport width */
   height: auto; /* Adjust height based on content */
   /* Space above the left-col */
   padding-right: 100%;
-  padding-top: 2rem;
-  padding-bottom: 1.2rem;
+  padding-top: 1rem;
+  padding-bottom: 1rem;
   background-color: #2C302E;
   color: #d6f9dd; /* Color de texto original del body del carrusel */
   font-family: 'Lato', sans-serif; /* Asegurar fuente Lato */
@@ -94,7 +94,7 @@ img {
 
 @media (max-width: 768px) {
   .left-col {
-    height: 40vh; /* Más pequeño en móviles pero proporcionado */
+    height: 50vh; /* Más pequeño en móviles pero proporcionado */
   }
 }
 @media (max-width: 768px) {

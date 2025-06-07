@@ -3,14 +3,16 @@ import { CommonModule } from '@angular/common';
 import { OrderService } from '../../services/order.service';
 import { Order, OrderStatus } from '../../models/order.model';
 import { NotificationService } from '../../services/notification.service';
+import { RouterModule } from '@angular/router';
 
 @Component({
   selector: 'app-order-history',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, RouterModule],
   templateUrl: './order-history.component.html',
   styleUrls: ['./order-history.component.css']
 })
+
 export class OrderHistoryComponent implements OnInit {
   orders: Order[] = [];
   filteredOrders: Order[] = [];
@@ -47,7 +49,7 @@ export class OrderHistoryComponent implements OnInit {
     if (this.selectedFilter === 'all') {
       this.filteredOrders = [...this.orders];
     } else {
-      this.filteredOrders = this.orders.filter(order => 
+      this.filteredOrders = this.orders.filter(order =>
         order.status.toLowerCase() === this.selectedFilter.toLowerCase()
       );
     }
@@ -90,10 +92,10 @@ export class OrderHistoryComponent implements OnInit {
   }
 
   formatDate(dateString: string): string {
-    const options: Intl.DateTimeFormatOptions = { 
-      year: 'numeric', 
-      month: 'long', 
-      day: 'numeric' 
+    const options: Intl.DateTimeFormatOptions = {
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric'
     };
     return new Date(dateString).toLocaleDateString('es-ES', options);
   }

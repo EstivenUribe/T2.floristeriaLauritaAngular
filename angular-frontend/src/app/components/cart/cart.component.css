@@ -20,7 +20,7 @@
 }
 
 .page-description {
-  color: var(--gray);
+  color: whitesmoke;
   font-size: 1.1rem;
   max-width: 700px;
   margin: 0 auto;
@@ -65,14 +65,14 @@
 
 .progress-step.active .step-number {
   border-color: var(--primary-pink);
-  color:  #7D56AE;
-  background-color: #e3d1ff;
+  color: #7646b3;
+  background-color: #ecdfff;
 }
 
 .progress-step.completed .step-number {
   border-color: var(--primary-pink);
   color:  #7D56AE;
-  background-color: #e3d1ff;
+  background-color: bisque;
 }
 
 .step-name {
@@ -91,8 +91,7 @@
   flex: 1;
   height: 2px;
   background-color: #ddd;
-  margin: 0 10px;
-  margin-bottom: 25px;
+  margin: 10px 10px 25px;
   transition: background-color 0.3s;
 }
 
@@ -115,7 +114,7 @@
 .empty-cart {
   text-align: center;
   padding: 60px 0;
-  border-radius: var(--border-radius-md);
+  border-radius: var(--border-radius-medium);
   grid-column: 1 / -1;
   margin-top: 30px;
   background-color: #fff;
@@ -149,8 +148,8 @@
 /* Detalles del carrito */
 .cart-details {
   background-color: white;
-  border-radius: var(--border-radius-md);
-  box-shadow: var(--shadow-sm);
+  border-radius: var(--border-radius-medium);
+  box-shadow: var(--shadow-small);
   padding: 30px;
 
 }
@@ -175,7 +174,7 @@
 .item-image {
   width: 80px;
   height: 80px;
-  border-radius: var(--border-radius-sm);
+  border-radius: var(--border-radius-small);
   overflow: hidden;
 }
 
@@ -247,8 +246,8 @@
 /* Resumen del carrito */
 .cart-summary {
   background-color: white;
-  border-radius: var(--border-radius-md);
-  box-shadow: var(--shadow-sm);
+  border-radius: var(--border-radius-medium);
+  box-shadow: var(--shadow-small);
   padding: 30px;
 }
 
@@ -292,11 +291,11 @@
   background-color: var(--primary-pink-light);
 }
 
-/* Formulario de env�o */
+/* Formulario de envio */
 .shipping-form {
   background-color: white;
-  border-radius: var(--border-radius-md);
-  box-shadow: var(--shadow-sm);
+  border-radius: var(--border-radius-medium);
+  box-shadow: var(--shadow-small);
   padding: 30px;
 }
 
@@ -333,7 +332,7 @@
   width: 100%;
   padding: 12px 15px;
   border: 1px solid #ddd;
-  border-radius: var(--border-radius-sm);
+  border-radius: var(--border-radius-small);
   font-size: 1rem;
   transition: border-color 0.3s;
 }
@@ -353,8 +352,8 @@
 /* M�todos de pago */
 .payment-methods {
   background-color: white;
-  border-radius: var(--border-radius-md);
-  box-shadow: var(--shadow-sm);
+  border-radius: var(--border-radius-medium);
+  box-shadow: var(--shadow-small);
   padding: 30px;
 }
 
@@ -378,7 +377,7 @@
 
 .payment-option {
   border: 1px solid #ddd;
-  border-radius: var(--border-radius-sm);
+  border-radius: var(--border-radius-small);
   padding: 15px;
   display: flex;
   align-items: center;
@@ -416,7 +415,7 @@
 .payment-info {
   background-color: var(--primary-pink-light);
   padding: 15px;
-  border-radius: var(--border-radius-sm);
+  border-radius: var(--border-radius-small);
   margin-bottom: 30px;
 }
 
@@ -444,8 +443,8 @@
 /* Resumen del pedido lateral */
 .order-summary {
   background-color: white;
-  border-radius: var(--border-radius-md);
-  box-shadow: var(--shadow-sm);
+  border-radius: var(--border-radius-medium);
+  box-shadow: var(--shadow-small);
   padding: 25px;
 }
 
@@ -510,8 +509,8 @@
 
 .order-confirmation {
   background-color: white;
-  border-radius: var(--border-radius-md);
-  box-shadow: var(--shadow-sm);
+  border-radius: var(--border-radius-medium);
+  box-shadow: var(--shadow-small);
   padding: 40px;
   text-align: center;
   max-width: 700px;
@@ -541,7 +540,7 @@
 .order-details {
   background-color: var(--primary-pink-light);
   padding: 20px;
-  border-radius: var(--border-radius-sm);
+  border-radius: var(--border-radius-small);
   margin-bottom: 30px;
   display: flex;
   justify-content: space-around;
@@ -669,7 +668,135 @@
     padding: 20px;
   }
 }
+/* Estilos para validaciones */
+.form-group input.error,
+.form-group textarea.error {
+  border-color: #e74c3c;
+  background-color: #fdf2f2;
+}
 
+.form-group input.error:focus,
+.form-group textarea.error:focus {
+  border-color: #e74c3c;
+  box-shadow: 0 0 0 3px rgba(231, 76, 60, 0.1);
+}
+
+.error-message {
+  color: #e74c3c;
+  font-size: 0.875rem;
+  margin-top: 5px;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.error-message::before {
+  content: "⚠";
+  font-size: 1rem;
+}
+
+.form-group input.valid,
+.form-group textarea.valid {
+  border-color: #27ae60;
+  background-color: #f8fff8;
+}
+
+.success-message {
+  color: #27ae60;
+  font-size: 0.875rem;
+  margin-top: 5px;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.success-message::before {
+  content: "✓";
+  font-size: 1rem;
+}
+
+/* Estilos para métodos de pago */
+.payment-form .form-group {
+  margin-bottom: 20px;
+}
+
+.card-type-indicator {
+  position: absolute;
+  right: 15px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 1.2rem;
+  color: var(--primary-purple);
+}
+
+.card-input-container {
+  position: relative;
+}
+
+.payment-form .form-row .form-group {
+  margin-bottom: 0;
+}
+
+/* Estados de botones */
+.btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  background-color: #ccc;
+  border-color: #ccc;
+}
+
+.btn:disabled:hover {
+  background-color: #ccc;
+  border-color: #ccc;
+}
+
+/* Indicador de procesamiento */
+.processing-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.processing-spinner {
+  background-color: white;
+  padding: 30px;
+  border-radius: var(--border-radius-medium);
+  text-align: center;
+  box-shadow: var(--shadow-medium);
+}
+
+.spinner {
+  border: 4px solid #f3f3f3;
+  border-top: 4px solid var(--primary-purple);
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  animation: spin 1s linear infinite;
+  margin: 0 auto 15px;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* Mejorar el estilo de alerta de errores */
+.error-alert {
+  background-color: #fdf2f2;
+  border: 1px solid #e74c3c;
+  color: #e74c3c;
+  padding: 15px;
+  border-radius: var(--border-radius-small);
+  margin-bottom: 20px;
+  display: flex;
+  align-items: center;
 @media (max-width: 576px) {
   .cart-details,
   .cart-summary,
@@ -678,4 +805,5 @@
   .payment-methods {
     padding: 20px 15px;
   }
+}
 }

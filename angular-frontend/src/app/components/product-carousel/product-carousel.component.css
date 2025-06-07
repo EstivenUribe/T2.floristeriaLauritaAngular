@@ -1,13 +1,14 @@
 /* Estilos del contenedor de la sección */
 .carousel-section {
   padding: 2rem 0;
-  background-color: #f8f7ff;
+  background-color: #f5e6f0; /* Rosa más visible pero suave que combina */
   margin-bottom: 2rem;
+  border-radius: 2rem;
 }
 
 .carousel-title {
   text-align: center;
-  color: #ff679d;
+  color: #8b5a83; /* Color más oscuro, un morado-rosado elegante */
   font-size: 2rem;
   margin-bottom: 1.5rem;
   font-family: 'Playfair Display', serif;
@@ -33,7 +34,7 @@ swiper-container {
   justify-content: center;
 }
 
-/* Tarjeta de producto */
+/* Tarjeta de producto - más grande */
 .flower-card {
   background: white;
   border-radius: 12px;
@@ -41,13 +42,14 @@ swiper-container {
   box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
   transition: transform 0.3s ease, box-shadow 0.3s ease;
   width: 100%;
-  max-width: 320px;
-  min-height: 400px;
+  max-width: 350px; /* Más ancha */
+  min-height: 450px; /* Más alta */
 }
 
 .flower-card:hover {
-  transform: translateY(-10px);
-  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+  transform: translateY(-8px); /* Movimiento más sutil */
+  border-radius: 12px;
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.15);
 }
 
 .flower-img-container {
@@ -71,12 +73,13 @@ swiper-container {
   position: absolute;
   top: 18px;
   right: 10px;
-  background-color: #ff99c6;
-  color: white;
-  padding: 5px 10px;
-  border-radius: 20px;
+  background: linear-gradient(135deg, #ff6b9d, #ffa0c9);
+  color: #2c2c2c;
+  padding: 8px 12px;
+  border-radius: 6px;
   font-size: 0.8rem;
-  font-weight: bold;
+  font-weight: 600;
+  box-shadow: 0 2px 8px rgba(255, 107, 157, 0.25);
 }
 
 .flower-details {
@@ -96,7 +99,7 @@ swiper-container {
 }
 
 .flower-price {
-  color: #ff4d8d;
+  color: #d63384; /* Rosa más intenso para el precio */
   font-weight: bold;
   font-size: 1.2rem;
   margin-bottom: 15px;
@@ -109,11 +112,13 @@ swiper-container {
   padding: 8px 16px;
   border-radius: 25px;
   font-weight: 500;
+  text-decoration: none; /* Quita el subrayado */
   transition: background-color 0.3s;
 }
 
 .view-details-btn:hover {
   background-color: #845fd3;
+  text-decoration: none; /* Asegura que no se subraye en hover */
 }
 
 /* Personalización de los botones de navegación de Swiper */
@@ -165,10 +170,10 @@ swiper-button-prev::after {
   }
 
   .flower-card {
-    max-width: 240px;
+    max-width: 280px;
   }
 
   .flower-img-container {
-    height: 160px;
+    height: 180px;
   }
 }

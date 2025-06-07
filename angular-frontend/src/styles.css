@@ -50,6 +50,10 @@ body {
   --color-warning: #FFD166;
   --color-info: var(--color-secondary);
 
+  /* Colores extras o faltantes */
+  --gray: gray;
+  --primary-pink-light: lightpink;
+
   /* Sombras */
   --shadow-small: 0 2px 4px rgba(0, 0, 0, 0.1);
   --shadow-medium: 0 4px 8px rgba(0, 0, 0, 0.12);

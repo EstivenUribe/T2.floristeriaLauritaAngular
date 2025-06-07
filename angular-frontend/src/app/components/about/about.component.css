@@ -19,7 +19,7 @@
 }
 
 .page-description {
-  color: var(--gray);
+  color: whitesmoke;
   font-size: 1.1rem;
   max-width: 700px;
   margin: 0 auto;
@@ -84,9 +84,9 @@
 }
 
 .about-image {
-  border-radius: var(--border-radius-lg);
+  border-radius: var(--border-radius-large);
   overflow: hidden;
-  box-shadow: var(--shadow-md);
+  box-shadow: var(--shadow-medium);
 }
 
 .about-image img {
@@ -180,7 +180,7 @@
 
 .value-card:hover {
   transform: translateY(-10px);
-  box-shadow: var(--shadow-md);
+  box-shadow: var(--shadow-medium);
 }
 
 .value-icon {
@@ -231,7 +231,7 @@
 
 .team-card:hover {
   transform: translateY(-10px);
-  box-shadow: var(--shadow-md);
+  box-shadow: var(--shadow-medium);
 }
 
 .team-image {
@@ -292,7 +292,7 @@
 
 .testimonial-card:hover {
   transform: translateY(-5px);
-  box-shadow: var(--shadow-md);
+  box-shadow: var(--shadow-medium);
 }
 
 .testimonial-content {
@@ -372,7 +372,7 @@
   color: white;
   border: none;
   padding: 12px 25px;
-  border-radius: var(--border-radius-sm);
+  border-radius: var(--border-radius-small);
   font-weight: 500;
   cursor: pointer;
   transition: background-color 0.3s;
@@ -393,7 +393,7 @@
   align-items: center;
   gap: 20px;
   margin-bottom: 20px;
-  border-radius: var(--border-radius-md);
+  border-radius: var(--border-radius-medium);
   transition: transform 0.3s, box-shadow 0.3s;
   padding: 30px;
   margin-top: 30px;
@@ -405,7 +405,7 @@
 
 .award-item:hover {
   transform: translateX(10px);
-  box-shadow: var(--shadow-md);
+  box-shadow: var(--shadow-medium);
 }
 
 .award-icon {

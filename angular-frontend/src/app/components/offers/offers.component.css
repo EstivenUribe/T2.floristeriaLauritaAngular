@@ -19,7 +19,7 @@
 }
 
 .page-description {
-  color: var(--gray);
+  color: whitesmoke;
   font-size: 1.1rem;
   max-width: 700px;
   margin: 0 auto;
@@ -30,7 +30,7 @@
   background-image: linear-gradient(rgba(0,0,0,0.4), rgba(0,0,0,0.4)), url('/assets/images/banners/offer-banner.jpg');
   background-size: cover;
   background-position: center;
-  border-radius: var(--border-radius-lg);
+  border-radius: var(--border-radius-large);
   overflow: hidden;
   height: 300px;
   display: flex;
@@ -42,7 +42,7 @@
 .offer-content {
   background-color: rgba(255, 255, 255, 0.9);
   padding: 30px;
-  border-radius: var(--border-radius-md);
+  border-radius: var(--border-radius-medium);
   max-width: 450px;
   margin-left: 50px;
 }
@@ -84,20 +84,21 @@
 
 .offer-card:hover {
   transform: translateY(-10px);
-  box-shadow: var(--shadow-md);
+  box-shadow: var(--shadow-medium);
 }
 
 .offer-tag {
   position: absolute;
   top: 15px;
   right: 15px;
-  background-color: var(--primary-pink);
-  color: white;
-  padding: 5px 10px;
-  border-radius: 5px;
-  font-weight: bold;
+  background: linear-gradient(135deg, #ff6b9d, #ffa0c9);
+  color: #2c2c2c;
+  padding: 8px 12px;
+  border-radius: 6px; /* Rectangular pero con esquinas ligeramente redondeadas */
+  font-weight: 600;
   font-size: 0.9rem;
   z-index: 1;
+  box-shadow: 0 2px 8px rgba(255, 107, 157, 0.25);
 }
 
 .offer-image {

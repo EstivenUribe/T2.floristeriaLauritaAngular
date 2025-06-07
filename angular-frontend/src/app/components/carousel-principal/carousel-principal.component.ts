@@ -1,5 +1,6 @@
 import { Component, OnInit, AfterViewInit, OnDestroy, ViewChild, ElementRef, Renderer2 } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import {RouterModule} from '@angular/router';
 
 interface SlideData {
   src: string;
@@ -9,7 +10,7 @@ interface SlideData {
 
 @Component({
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, RouterModule],
   selector: 'app-carousel-principal',
   templateUrl: './carousel-principal.component.html',
   styleUrls: ['./carousel-principal.component.css']
@@ -169,7 +170,7 @@ export class CarouselPrincipalComponent implements OnInit, AfterViewInit, OnDest
       const btnLink = this.renderer.createElement('a');
       this.renderer.addClass(btnLink, 'btn');
       this.renderer.addClass(btnLink, 'caption-btn'); // nueva clase para estilizar desde CSS
-      this.renderer.setAttribute(btnLink, 'href', '#');
+      this.renderer.setAttribute(btnLink, 'href', '/productos');
       this.renderer.setProperty(btnLink, 'textContent', 'Ver más');
 
       this.renderer.appendChild(caption, btnLink);

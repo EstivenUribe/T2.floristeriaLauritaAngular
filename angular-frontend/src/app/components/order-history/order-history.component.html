@@ -38,7 +38,7 @@
       <h3>No hay pedidos que mostrar</h3>
       <p *ngIf="selectedFilter !== 'all'">Intenta cambiar el filtro para ver más pedidos</p>
       <p *ngIf="selectedFilter === 'all'">Parece que aún no has realizado ninguna compra</p>
-      <a routerLink="/productos" class="btn-primary">Explorar Productos</a>
+      <a routerLink="/productos" class="btn-primary" style="cursor: pointer">Explorar Productos</a>
     </div>
 
     <div *ngIf="!isLoading && filteredOrders.length > 0" class="orders-list">
@@ -99,7 +99,7 @@
         <div class="info-group">
           <span class="info-label">Dirección de envío:</span>
           <address>
-            {{ selectedOrder.shippingAddress.street }}, {{ selectedOrder.shippingAddress.city }}, 
+            {{ selectedOrder.shippingAddress.street }}, {{ selectedOrder.shippingAddress.city }},
             {{ selectedOrder.shippingAddress.state }} {{ selectedOrder.shippingAddress.zipCode }}
           </address>
         </div>

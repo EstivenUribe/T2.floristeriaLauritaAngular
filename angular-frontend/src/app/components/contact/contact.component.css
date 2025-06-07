@@ -20,7 +20,7 @@
 }
 
 .page-description {
-  color: var(--gray);
+  color: whitesmoke;
   font-size: 1.1rem;
   max-width: 700px;
   margin: 0 auto;
@@ -95,12 +95,17 @@
   border-radius: 50%;
   background-color: var(--primary-pink-light);
   color: var(--primary-pink);
-  transition: all 0.3s;
+  text-decoration: none; /* Quita el subrayado */
+  transition: all 0.3s ease;
+  transform: scale(1); /* Base para la animación */
 }
 
 .contact-socials .social-links a:hover {
-  background-color: var(--primary-pink);
-  color: white;
+  background-color: hotpink;
+  color: black;
+  text-decoration: none; /* Asegura que no haya subrayado en hover */
+  transform: scale(1.1); /* Efecto de agrandamiento sutil */
+  box-shadow: 0 4px 12px rgba(255, 105, 180, 0.3); /* Sombra suave */
 }
 
 /* Formulario de contacto */
@@ -145,7 +150,7 @@
 .form-group input, .form-group textarea {
   padding: 12px 15px;
   border: 1px solid #ddd;
-  border-radius: var(--border-radius-sm);
+  border-radius: var(--border-radius-small);
   font-size: 1rem;
   transition: border-color 0.3s;
 }
@@ -168,8 +173,8 @@
 }
 
 .map-section iframe {
-  border-radius: var(--border-radius-md);
-  box-shadow: var(--shadow-md);
+  border-radius: var(--border-radius-medium);
+  box-shadow: var(--shadow-medium);
 }
 
 /* Responsive */
@@ -210,4 +215,23 @@
   .form-group input, .form-group textarea {
     padding: 10px;
   }
+}
+.error-message {
+  margin-top: 5px;
+}
+
+.error-message small {
+  color: #dc3545;
+  font-size: 0.875rem;
+}
+
+.form-group input.ng-invalid.ng-touched,
+.form-group textarea.ng-invalid.ng-touched {
+  border-color: #dc3545;
+}
+
+.contact-form button:disabled {
+  background-color: #6c757d;
+  cursor: not-allowed;
+  opacity: 0.6;
 }
