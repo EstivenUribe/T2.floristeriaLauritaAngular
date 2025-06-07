@@ -142,6 +142,7 @@ export class CartComponent implements OnInit {
     } else {
       this.shippingErrors.fullName = '';
     }
+    this.updateShippingFormValidation();
   }
 
   validateEmail(): void {
@@ -157,6 +158,7 @@ export class CartComponent implements OnInit {
     } else {
       this.shippingErrors.email = '';
     }
+    this.updateShippingFormValidation();
   }
 
   validatePhone(): void {
@@ -173,6 +175,7 @@ export class CartComponent implements OnInit {
     } else {
       this.shippingErrors.phone = '';
     }
+    this.updateShippingFormValidation();
   }
 
   validateAddress(): void {
@@ -189,6 +192,7 @@ export class CartComponent implements OnInit {
     } else {
       this.shippingErrors.address = '';
     }
+    this.updateShippingFormValidation();
   }
 
   validateCity(): void {
@@ -203,6 +207,7 @@ export class CartComponent implements OnInit {
     } else {
       this.shippingErrors.city = '';
     }
+    this.updateShippingFormValidation();
   }
 
   validateProvince(): void {
@@ -223,6 +228,7 @@ export class CartComponent implements OnInit {
     } else {
       this.shippingErrors.province = '';
     }
+    this.updateShippingFormValidation();
   }
 
   validatePostalCode(): void {
@@ -233,6 +239,12 @@ export class CartComponent implements OnInit {
     } else {
       this.shippingErrors.postalCode = '';
     }
+    this.updateShippingFormValidation();
+  }
+
+  // Nueva función para actualizar el estado de validación del formulario
+  updateShippingFormValidation(): void {
+    this.isShippingFormValid = !Object.values(this.shippingErrors).some(error => error !== '');
   }
 
   // VALIDACIONES DEL FORMULARIO DE PAGO
