@@ -64,7 +64,7 @@ export class LoginComponent implements OnInit {
   ngOnInit(): void {
     // Inicializar el estado del panel
     this.isRightPanelActive = false;
-    
+
     // Verificar si hay una ruta de redirección guardada
     const redirectPath = localStorage.getItem('redirectAfterLogin');
     if (redirectPath) {
@@ -223,7 +223,7 @@ export class LoginComponent implements OnInit {
         this.registerUsername = '';
         this.registerEmail = '';
         this.registerPassword = '';
-        
+
       },
       error: (err) => {
         this.isLoading = false;
@@ -246,5 +246,11 @@ export class LoginComponent implements OnInit {
    */
   showSignInPanel(): void {
     this.isRightPanelActive = false;
+  }
+  /**
+   * Limpia el mensaje de error
+   */
+  clearError(): void {
+    this.error = '';
   }
 }

@@ -7,18 +7,25 @@
     id="container"
     [ngClass]="{'right-panel-active': isRightPanelActive}"
   >
+    <!-- Mensaje de error global -->
+    <div *ngIf="error" class="error-message-overlay" (click)="clearError()">
+      <div class="error-message-global">
+        <span>{{ error }}</span>
+        <button type="button" class="close-error" (click)="clearError()">×</button>
+      </div>
+    </div>
     <!-- Panel de Registro -->
     <div class="form-container sign-up-container">
       <form (ngSubmit)="register()" class="register-form">
-        <h1>Crear Cuenta</h1>
+        <h1>Crea tu Cuenta</h1>
         <!-- Botón para regresar al inicio -->
         <div class="home-link">
           <a [routerLink]="['/']" class="back-home">
             <i class="fas fa-home"></i> Volver al Inicio
           </a>
         </div>
-        <!-- Botones de redes sociales -->
-        <div class="social-container">
+        <!-- Botones de redes sociales - COMO NO TIENEN FUNCIONALIDAD, QUEDAN OCULTOS-->
+        <!--<div class="social-container">
           <a href="#" class="social" (click)="$event.preventDefault()">
             <i class="fab fa-facebook-f"></i>
           </a>
@@ -28,8 +35,8 @@
           <a href="#" class="social" (click)="$event.preventDefault()">
             <i class="fab fa-linkedin-in"></i>
           </a>
-        </div>
-        <span>o usa tu correo para registrarte</span>
+        </div> -->
+        <span>¡Usa tu correo para registrarte!</span>
         <!-- Sección de información de cuenta -->
         <div class="form-section">
           <h3>Información de Cuenta</h3>
@@ -64,7 +71,7 @@
             </button>
           </div>
         </div>
-        
+
         <!-- Sección de información personal -->
         <div class="form-section">
           <h3>Información Personal</h3>
@@ -89,7 +96,7 @@
             name="registerPhone"
           />
         </div>
-        
+
         <!-- Sección de dirección -->
         <div class="form-section">
           <h3>Dirección</h3>
@@ -123,27 +130,27 @@
             />
           </div>
         </div>
-        
+
         <!-- Sección de avatar -->
         <div class="form-section avatar-section">
           <h3>Elige tu avatar</h3>
           <div class="avatar-options">
-            <div *ngFor="let i of [1, 2, 3, 4, 5, 6]" 
-                 class="avatar-option" 
+            <div *ngFor="let i of [1, 2, 3, 4, 5, 6]"
+                 class="avatar-option"
                  [class.selected]="registerAvatarId === i"
                  (click)="registerAvatarId = i">
               <img src="assets/avatars/avatar-{{i}}.svg" alt="Avatar {{i}}" class="avatar-img">
             </div>
           </div>
         </div>
-        
+
         <div class="terms-container">
           <label>
             <input type="checkbox" required>
             Acepto los <a [routerLink]="['/terminos']">Términos y Condiciones</a> y la <a [routerLink]="['/privacidad']">Política de Privacidad</a>
           </label>
         </div>
-        
+
         <button type="submit" [disabled]="isLoading">
           <span *ngIf="!isLoading">Registrarse</span>
           <span *ngIf="isLoading">Cargando...</span>
@@ -152,10 +159,6 @@
     </div>
     <!-- Panel de Inicio de Sesión -->
     <div class="form-container sign-in-container">
-      <!-- Mensaje de error si existe -->
-      <div *ngIf="error" class="error-message">
-        {{ error }}
-      </div>
       <!-- Formulario de Administrador -->
       <form *ngIf="isAdminLogin" (ngSubmit)="login()">
         <h1>Administrador</h1>
@@ -203,8 +206,8 @@
             <i class="fas fa-home"></i> Volver al Inicio
           </a>
         </div>
-        <!-- Botones de redes sociales -->
-        <div class="social-container">
+        <!-- Botones de redes sociales NO TIENEN FUNCIONALIDAD-->
+        <!--<div class="social-container">
           <a href="#" class="social" (click)="$event.preventDefault()">
             <i class="fab fa-facebook-f"></i>
           </a>
@@ -214,8 +217,8 @@
           <a href="#" class="social" (click)="$event.preventDefault()">
             <i class="fab fa-linkedin-in"></i>
           </a>
-        </div>
-        <span>o usa tu cuenta</span>
+        </div>-->
+        <span>¡Usa tu cuenta!</span>
         <!-- Campo de email -->
         <input
           type="email"
@@ -252,14 +255,14 @@
             />
             <label for="rememberMe">Recordarme</label>
           </div>
-          <a href="#" [routerLink]="['/']">¿Olvidaste tu contraseña?</a>
-          <a
+          <!--<a href="#" [routerLink]="['/']">¿Olvidaste tu contraseña?</a>-->
+          <!--<a
             href="#"
             (click)="toggleLoginType(); $event.preventDefault()"
           >
             <br>
             Acceder como administrador
-          </a>
+          </a>-->
         </div>
         <button type="submit" [disabled]="isLoading">
           <span *ngIf="!isLoading">Iniciar Sesión</span>
