@@ -443,20 +443,20 @@ export class CartComponent implements OnInit {
         return;
       }
       this.currentStep = 2;
-      // Validar automáticamente cuando se muestre el formulario de envío
       setTimeout(() => {
         this.validateAllShippingFields();
       }, 0);
     } else if (this.currentStep === 2) {
-      if (this.validateShippingForm()) {
+      if (!this.validateShippingForm()) {
         this.error = 'Por favor corrige los errores en el formulario';
         return;
       }
       this.cartService.saveShippingInfo(this.shippingForm);
-    }
-
-    if (this.currentStep < 4) {
-      this.currentStep++;
+      this.currentStep = 3;
+      this.error = '';
+    } else if (this.currentStep === 3) {
+      // Lógica para ir al paso 4 si es necesario
+      this.currentStep = 4;
       this.error = '';
     }
   }
