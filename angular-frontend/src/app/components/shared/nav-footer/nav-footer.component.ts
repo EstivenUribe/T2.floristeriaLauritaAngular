@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy, AfterViewInit, ChangeDetectorRef } from '@angular/core';
+import { Component, OnInit, OnDestroy, AfterViewInit, ChangeDetectorRef, HostListener } from '@angular/core';
 import { Router, RouterModule, NavigationEnd } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { CartService } from '../../../services/cart.service';
@@ -31,8 +31,21 @@ export class NavFooterComponent implements OnInit, OnDestroy, AfterViewInit {
     private router: Router,
     private cartService: CartService,
     private cdr: ChangeDetectorRef,
-    public authService: AuthService // Hacerlo público para acceso directo en plantilla si se prefiere
+    public authService: AuthService
   ) { }
+
+  // HostListener para cerrar el menú al hacer clic fuera de él
+  @HostListener('document:click', ['$event'])
+  onDocumentClick(event: Event): void {
+    const target = event.target as HTMLElement;
+    const userMenuContainer = document.querySelector('.user-menu-container');
+
+    // Si el clic fue fuera del contenedor del menú de usuario, cerrar el menú
+    if (userMenuContainer && !userMenuContainer.contains(target)) {
+      this.isUserMenuOpen = false;
+      this.cdr.detectChanges(); // Forzar detección de cambios
+    }
+  }
 
   ngOnInit(): void {
     this.cartSubscription = this.cartService.items.subscribe(items => {
@@ -42,7 +55,7 @@ export class NavFooterComponent implements OnInit, OnDestroy, AfterViewInit {
     // Subscribirse a cambios de ruta para asegurar que el menú se actualiza correctamente
     this.routerSubscription = this.router.events
       .pipe(filter(event => event instanceof NavigationEnd))
-      .subscribe((event: NavigationEnd) => { // Asegurarse que event es de tipo NavigationEnd
+      .subscribe((event: NavigationEnd) => {
         this.showLayout = !event.urlAfterRedirects.startsWith('/login');
         this.ensureNavConsistency();
         this.cdr.detectChanges();
@@ -55,9 +68,9 @@ export class NavFooterComponent implements OnInit, OnDestroy, AfterViewInit {
   ngAfterViewInit(): void {
     // Asegurarse que el nav se muestra correctamente después de renderizar la vista
     setTimeout(() => {
-      this.showLayout = !this.router.url.startsWith('/login'); // Estado inicial
+      this.showLayout = !this.router.url.startsWith('/login');
       this.ensureNavConsistency();
-      this.cdr.detectChanges(); // Para asegurar que el cambio en showLayout se refleje
+      this.cdr.detectChanges();
     }, 0);
   }
 
@@ -88,7 +101,7 @@ export class NavFooterComponent implements OnInit, OnDestroy, AfterViewInit {
   logout(): void {
     this.authService.logout();
     this.isUserMenuOpen = false;
-    this.router.navigate(['/']); // O a la página de login
+    this.router.navigate(['/']);
   }
 
   goToHomeE() {
@@ -115,11 +128,9 @@ export class NavFooterComponent implements OnInit, OnDestroy, AfterViewInit {
     const headerTop = document.querySelector('.header-top') as HTMLElement;
 
     if (mainMenu && headerTop) {
-      // Asegurar que el menú principal esté completamente visible
       mainMenu.style.visibility = 'visible';
       mainMenu.style.display = 'block';
 
-      // Ajustar alturas/margen si es necesario
       const computedStyle = window.getComputedStyle(mainMenu);
       if (computedStyle.paddingBottom === '0px') {
         mainMenu.style.paddingBottom = '15px';
@@ -130,8 +141,6 @@ export class NavFooterComponent implements OnInit, OnDestroy, AfterViewInit {
   // Menú lateral (sidebar)
   toggleSidebar(): void {
     this.showSidebar = !this.showSidebar;
-
-    // Bloquear scroll cuando el menú está abierto
     document.body.style.overflow = this.showSidebar ? 'hidden' : '';
   }
 
@@ -142,7 +151,6 @@ export class NavFooterComponent implements OnInit, OnDestroy, AfterViewInit {
     }
     this.router.navigate(['/login']);
 
-    // Cerrar el sidebar si está abierto
     if (this.showSidebar) {
       this.toggleSidebar();
     }

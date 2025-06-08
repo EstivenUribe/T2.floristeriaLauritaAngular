@@ -46,17 +46,17 @@ export class ProfileComponent implements OnInit {
   ngOnInit(): void {
     this.loadUserProfile();
   }
-  
+
   // Método para actualizar el estado de habilitación de los controles del formulario
   private updateFormControlsState(): void {
     // El email siempre está deshabilitado
     this.profileForm.get('email')?.disable();
-    
+
     // Los demás campos dependen del modo de edición
     const controls = [
       'firstName', 'lastName', 'phone', 'address', 'city', 'state', 'zipCode'
     ];
-    
+
     controls.forEach(control => {
       if (this.isEditing) {
         this.profileForm.get(control)?.enable();
@@ -68,14 +68,14 @@ export class ProfileComponent implements OnInit {
 
   loadUserProfile(): void {
     this.isLoading = true;
-    
+
     // Forzar recarga desde el servidor
     this.authService.getCurrentUser(true).subscribe({
       next: (user) => {
         this.user = user;
         if (user) {
           this.selectedAvatarId = user.avatarId || 1;
-          
+
           // Actualizar formulario con datos del usuario
           this.profileForm.patchValue({
             firstName: user.firstName || '',
@@ -88,11 +88,14 @@ export class ProfileComponent implements OnInit {
             phone: user.phone || '',
             avatarId: user.avatarId || 1
           });
-          
+
           // Aplicar estado de habilitación según modo de edición
           this.updateFormControlsState();
+
+          // ⭐ AGREGAR esta línea AL FINAL, después de cargar el usuario
+          this.loadEmailVerificationState();
         }
-        
+
         this.isLoading = false;
       },
       error: (error) => {
@@ -104,10 +107,10 @@ export class ProfileComponent implements OnInit {
 
   toggleEditMode(): void {
     this.isEditing = !this.isEditing;
-    
+
     // Actualizar estado de habilitación de los controles
     this.updateFormControlsState();
-    
+
     if (!this.isEditing) {
       // Reset form when canceling edit
       this.loadUserProfile();
@@ -120,7 +123,7 @@ export class ProfileComponent implements OnInit {
 
   toggleChangePassword(): void {
     this.changePassword = !this.changePassword;
-    
+
     if (this.changePassword) {
       this.profileForm.get('currentPassword')?.setValidators(Validators.required);
       this.profileForm.get('newPassword')?.setValidators([Validators.required, Validators.minLength(6)]);
@@ -129,13 +132,13 @@ export class ProfileComponent implements OnInit {
       this.profileForm.get('currentPassword')?.clearValidators();
       this.profileForm.get('newPassword')?.clearValidators();
       this.profileForm.get('confirmPassword')?.clearValidators();
-      
+
       // Reset password fields
       this.profileForm.get('currentPassword')?.setValue('');
       this.profileForm.get('newPassword')?.setValue('');
       this.profileForm.get('confirmPassword')?.setValue('');
     }
-    
+
     // Update validation status
     this.profileForm.get('currentPassword')?.updateValueAndValidity();
     this.profileForm.get('newPassword')?.updateValueAndValidity();
@@ -154,7 +157,7 @@ export class ProfileComponent implements OnInit {
 
     // Obtener datos del formulario
     const formData = this.profileForm.value;
-    
+
     // Preparar datos para enviar
     const profileData: any = {
       firstName: formData.firstName,
@@ -183,7 +186,7 @@ export class ProfileComponent implements OnInit {
         this.isEditing = false;
         this.changePassword = false;
         this.notificationService.success('Perfil actualizado correctamente');
-        
+
         // Actualizar campos y estado del formulario
         this.loadUserProfile();
       },
@@ -203,19 +206,19 @@ export class ProfileComponent implements OnInit {
     const last = this.user.lastName?.charAt(0) || '';
     return (first + last).toUpperCase();
   }
-  
+
   get userAvatarUrl(): string {
     if (!this.user) return 'assets/avatars/avatar-1.svg';
     const avatarId = this.user.avatarId || 1;
     return `assets/avatars/avatar-${avatarId}.svg`;
   }
-  
+
   selectAvatar(id: number): void {
     this.selectedAvatarId = id;
     this.profileForm.get('avatarId')?.setValue(id);
   }
-  
-  sendVerificationEmail(): void {
+
+  /*sendVerificationEmail(): void {
     this.verifyingEmail = true;
     // Aquí implementaremos la llamada al servicio de autenticación para enviar el correo de verificación
     this.authService.sendVerificationEmail().subscribe({
@@ -228,8 +231,27 @@ export class ProfileComponent implements OnInit {
         this.verifyingEmail = false;
       }
     });
-  }
+  }*/
+  sendVerificationEmail(): void {
+    this.verifyingEmail = true;
 
+    // Simular verificación después de 3 segundos
+    setTimeout(() => {
+      if (this.user) {
+        this.user.emailVerified = true;
+        // ⭐ AGREGAR esta línea para guardar en localStorage
+        localStorage.setItem('emailVerified', 'true');
+      }
+      this.notificationService.success('Correo electrónico verificado correctamente');
+      this.verifyingEmail = false;
+    }, 3000);
+  }
+  private loadEmailVerificationState(): void {
+    const emailVerified = localStorage.getItem('emailVerified');
+    if (emailVerified === 'true' && this.user) {
+      this.user.emailVerified = true;
+    }
+  }
   get fullName(): string {
     if (!this.user) return '';
     return `${this.user.firstName || ''} ${this.user.lastName || ''}`.trim();

@@ -170,7 +170,7 @@ export class CarouselPrincipalComponent implements OnInit, AfterViewInit, OnDest
       const btnLink = this.renderer.createElement('a');
       this.renderer.addClass(btnLink, 'btn');
       this.renderer.addClass(btnLink, 'caption-btn'); // nueva clase para estilizar desde CSS
-      this.renderer.setAttribute(btnLink, 'href', '/productos');
+      this.renderer.setAttribute(btnLink, 'href', '/ofertas');
       this.renderer.setProperty(btnLink, 'textContent', 'Ver más');
 
       this.renderer.appendChild(caption, btnLink);

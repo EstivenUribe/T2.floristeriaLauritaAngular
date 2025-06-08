@@ -438,24 +438,33 @@ export class CartComponent implements OnInit {
   }
 
   nextStep() {
-    if (this.currentStep === 2) {
-      if (!this.validateShippingForm()) {
-        this.error = 'Por favor corrige los errores en el formulario';
+    if (this.currentStep === 1) {
+      if (this.cartItems.length === 0) {
+        this.error = 'Tu carrito está vacío';
         return;
       }
-      this.cartService.saveShippingInfo(this.shippingForm);
-    }
-
-    if (this.currentStep < 4) {
-      this.currentStep++;
-      this.error = '';
+      this.currentStep = 2;
+      // Validar automáticamente cuando se muestre el formulario de envío
+      setTimeout(() => {
+        this.validateAllShippingFields();
+      }, 0);
+    } else if (this.currentStep === 2) {
+      if (this.validateShippingForm()) {
+        // Aquí mantén lo que ya tenías antes
+        this.currentStep = 3;
+      }
     }
   }
 
   prevStep() {
     if (this.currentStep > 1) {
       this.currentStep--;
-      this.error = '';
+      // Si volvemos al paso de envío, validar automáticamente
+      if (this.currentStep === 2) {
+        setTimeout(() => {
+          this.validateAllShippingFields();
+        }, 0);
+      }
     }
   }
 
@@ -508,5 +517,15 @@ export class CartComponent implements OnInit {
 
   formatPrice(price: number): string {
     return new Intl.NumberFormat('es-CO', { style: 'currency', currency: 'COP' }).format(price);
+  }
+  // Validar todos los campos del formulario de envío automáticamente
+  validateAllShippingFields(): void {
+    if (this.shippingForm.fullName) this.validateFullName();
+    if (this.shippingForm.email) this.validateEmail();
+    if (this.shippingForm.phone) this.validatePhone();
+    if (this.shippingForm.address) this.validateAddress();
+    if (this.shippingForm.city) this.validateCity();
+    if (this.shippingForm.province) this.validateProvince();
+    if (this.shippingForm.postalCode) this.validatePostalCode();
   }
 }

@@ -48,7 +48,7 @@ export class AdminComponent implements OnInit {
 
   // State variables
   activeTab: 'productos' | 'equipo' | 'banners' | 'politicas' | 'comentarios' | 'configuracion' = 'productos';
-  
+
   // Productos
   products: Product[] = [];
   productForm: FormGroup;
@@ -61,7 +61,7 @@ export class AdminComponent implements OnInit {
   selectedFile: File | null = null;
   imagePreview: string | null = null;
   uploadingImage = false;
-  
+
   // Equipo
   teamMembers: TeamMember[] = [];
   teamMemberForm: FormGroup;
@@ -72,7 +72,7 @@ export class AdminComponent implements OnInit {
   teamMemberSelectedFile: File | null = null;
   teamMemberImagePreview: string | null = null;
   uploadingTeamMemberImage = false;
-  
+
   // Banners
   banners: Banner[] = [];
   filteredBanners: Banner[] = [];
@@ -85,7 +85,7 @@ export class AdminComponent implements OnInit {
   bannerImagePreview: string | null = null;
   uploadingBannerImage = false;
   bannerFilter: string = 'all';
-  
+
   // Configuración
   companyInfoForm: FormGroup;
   loadingCompanyInfo = false;
@@ -118,7 +118,7 @@ export class AdminComponent implements OnInit {
       precio: [0, [Validators.required, Validators.min(0)]],
       rebaja: [false]
     });
-    
+
     // Initialize team member form
     this.teamMemberForm = this.formBuilder.group({
       nombre: ['', Validators.required],
@@ -134,7 +134,7 @@ export class AdminComponent implements OnInit {
         linkedin: ['']
       })
     });
-    
+
     // Initialize banner form
     this.bannerForm = this.formBuilder.group({
       titulo: ['', [Validators.required, Validators.maxLength(100)]],
@@ -155,7 +155,7 @@ export class AdminComponent implements OnInit {
         overlay: ['rgba(0,0,0,0.3)']
       })
     });
-    
+
     // Initialize company info form
     this.companyInfoForm = this.formBuilder.group({
       _id: [''],
@@ -171,20 +171,20 @@ export class AdminComponent implements OnInit {
   ngOnInit(): void {
     // Load initial data for the active tab
     this.loadProducts();
-    
+
     // Subscribe to loading states for UI feedback
     this.productService.isLoading.subscribe(isLoading => {
       this.loading = isLoading;
     });
-    
+
     this.teamService.isLoading.subscribe(isLoading => {
       this.loadingTeamMembers = isLoading;
     });
-    
+
     this.bannerService.isLoading.subscribe(isLoading => {
       this.loadingBanners = isLoading;
     });
-    
+
     this.companyInfoService.isLoading.subscribe(isLoading => {
       this.loadingCompanyInfo = isLoading;
     });
@@ -198,7 +198,7 @@ export class AdminComponent implements OnInit {
   setActiveTab(tab: 'productos' | 'equipo' | 'banners' | 'politicas' | 'comentarios' | 'configuracion'): void {
     this.activeTab = tab;
     this.resetMessages();
-    
+
     // Load data for the selected tab if not loaded yet
     switch(tab) {
       case 'productos':
@@ -232,7 +232,7 @@ export class AdminComponent implements OnInit {
         break;
     }
   }
-  
+
   resetMessages(): void {
     this.success = '';
     this.error = '';
@@ -249,7 +249,7 @@ export class AdminComponent implements OnInit {
         sortDirection: 'desc'
       }
     };
-    
+
     this.productService.getProducts(params)
       .subscribe({
         next: (response) => {
@@ -314,7 +314,7 @@ export class AdminComponent implements OnInit {
       precio: product.precio,
       rebaja: product.rebaja
     });
-    
+
     // Set image preview if available
     if (product.imagen) {
       this.imagePreview = product.imagen;
@@ -351,13 +351,13 @@ export class AdminComponent implements OnInit {
       rebaja: false
     });
   }
-  
+
   // Product file handling
   onFileSelected(event: Event): void {
     const inputElement = event.target as HTMLInputElement;
     if (inputElement.files && inputElement.files.length > 0) {
       this.selectedFile = inputElement.files[0];
-      
+
       // Create preview of the image
       const reader = new FileReader();
       reader.onload = () => {
@@ -366,15 +366,15 @@ export class AdminComponent implements OnInit {
       reader.readAsDataURL(this.selectedFile);
     }
   }
-  
+
   uploadImage(): void {
     if (!this.selectedFile) {
       return;
     }
-    
+
     this.uploadingImage = true;
     this.resetMessages();
-    
+
     this.uploadService.uploadImage(this.selectedFile)
       .subscribe({
         next: (response) => {
@@ -392,7 +392,7 @@ export class AdminComponent implements OnInit {
         }
       });
   }
-  
+
   // TEAM MEMBERS
   loadTeamMembers(): void {
     this.teamService.getTeamMembers(false) // Get all team members including inactive
@@ -406,18 +406,18 @@ export class AdminComponent implements OnInit {
         }
       });
   }
-  
+
   onSubmitTeamMember(): void {
     this.submittedTeamMember = true;
     this.resetMessages();
-    
+
     // Validate form
     if (this.teamMemberForm.invalid) {
       return;
     }
-    
+
     const teamMember: TeamMember = this.teamMemberForm.value;
-    
+
     if (this.isEditingTeamMember) {
       // Update existing team member
       this.teamService.updateTeamMember(this.currentTeamMemberId, teamMember)
@@ -448,11 +448,11 @@ export class AdminComponent implements OnInit {
         });
     }
   }
-  
+
   editTeamMember(teamMember: TeamMember): void {
     this.isEditingTeamMember = true;
     this.currentTeamMemberId = teamMember._id as string;
-    
+
     // Update form with team member data
     this.teamMemberForm.patchValue({
       nombre: teamMember.nombre,
@@ -468,13 +468,13 @@ export class AdminComponent implements OnInit {
         linkedin: ''
       }
     });
-    
+
     // Set image preview if available
     if (teamMember.foto) {
       this.teamMemberImagePreview = teamMember.foto;
     }
   }
-  
+
   deleteTeamMember(id: string): void {
     if (confirm('¿Estás seguro de que quieres eliminar este miembro del equipo?')) {
       this.teamService.deleteTeamMember(id)
@@ -490,7 +490,7 @@ export class AdminComponent implements OnInit {
         });
     }
   }
-  
+
   toggleTeamMemberStatus(id: string): void {
     this.teamService.toggleMemberStatus(id)
       .subscribe({
@@ -504,7 +504,7 @@ export class AdminComponent implements OnInit {
         }
       });
   }
-  
+
   resetTeamMemberForm(): void {
     this.submittedTeamMember = false;
     this.isEditingTeamMember = false;
@@ -526,13 +526,13 @@ export class AdminComponent implements OnInit {
       }
     });
   }
-  
+
   // Team member file handling
   onTeamMemberFileSelected(event: Event): void {
     const inputElement = event.target as HTMLInputElement;
     if (inputElement.files && inputElement.files.length > 0) {
       this.teamMemberSelectedFile = inputElement.files[0];
-      
+
       // Create preview of the image
       const reader = new FileReader();
       reader.onload = () => {
@@ -541,15 +541,15 @@ export class AdminComponent implements OnInit {
       reader.readAsDataURL(this.teamMemberSelectedFile);
     }
   }
-  
+
   uploadTeamMemberImage(): void {
     if (!this.teamMemberSelectedFile) {
       return;
     }
-    
+
     this.uploadingTeamMemberImage = true;
     this.resetMessages();
-    
+
     this.uploadService.uploadImage(this.teamMemberSelectedFile, 'team')
       .subscribe({
         next: (response) => {
@@ -567,7 +567,7 @@ export class AdminComponent implements OnInit {
         }
       });
   }
-  
+
   // BANNERS
   loadBanners(): void {
     this.bannerService.getAllBanners()
@@ -582,7 +582,7 @@ export class AdminComponent implements OnInit {
         }
       });
   }
-  
+
   filterBanners(): void {
     if (this.bannerFilter === 'all') {
       this.filteredBanners = [...this.banners];
@@ -592,18 +592,18 @@ export class AdminComponent implements OnInit {
       );
     }
   }
-  
+
   onSubmitBanner(): void {
     this.submittedBanner = true;
     this.resetMessages();
-    
+
     // Validate form
     if (this.bannerForm.invalid) {
       return;
     }
-    
+
     const banner: Banner = this.bannerForm.value;
-    
+
     if (this.isEditingBanner) {
       // Update existing banner
       this.bannerService.updateBanner(this.currentBannerId, banner)
@@ -634,19 +634,19 @@ export class AdminComponent implements OnInit {
         });
     }
   }
-  
+
   editBanner(banner: Banner): void {
     this.isEditingBanner = true;
     this.currentBannerId = banner._id as string;
-    
+
     // Convert date strings to Date objects
     const fechaInicio = banner.fechaInicio ? new Date(banner.fechaInicio) : new Date();
     const fechaFin = banner.fechaFin ? new Date(banner.fechaFin) : null;
-    
+
     // Format dates for input[type=date]
     const formattedFechaInicio = fechaInicio.toISOString().split('T')[0];
     const formattedFechaFin = fechaFin ? fechaFin.toISOString().split('T')[0] : null;
-    
+
     // Update form with banner data
     this.bannerForm.patchValue({
       titulo: banner.titulo,
@@ -667,13 +667,13 @@ export class AdminComponent implements OnInit {
         overlay: 'rgba(0,0,0,0.3)'
       }
     });
-    
+
     // Set image preview if available
     if (banner.imagen) {
       this.bannerImagePreview = banner.imagen;
     }
   }
-  
+
   deleteBanner(id: string): void {
     if (confirm('¿Estás seguro de que quieres eliminar este banner?')) {
       this.bannerService.deleteBanner(id)
@@ -689,7 +689,7 @@ export class AdminComponent implements OnInit {
         });
     }
   }
-  
+
   toggleBannerStatus(id: string): void {
     this.bannerService.toggleBannerStatus(id)
       .subscribe({
@@ -703,14 +703,14 @@ export class AdminComponent implements OnInit {
         }
       });
   }
-  
+
   resetBannerForm(): void {
     this.submittedBanner = false;
     this.isEditingBanner = false;
     this.currentBannerId = '';
     this.bannerSelectedFile = null;
     this.bannerImagePreview = null;
-    
+
     // Initialize with default values
     this.bannerForm.reset({
       titulo: '',
@@ -732,13 +732,13 @@ export class AdminComponent implements OnInit {
       }
     });
   }
-  
+
   // Banner file handling
   onBannerFileSelected(event: Event): void {
     const inputElement = event.target as HTMLInputElement;
     if (inputElement.files && inputElement.files.length > 0) {
       this.bannerSelectedFile = inputElement.files[0];
-      
+
       // Create preview of the image
       const reader = new FileReader();
       reader.onload = () => {
@@ -747,15 +747,15 @@ export class AdminComponent implements OnInit {
       reader.readAsDataURL(this.bannerSelectedFile);
     }
   }
-  
+
   uploadBannerImage(): void {
     if (!this.bannerSelectedFile) {
       return;
     }
-    
+
     this.uploadingBannerImage = true;
     this.resetMessages();
-    
+
     this.uploadService.uploadImage(this.bannerSelectedFile, 'banners')
       .subscribe({
         next: (response) => {
@@ -773,7 +773,7 @@ export class AdminComponent implements OnInit {
         }
       });
   }
-  
+
   // Helper to get section name
   getBannerSectionName(section: BannerSection): string {
     const sectionNames: Record<BannerSection, string> = {
@@ -784,7 +784,7 @@ export class AdminComponent implements OnInit {
       'nosotros': 'Nosotros',
       'contacto': 'Contacto'
     };
-    
+
     return sectionNames[section] || section;
   }
 
@@ -839,13 +839,13 @@ export class AdminComponent implements OnInit {
     if (index !== -1) {
       this.reviews[index].approved = !originalApprovedState;
     }
-    
+
     this.resetMessages();
 
     this.reviewService.updateReview(reviewToUpdate._id, newReviewData).subscribe({
       next: (updatedReview) => {
         if (index !== -1) {
-          this.reviews[index] = { ...this.reviews[index], ...updatedReview }; 
+          this.reviews[index] = { ...this.reviews[index], ...updatedReview };
         }
         this.success = `Comentario ${updatedReview.approved ? 'aprobado' : 'desaprobado'} correctamente.`;
       },
@@ -950,7 +950,7 @@ export class AdminComponent implements OnInit {
             data.valores.forEach(valor => this.valoresFormArray.push(this.createValorGroup(valor)));
           } else {
             // Opcional: añadir un valor por defecto si está vacío y se requiere al menos uno
-             this.addValor(); 
+             this.addValor();
           }
 
           // La lógica para 'integrantes' ha sido removida ya que se gestiona en la pestaña Equipo.
@@ -967,14 +967,14 @@ export class AdminComponent implements OnInit {
         }
       });
   }
-  
+
   onSubmitCompanyInfo(): void {
     this.submittedCompanyInfo = true;
     this.resetMessages();
-    
+
     // Create the company info object from form
     const companyInfo: CompanyInfo = this.companyInfoForm.value;
-    
+
     this.companyInfoService.updateCompanyInfo(companyInfo)
       .subscribe({
         next: () => {
@@ -987,7 +987,7 @@ export class AdminComponent implements OnInit {
         }
       });
   }
-  
+
   resetCompanyInfoForm(): void {
     this.submittedCompanyInfo = false;
     this.historiaImagePreview = null;
@@ -1011,7 +1011,7 @@ export class AdminComponent implements OnInit {
       } else {
         this.addValor(); // Añadir uno vacío por defecto si no hay
       }
-      
+
       const integrantesControl = this.companyInfoForm.get('integrantes') as FormArray;
       integrantesControl.clear();
       if (this.companyInfo.integrantes && this.companyInfo.integrantes.length > 0) {

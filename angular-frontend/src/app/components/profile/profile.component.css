@@ -339,7 +339,7 @@
   .form-row {
     grid-template-columns: 1fr;
   }
-  
+
   .button-group {
     justify-content: center;
   }

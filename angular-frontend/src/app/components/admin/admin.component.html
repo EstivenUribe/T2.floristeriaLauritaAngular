@@ -20,28 +20,28 @@
     <button class="tab-button" [class.active]="activeTab === 'comentarios'" (click)="setActiveTab('comentarios')">
       Comentarios
     </button>
-    <button class="tab-button" [class.active]="activeTab === 'configuracion'" (click)="setActiveTab('configuracion')">
+    <!--<button class="tab-button" [class.active]="activeTab === 'configuracion'" (click)="setActiveTab('configuracion')">
       Configuración
-    </button>
+    </button>-->
   </div>
 
   <!-- Pestaña de Productos -->
   <main *ngIf="activeTab === 'productos'">
     <section id="formulario-producto">
       <h2>{{ isEditing ? 'Editar' : 'Agregar' }} Producto</h2>
-      
+
       <div *ngIf="success" class="alert alert-success">
         {{ success }}
       </div>
-      
+
       <div *ngIf="error" class="alert alert-danger">
         {{ error }}
       </div>
-      
+
       <form [formGroup]="productForm" (ngSubmit)="onSubmit()">
         <div class="form-group">
           <label for="nombre">Nombre:</label>
-          <input type="text" id="nombre" formControlName="nombre" class="form-control" 
+          <input type="text" id="nombre" formControlName="nombre" class="form-control"
                 [ngClass]="{ 'is-invalid': submitted && productForm.controls['nombre'].errors }">
           <div *ngIf="submitted && productForm.controls['nombre'].errors" class="invalid-feedback">
             <div *ngIf="productForm.controls['nombre'].errors['required']">El nombre es obligatorio</div>
@@ -102,15 +102,15 @@
 
     <section id="lista-productos">
       <h2>Lista de Productos</h2>
-      
+
       <div *ngIf="loading" class="loading">
         <p>Cargando productos...</p>
       </div>
-      
+
       <div *ngIf="!loading && products.length === 0" class="no-products">
         <p>No hay productos registrados.</p>
       </div>
-      
+
       <div id="productos-admin-list">
         <div *ngFor="let producto of products" class="producto-admin-item">
           <h3>{{ producto.nombre }}</h3>
@@ -129,15 +129,15 @@
   <main *ngIf="activeTab === 'equipo'" class="admin-equipo">
     <section id="formulario-equipo">
       <h2>{{ isEditingTeamMember ? 'Editar' : 'Agregar' }} Miembro del Equipo</h2>
-      
+
       <div *ngIf="success" class="alert alert-success">
         {{ success }}
       </div>
-      
+
       <div *ngIf="error" class="alert alert-danger">
         {{ error }}
       </div>
-      
+
       <form [formGroup]="teamMemberForm" (ngSubmit)="onSubmitTeamMember()">
         <div class="form-group">
           <label for="nombre_miembro">Nombre:</label>
@@ -147,7 +147,7 @@
             <div *ngIf="teamMemberForm.controls['nombre'].errors['required']">El nombre es obligatorio</div>
           </div>
         </div>
-        
+
         <div class="form-group">
           <label for="apellido">Apellido:</label>
           <input type="text" id="apellido" formControlName="apellido" class="form-control"
@@ -156,7 +156,7 @@
             <div *ngIf="teamMemberForm.controls['apellido'].errors['required']">El apellido es obligatorio</div>
           </div>
         </div>
-        
+
         <div class="form-group">
           <label for="cargo">Cargo:</label>
           <input type="text" id="cargo" formControlName="cargo" class="form-control"
@@ -165,7 +165,7 @@
             <div *ngIf="teamMemberForm.controls['cargo'].errors['required']">El cargo es obligatorio</div>
           </div>
         </div>
-        
+
         <div class="form-group">
           <label for="biografia">Biografía:</label>
           <textarea id="biografia" formControlName="biografia" class="form-control"
@@ -176,7 +176,7 @@
             <div *ngIf="teamMemberForm.controls['biografia'].errors['maxlength']">La biografía no debe exceder los 500 caracteres</div>
           </div>
         </div>
-        
+
         <div class="form-group">
           <label>Foto del Miembro:</label>
           <div class="upload-container">
@@ -186,8 +186,8 @@
             <div class="upload-controls">
               <input type="file" id="teamMemberFileInput" accept="image/*" (change)="onTeamMemberFileSelected($event)" class="file-input">
               <label for="teamMemberFileInput" class="file-input-label">Seleccionar Foto</label>
-              <button type="button" class="upload-btn" 
-                      [disabled]="!teamMemberSelectedFile || uploadingTeamMemberImage" 
+              <button type="button" class="upload-btn"
+                      [disabled]="!teamMemberSelectedFile || uploadingTeamMemberImage"
                       (click)="uploadTeamMemberImage()">
                 {{ uploadingTeamMemberImage ? 'Subiendo...' : 'Subir Foto' }}
               </button>
@@ -199,7 +199,7 @@
             <small class="form-text text-muted">Esta ruta se establece automáticamente al subir una foto</small>
           </div>
         </div>
-        
+
         <div class="form-group">
           <label>Redes Sociales:</label>
           <div formGroupName="redesSociales" class="social-links">
@@ -230,7 +230,7 @@
               </div>
               <button type="button" class="btn btn-success btn-sm mt-2" (click)="addValor()">Añadir Valor</button>
               <hr>
-              
+
               <!-- La sección de Integrantes se mantiene como estaba, solo se muestra información si es necesario -->
               <div class="form-group">
                 <label>Integrantes (Información General)</label>
@@ -247,15 +247,15 @@
             </div>
           </div>
         </div>
-        
+
         <div class="form-check">
           <input type="checkbox" id="activo" formControlName="activo" class="form-check-input">
           <label for="activo" class="form-check-label">Miembro Activo</label>
         </div>
-        
+
         <div class="form-buttons">
           <button type="submit" class="btn btn-primary" [disabled]="loadingTeamMembers">
-            {{ isEditingTeamMember ? 'Actualizar' : 'Guardar' }} Miembro
+             {{ isEditingTeamMember ? 'Actualizar' : 'Guardar' }}
           </button>
           <button type="button" class="btn btn-secondary" (click)="resetTeamMemberForm()" [disabled]="loadingTeamMembers">
             Limpiar Formulario
@@ -263,18 +263,18 @@
         </div>
       </form>
     </section>
-    
+
     <section id="lista-equipo">
       <h2>Miembros del Equipo</h2>
-      
+
       <div *ngIf="loadingTeamMembers" class="loading">
         <p>Cargando miembros del equipo...</p>
       </div>
-      
+
       <div *ngIf="!loadingTeamMembers && teamMembers.length === 0" class="no-items">
         <p>No hay miembros del equipo registrados.</p>
       </div>
-      
+
       <div id="equipo-admin-list">
         <div *ngFor="let miembro of teamMembers" class="miembro-admin-item" [class.inactive]="!miembro.activo">
           <div class="member-status" *ngIf="!miembro.activo">Inactivo</div>
@@ -302,11 +302,11 @@
       <div *ngIf="success" class="alert alert-success">
         {{ success }}
       </div>
-      
+
       <div *ngIf="error" class="alert alert-danger">
         {{ error }}
       </div>
-      
+
       <form [formGroup]="companyInfoForm" (ngSubmit)="onSubmitCompanyInfo()">
         <!-- Sección Nuestra Historia -->
         <h4>Nuestra Historia</h4>
@@ -338,7 +338,7 @@
           <label for="mision">Misión:</label>
           <textarea id="mision" formControlName="mision" class="form-control" rows="4"></textarea>
         </div>
-        
+
         <div class="form-group">
           <label for="vision">Visión:</label>
           <textarea id="vision" formControlName="vision" class="form-control" rows="4"></textarea>
@@ -370,7 +370,7 @@
           <i class="fas fa-plus"></i> Añadir Valor
         </button>
 
-        
+
         <div class="form-buttons">
           <button type="submit" class="btn btn-primary" [disabled]="loadingCompanyInfo">
             Guardar Información
@@ -422,8 +422,8 @@
                 <span *ngIf="!review.approved" class="badge bg-warning text-dark">Pendiente</span>
               </td>
               <td> <!-- Celda para Acciones MODIFICADA -->
-                <button (click)="toggleApproval(review)" 
-                        class="btn btn-sm me-1"  
+                <button (click)="toggleApproval(review)"
+                        class="btn btn-sm me-1"
                         [ngClass]="review.approved ? 'btn-outline-warning' : 'btn-outline-success'">
                   <i class="fas" [ngClass]="review.approved ? 'fa-times-circle' : 'fa-check-circle'"></i>
                   {{ review.approved ? 'Desaprobar' : 'Aprobar' }}
