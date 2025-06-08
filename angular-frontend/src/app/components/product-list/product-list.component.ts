@@ -158,15 +158,26 @@ export class ProductListComponent implements OnInit, OnDestroy {
   // Limpiar filtros
   clearFilters(): void {
     this.filter = {
+      search: '',
+      categoria: '',
+      minPrice: undefined,
+      maxPrice: undefined,
+      destacado: undefined,
+      rebaja: undefined,
       sortBy: 'fechaCreacion',
       sortDirection: 'desc',
       disponible: true
     };
     
-    this.updateQueryParams({
-      page: 1,
-      limit: this.pageSize,
-      ...this.convertFilterToParams()
+    // Reiniciar todos los parámetros de URL
+    this.router.navigate(['/productos'], {
+      queryParams: {
+        page: 1,
+        limit: this.pageSize,
+        sortBy: 'fechaCreacion',
+        sortDirection: 'desc',
+        disponible: true
+      }
     });
   }
   
@@ -175,7 +186,13 @@ export class ProductListComponent implements OnInit, OnDestroy {
     const params: Record<string, string> = {};
     
     if (this.filter.search) params['search'] = this.filter.search;
-    if (this.filter.categoria) params['categoria'] = this.filter.categoria;
+    
+    // Si la categoría es 'todas', no incluimos el parámetro para mostrar todos los productos
+    // en lugar de filtrar por 'todas'
+    if (this.filter.categoria && this.filter.categoria !== 'todas') {
+      params['categoria'] = this.filter.categoria;
+    }
+    
     if (this.filter.minPrice !== undefined) params['minPrice'] = this.filter.minPrice.toString();
     if (this.filter.maxPrice !== undefined) params['maxPrice'] = this.filter.maxPrice.toString();
     if (this.filter.destacado !== undefined) params['destacado'] = this.filter.destacado.toString();

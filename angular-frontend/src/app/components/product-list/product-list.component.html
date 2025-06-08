@@ -135,10 +135,10 @@
             <h3>{{ producto.nombre }}</h3>
             <p *ngIf="producto.descripcion">{{ producto.descripcion | slice:0:80 }}{{ producto.descripcion.length > 80 ? '...' : '' }}</p>
             <div class="price-container">
-              <p class="precio" *ngIf="!producto.rebaja || !producto.descuento">${{ producto.precio.toFixed(2) }}</p>
+              <p class="precio" *ngIf="!producto.rebaja || !producto.descuento">{{ producto.precio | number:'1.0-0' }} COP</p>
               <div *ngIf="producto.rebaja && producto.descuento" class="discount-price">
-                <p class="precio-final">${{ getPrecioFinal(producto).toFixed(2) }}</p>
-                <p class="precio-original">${{ producto.precio.toFixed(2) }}</p>
+                <p class="precio-final">{{ getPrecioFinal(producto) | number:'1.0-0' }} COP</p>
+                <p class="precio-original">{{ producto.precio | number:'1.0-0' }} COP</p>
                 <span class="descuento-porcentaje">-{{ producto.descuento }}%</span>
               </div>
             </div>
@@ -222,11 +222,11 @@
 
           <div class="product-price">
             <div *ngIf="!selectedProduct.rebaja || !selectedProduct.descuento">
-              <span class="price">${{ selectedProduct.precio.toFixed(2) }}</span>
+              <span class="price">{{ selectedProduct.precio | number:'1.0-0' }} COP</span>
             </div>
             <div *ngIf="selectedProduct.rebaja && selectedProduct.descuento" class="discount-price-container">
-              <span class="price">${{ getPrecioFinal(selectedProduct).toFixed(2) }}</span>
-              <span class="original-price">${{ selectedProduct.precio.toFixed(2) }}</span>
+              <span class="price">{{ getPrecioFinal(selectedProduct) | number:'1.0-0' }} COP</span>
+              <span class="original-price">{{ selectedProduct.precio | number:'1.0-0' }} COP</span>
               <span class="discount-badge">-{{ selectedProduct.descuento }}%</span>
             </div>
           </div>

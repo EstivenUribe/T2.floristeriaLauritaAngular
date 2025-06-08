@@ -19,7 +19,13 @@ import { finalize, tap } from 'rxjs/operators';
 @Component({
   selector: 'app-admin',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, FormsModule, RouterModule, HttpClientModule],
+  imports: [
+    CommonModule,
+    ReactiveFormsModule,
+    FormsModule,
+    RouterModule,
+    HttpClientModule
+  ],
   templateUrl: './admin.component.html',
   styleUrls: ['./admin.component.css']
 })
@@ -116,6 +122,7 @@ export class AdminComponent implements OnInit {
       descripcion: [''],
       imagen: [''],
       precio: [0, [Validators.required, Validators.min(0)]],
+      categoria: ['', Validators.required],
       rebaja: [false]
     });
 
@@ -312,6 +319,7 @@ export class AdminComponent implements OnInit {
       descripcion: product.descripcion,
       imagen: product.imagen,
       precio: product.precio,
+      categoria: product.categoria || '',
       rebaja: product.rebaja
     });
 
@@ -348,6 +356,7 @@ export class AdminComponent implements OnInit {
       descripcion: '',
       imagen: '',
       precio: 0,
+      categoria: '',
       rebaja: false
     });
   }
@@ -563,7 +572,6 @@ export class AdminComponent implements OnInit {
         error: (err) => {
           this.error = 'Error al subir la foto';
           this.uploadingTeamMemberImage = false;
-          console.error('Error al subir foto:', err);
         }
       });
   }
@@ -572,31 +580,32 @@ export class AdminComponent implements OnInit {
   loadBanners(): void {
     this.bannerService.getAllBanners()
       .subscribe({
-        next: (data) => {
+        next: (data: Banner[]) => {
           this.banners = data;
-          this.filterBanners();
+          this.filterBanners(this.bannerFilter);
         },
-        error: (err) => {
-          this.error = 'Error al cargar banners.';
+        error: (err: any) => {
+          this.error = 'Error al cargar los banners';
           console.error('Error al cargar banners:', err);
         }
       });
   }
-
-  filterBanners(): void {
-    if (this.bannerFilter === 'all') {
+  
+  filterBanners(section: string): void {
+    this.bannerFilter = section;
+    if (section === 'all') {
       this.filteredBanners = [...this.banners];
     } else {
       this.filteredBanners = this.banners.filter(
-        banner => banner.seccion === this.bannerFilter
+        banner => banner.seccion === section
       );
     }
   }
-
+  
   onSubmitBanner(): void {
     this.submittedBanner = true;
     this.resetMessages();
-
+    
     // Validate form
     if (this.bannerForm.invalid) {
       return;
@@ -613,7 +622,7 @@ export class AdminComponent implements OnInit {
             this.loadBanners();
             this.resetBannerForm();
           },
-          error: (err) => {
+          error: (err: any) => {
             this.error = 'Error al actualizar banner.';
             console.error('Error al actualizar banner:', err);
           }
@@ -627,14 +636,14 @@ export class AdminComponent implements OnInit {
             this.loadBanners();
             this.resetBannerForm();
           },
-          error: (err) => {
+          error: (err: any) => {
             this.error = 'Error al crear banner.';
             console.error('Error al crear banner:', err);
           }
         });
     }
   }
-
+  
   editBanner(banner: Banner): void {
     this.isEditingBanner = true;
     this.currentBannerId = banner._id as string;
@@ -682,7 +691,7 @@ export class AdminComponent implements OnInit {
             this.success = 'Banner eliminado correctamente.';
             this.loadBanners();
           },
-          error: (err) => {
+          error: (err: any) => {
             this.error = 'Error al eliminar banner.';
             console.error('Error al eliminar banner:', err);
           }
@@ -693,11 +702,11 @@ export class AdminComponent implements OnInit {
   toggleBannerStatus(id: string): void {
     this.bannerService.toggleBannerStatus(id)
       .subscribe({
-        next: (updatedBanner) => {
+        next: (updatedBanner: Banner) => {
           this.success = `Banner ${updatedBanner.activo ? 'activado' : 'desactivado'} correctamente.`;
           this.loadBanners();
         },
-        error: (err) => {
+        error: (err: any) => {
           this.error = 'Error al cambiar el estado del banner.';
           console.error('Error al cambiar estado del banner:', err);
         }
@@ -758,7 +767,7 @@ export class AdminComponent implements OnInit {
 
     this.uploadService.uploadImage(this.bannerSelectedFile, 'banners')
       .subscribe({
-        next: (response) => {
+        next: (response: {imagePath: string}) => {
           // Update form with image path
           this.bannerForm.patchValue({
             imagen: response.imagePath
@@ -766,7 +775,7 @@ export class AdminComponent implements OnInit {
           this.uploadingBannerImage = false;
           this.success = 'Imagen subida correctamente';
         },
-        error: (err) => {
+        error: (err: any) => {
           this.error = 'Error al subir la imagen';
           this.uploadingBannerImage = false;
           console.error('Error al subir imagen de banner:', err);
@@ -911,7 +920,7 @@ export class AdminComponent implements OnInit {
     this.resetMessages();
     // Usar 'company' o 'nosotros' como posible subcarpeta en el backend
     this.uploadService.uploadImage(this.historiaSelectedFile, 'companyInfo').subscribe({
-      next: (response) => {
+      next: (response: {imagePath: string}) => {
         this.companyInfoForm.patchValue({
           historiaImagenUrl: response.imagePath
         });
@@ -920,7 +929,7 @@ export class AdminComponent implements OnInit {
         this.success = 'Imagen de historia subida correctamente.';
         this.historiaSelectedFile = null; // Limpiar archivo seleccionado
       },
-      error: (err) => {
+      error: (err: any) => {
         this.error = 'Error al subir la imagen de historia.';
         this.uploadingHistoriaImage = false;
         console.error('Error al subir imagen de historia:', err);
@@ -928,21 +937,23 @@ export class AdminComponent implements OnInit {
     });
   }
 
-  // COMPANY INFO (Ahora Políticas)
+  // Método para cargar la información de la empresa
   loadCompanyInfo(): void {
-    this.companyInfoService.getCompanyInfo()
-      .subscribe({
-        next: (data) => {
-          this.companyInfo = data;
-          this.companyInfoForm.patchValue({
-            _id: data._id,
-            mision: data.mision || '',
-            vision: data.vision || '',
-            historiaTitulo: data.historiaTitulo || '',
-            historiaTexto: data.historiaTexto || '',
-            historiaImagenUrl: data.historiaImagenUrl || ''
-            // No parchear 'integrantes' o 'valores' directamente aquí, se manejan por separado
-          });
+    this.loadingCompanyInfo = true;
+    this.companyInfoService.getCompanyInfo().subscribe({
+      next: (data: CompanyInfo) => {
+        this.companyInfo = data;
+        
+        // Rellenar el formulario con los datos obtenidos
+        this.companyInfoForm.patchValue({
+          _id: data._id,
+          mision: data.mision || '',
+          vision: data.vision || '',
+          historiaTitulo: data.historiaTitulo || '',
+          historiaTexto: data.historiaTexto || '',
+          historiaImagenUrl: data.historiaImagenUrl || ''
+          // No parchear 'integrantes' o 'valores' directamente aquí, se manejan por separado
+        });
 
           // Manejar FormArray de Valores
           this.valoresFormArray.clear();
@@ -950,7 +961,7 @@ export class AdminComponent implements OnInit {
             data.valores.forEach(valor => this.valoresFormArray.push(this.createValorGroup(valor)));
           } else {
             // Opcional: añadir un valor por defecto si está vacío y se requiere al menos uno
-             this.addValor();
+             this.addValor(); 
           }
 
           // La lógica para 'integrantes' ha sido removida ya que se gestiona en la pestaña Equipo.
@@ -967,14 +978,21 @@ export class AdminComponent implements OnInit {
         }
       });
   }
-
+  
   onSubmitCompanyInfo(): void {
     this.submittedCompanyInfo = true;
+    
+    // Validar formulario
+    if (this.companyInfoForm.invalid) {
+      this.error = 'Por favor, completa los campos requeridos correctamente';
+      return;
+    }
+    
     this.resetMessages();
-
+    
     // Create the company info object from form
     const companyInfo: CompanyInfo = this.companyInfoForm.value;
-
+    
     this.companyInfoService.updateCompanyInfo(companyInfo)
       .subscribe({
         next: () => {

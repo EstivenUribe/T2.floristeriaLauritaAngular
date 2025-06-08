@@ -156,10 +156,10 @@
             <h5 class="mb-0">Dirección de Envío</h5>
           </div>
           <div class="card-body">
-            <p><strong>Calle:</strong> {{ selectedOrder.shippingAddress?.street || 'N/A' }}</p>
-            <p><strong>Ciudad:</strong> {{ selectedOrder.shippingAddress?.city || 'N/A' }}</p>
-            <p><strong>Estado/Provincia:</strong> {{ selectedOrder.shippingAddress?.state || 'N/A' }}</p>
-            <p><strong>Código Postal:</strong> {{ selectedOrder.shippingAddress?.zipCode || 'N/A' }}</p>
+            <p><strong>Calle:</strong> {{ selectedOrder.shippingAddress.street || 'N/A' }}</p>
+            <p><strong>Ciudad:</strong> {{ selectedOrder.shippingAddress.city || 'N/A' }}</p>
+            <p><strong>Estado/Provincia:</strong> {{ selectedOrder.shippingAddress.state || 'N/A' }}</p>
+            <p><strong>Código Postal:</strong> {{ selectedOrder.shippingAddress.zipCode || 'N/A' }}</p>
           </div>
         </div>
       </div>

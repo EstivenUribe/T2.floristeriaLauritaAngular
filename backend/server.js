@@ -19,7 +19,9 @@ app.use(express.json());
 
 // Configuración de la base de datos
 const dbConfig = require('./config/db');
-mongoose.connect(dbConfig.url)
+
+// Usar el método connect() proporcionado por dbConfig
+dbConfig.connect()
     .then(() => console.log('Conectado a MongoDB'))
     .catch(err => console.error('Error de conexión a MongoDB:', err));
 
