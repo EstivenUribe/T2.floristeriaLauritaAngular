@@ -401,7 +401,6 @@ export class CartComponent implements OnInit {
     this.paymentForm.expiryDate = value;
     this.validateExpiryDate();
   }
-
   // Validar todo el formulario de envío
   validateShippingForm(): boolean {
     this.validateFullName();
@@ -450,9 +449,15 @@ export class CartComponent implements OnInit {
       }, 0);
     } else if (this.currentStep === 2) {
       if (this.validateShippingForm()) {
-        // Aquí mantén lo que ya tenías antes
-        this.currentStep = 3;
+        this.error = 'Por favor corrige los errores en el formulario';
+        return;
       }
+      this.cartService.saveShippingInfo(this.shippingForm);
+    }
+
+    if (this.currentStep < 4) {
+      this.currentStep++;
+      this.error = '';
     }
   }
 
