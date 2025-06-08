@@ -1,0 +1,44 @@
+<!-- Overlay de guía tutorial - solo visible cuando isVisible es true -->
+<div class="tutorial-overlay" *ngIf="isVisible">
+  <!-- Capa semi-transparente para oscurecer el fondo -->
+  <div class="tutorial-backdrop"></div>
+  
+  <!-- Destacado del elemento actual -->
+  <div class="tutorial-highlight" #highlight [style.top]="highlightPosition.top" 
+       [style.left]="highlightPosition.left"
+       [style.width]="highlightPosition.width"
+       [style.height]="highlightPosition.height">
+  </div>
+  
+  <!-- Flecha indicadora -->
+  <div class="tutorial-arrow" #arrow [style.top]="arrowPosition.top" [style.left]="arrowPosition.left"
+       [ngClass]="{
+         'arrow-top': tourSteps[currentStep].position === 'top',
+         'arrow-right': tourSteps[currentStep].position === 'right',
+         'arrow-bottom': tourSteps[currentStep].position === 'bottom',
+         'arrow-left': tourSteps[currentStep].position === 'left'
+       }">
+  </div>
+  
+  <!-- Tooltip con información -->
+  <div class="tutorial-tooltip" #tooltip [style.top]="tooltipPosition.top" [style.left]="tooltipPosition.left">
+    <div class="tooltip-header">
+      <h3>{{ tourSteps[currentStep].title }}</h3>
+      <button class="close-btn" (click)="skipTour()">×</button>
+    </div>
+    <div class="tooltip-content">
+      <p>{{ tourSteps[currentStep].content }}</p>
+    </div>
+    <div class="tooltip-footer">
+      <div class="step-counter">{{ currentStep + 1 }} / {{ tourSteps.length }}</div>
+      <div class="tooltip-buttons">
+        <!-- Botón Continuar: Si es el último paso, muestra 'Finalizar', de lo contrario muestra 'Continuar' -->
+        <button class="btn-next" *ngIf="currentStep < tourSteps.length - 1" (click)="nextStep()">Continuar</button>
+        <button class="btn-finish" *ngIf="currentStep === tourSteps.length - 1" (click)="endTour()">Finalizar</button>
+        
+        <!-- Botón Salir del Tour: siempre visible -->
+        <button class="btn-exit" (click)="skipTour()">Salir del tour</button>
+      </div>
+    </div>
+  </div>
+</div>

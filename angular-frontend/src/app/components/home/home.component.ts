@@ -1,4 +1,4 @@
-import { Component, HostListener } from '@angular/core';
+import { Component, HostListener, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { ProductListComponent } from '../product-list/product-list.component';
@@ -7,6 +7,7 @@ import { CompanyInfoComponent } from '../company-info/company-info.component';
 import { RouterModule } from '@angular/router';
 // import {NavFooterComponent} from '../shared/nav-footer/nav-footer.component'; // No utilizado en el template
 import { CarouselPrincipalComponent } from '../carousel-principal/carousel-principal.component';
+import { TutorialGuideComponent } from '../tutorial-guide/tutorial-guide.component';
 
 @Component({
   selector: 'app-home',
@@ -18,18 +19,31 @@ import { CarouselPrincipalComponent } from '../carousel-principal/carousel-princ
     CompanyInfoComponent,
     RouterModule,
     // NavFooterComponent, // No utilizado en el template
-    CarouselPrincipalComponent
+    CarouselPrincipalComponent,
+    TutorialGuideComponent
   ],
   templateUrl: './home.component.html',
   styleUrls: ['./home.component.css']
 })
-export class HomeComponent {
+export class HomeComponent implements OnInit {
   showLoginMenu = false;
   showMobileMenu = false;
   showSidebar = false;
   isHeaderFixed = false;
+  showTutorial = false;
 
   constructor(private router: Router) { }
+  
+  ngOnInit(): void {
+    // Verificar si es usuario nuevo para mostrar el tutorial
+    if (localStorage.getItem('firstTimeUser') === 'true') {
+      console.log('Home: Usuario nuevo detectado, activando tutorial...');
+      // Pequeño retraso para asegurar que los componentes estén cargados
+      setTimeout(() => {
+        this.showTutorial = true;
+      }, 500);
+    }
+  }
 
   // Detecta el scroll para fijar el header
   @HostListener('window:scroll', [])

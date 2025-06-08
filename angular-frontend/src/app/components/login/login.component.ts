@@ -218,12 +218,16 @@ export class LoginComponent implements OnInit {
         // Registro exitoso
         this.isLoading = false;
         this.notificationService.success(`¡Bienvenido, ${response.user.username}! Tu registro ha sido exitoso.`, 'Registro Completo');
+        
+        // Marcar como usuario nuevo para iniciar el tutorial guiado
+        localStorage.setItem('firstTimeUser', 'true');
+        
         this.router.navigate(['/']); // Redirigir a la página de inicio
+        
         // Limpiar formulario de registro
         this.registerUsername = '';
         this.registerEmail = '';
         this.registerPassword = '';
-
       },
       error: (err) => {
         this.isLoading = false;

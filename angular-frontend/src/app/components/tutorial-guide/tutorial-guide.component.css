@@ -1,0 +1,182 @@
+/* Overlay principal */
+.tutorial-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: 9000;
+  pointer-events: none;
+}
+
+/* Fondo semi-transparente */
+.tutorial-backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.6);
+  z-index: 9001;
+}
+
+/* Destacado del elemento */
+.tutorial-highlight {
+  position: absolute;
+  background-color: transparent;
+  border-radius: 4px;
+  box-shadow: 0 0 0 9999px rgba(0, 0, 0, 0.7);
+  z-index: 9002;
+  pointer-events: none;
+  transition: all 0.3s ease-in-out;
+}
+
+/* Flecha indicadora con diferentes direcciones */
+.tutorial-arrow {
+  position: absolute;
+  width: 30px;
+  height: 30px;
+  z-index: 9003;
+  pointer-events: none;
+  transition: all 0.3s ease-in-out;
+}
+
+.arrow-top::before {
+  content: '';
+  position: absolute;
+  border-left: 15px solid transparent;
+  border-right: 15px solid transparent;
+  border-bottom: 15px solid #ff7bbd;
+  transform: translateX(-50%);
+}
+
+.arrow-right::before {
+  content: '';
+  position: absolute;
+  border-top: 15px solid transparent;
+  border-bottom: 15px solid transparent;
+  border-left: 15px solid #ff7bbd;
+  transform: translateY(-50%);
+}
+
+.arrow-bottom::before {
+  content: '';
+  position: absolute;
+  border-left: 15px solid transparent;
+  border-right: 15px solid transparent;
+  border-top: 15px solid #ff7bbd;
+  transform: translateX(-50%);
+}
+
+.arrow-left::before {
+  content: '';
+  position: absolute;
+  border-top: 15px solid transparent;
+  border-bottom: 15px solid transparent;
+  border-right: 15px solid #ff7bbd;
+  transform: translateY(-50%);
+}
+
+/* Tooltip con información */
+.tutorial-tooltip {
+  position: absolute;
+  width: 300px;
+  background-color: white;
+  border-radius: 8px;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+  z-index: 9004;
+  pointer-events: auto;
+  overflow: hidden;
+  transition: all 0.3s ease-in-out;
+  font-family: 'Poppins', sans-serif;
+}
+
+.tooltip-header {
+  background-color: #ff7bbd;
+  color: white;
+  padding: 12px 15px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.tooltip-header h3 {
+  margin: 0;
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.close-btn {
+  background: transparent;
+  color: white;
+  border: none;
+  font-size: 24px;
+  cursor: pointer;
+  line-height: 1;
+  padding: 0 5px;
+}
+
+.tooltip-content {
+  padding: 15px;
+  font-size: 14px;
+  line-height: 1.5;
+  color: #444;
+}
+
+.tooltip-footer {
+  background-color: #f8f8f8;
+  padding: 12px 15px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-top: 1px solid #eee;
+}
+
+.step-counter {
+  font-size: 13px;
+  color: #888;
+}
+
+.tooltip-buttons {
+  display: flex;
+  gap: 10px;
+}
+
+.tooltip-buttons button {
+  padding: 6px 12px;
+  border-radius: 4px;
+  font-size: 13px;
+  cursor: pointer;
+  border: none;
+  font-weight: 500;
+  transition: all 0.2s ease;
+}
+
+.btn-prev {
+  background-color: #eee;
+  color: #555;
+}
+
+.btn-next,
+.btn-finish {
+  background-color: #ff7bbd;
+  color: white;
+}
+
+.btn-exit {
+  background-color: #888;
+  color: white;
+}
+
+.btn-prev:hover {
+  background-color: #ddd;
+}
+
+.btn-next:hover,
+.btn-finish:hover {
+  background-color: #ff5ca9;
+}
+
+.btn-exit:hover {
+  background-color: #666;
+}
