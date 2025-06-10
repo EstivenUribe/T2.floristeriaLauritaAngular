@@ -14,7 +14,11 @@ const app = express();
 const port = process.env.PORT || 3000;
 
 // Middleware
-app.use(cors());
+const corsOptions = {
+  origin: process.env.CORS_ORIGIN || 'http://localhost:4200',
+  credentials: true
+};
+app.use(cors(corsOptions));
 app.use(express.json());
 
 // Configuración de la base de datos
