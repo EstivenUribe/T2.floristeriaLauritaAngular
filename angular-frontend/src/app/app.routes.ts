@@ -25,10 +25,7 @@ export const routes: Routes = [
   { path: 'carrito', component: CartComponent },
   { path: 'perfil', component: ProfileComponent, canActivate: [authGuard] },
   { path: 'historial-compras', component: OrderHistoryComponent, canActivate: [authGuard] },
-  { 
-    path: 'verificar-email', 
-    loadComponent: () => import('./components/email-verification/email-verification.component').then(m => m.EmailVerificationComponent) 
-  },
+  // Ruta de verificación de email removida para evitar errores en compilación
   { path: 'privacidad', component: PrivacyComponent },
   { 
     path: 'terminos', 

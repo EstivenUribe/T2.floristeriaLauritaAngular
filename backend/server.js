@@ -13,12 +13,16 @@ const bannerRoutes = require('./routes/banners');
 const app = express();
 const port = process.env.PORT || 3000;
 
+// Middleware personalizado para filtrar logs innecesarios
+const requestLogger = require('./middleware/requestLogger');
+
 // Middleware
 const corsOptions = {
   origin: process.env.CORS_ORIGIN || 'http://localhost:4200',
   credentials: true
 };
 app.use(cors(corsOptions));
+app.use(requestLogger); // Agregar el middleware de logging personalizado
 app.use(express.json());
 
 // Configuración de la base de datos
