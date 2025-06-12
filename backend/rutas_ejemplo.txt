@@ -1,0 +1,59 @@
+// =============================
+// Archivo de rutas de ejemplo
+// =============================
+
+// 1. RUTA PARA CATEGORÍAS DE PRODUCTOS
+// Archivo: routes/products.js
+const express = require('express');
+const router = express.Router();
+
+// GET /api/productos
+router.get('/', (req, res) => {
+  // Lógica para devolver productos
+  res.json({ message: 'Lista de productos' });
+});
+
+// GET /api/productos/categorias
+router.get('/categorias', (req, res) => {
+  // Lógica para devolver categorías
+  res.json({ categorias: ['flores', 'condolencias', 'aniversarios'] });
+});
+
+module.exports = router;
+
+// 2. RUTA PARA COMPANY INFO
+// Archivo: routes/companyInfo.js
+const express2 = require('express');
+const router2 = express2.Router();
+
+// GET /api/company-info
+router2.get('/', (req, res) => {
+  // Lógica para devolver la información de la empresa
+  res.json({ nombre: 'Floristería Laurita', direccion: 'Calle Falsa 123', telefono: '123456789' });
+});
+
+module.exports = router2;
+
+// 3. RUTA PARA CSRF TOKEN
+// Archivo: routes/csrf.js
+const express3 = require('express');
+const router3 = express3.Router();
+
+// GET /api/csrf/token
+router3.get('/token', (req, res) => {
+  // Lógica para devolver un token CSRF
+  res.json({ csrfToken: 'ejemplo-token-csrf-123' });
+});
+
+module.exports = router3;
+
+// 4. IMPORTACIÓN EN server.js
+// En tu server.js debes agregar:
+// const productRoutes = require('./routes/products');
+// const companyInfoRoutes = require('./routes/companyInfo');
+// const csrfRoutes = require('./routes/csrf');
+// app.use('/api/productos', productRoutes);
+// app.use('/api/company-info', companyInfoRoutes);
+// app.use('/api/csrf', csrfRoutes);
+
+// Asegúrate de crear los archivos .js reales en la carpeta /routes y copiar el código correspondiente de este ejemplo.

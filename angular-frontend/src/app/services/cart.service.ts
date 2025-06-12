@@ -8,8 +8,8 @@ import { CartItem, Order, ShippingInfo, PaymentInfo, PaymentMethod } from '../mo
   providedIn: 'root'
 })
 export class CartService {
-  private apiUrl = 'http://localhost:3000/api/cart';
-  private ordersUrl = 'http://localhost:3000/api/orders';
+  private apiUrl = '/api/cart';
+  private ordersUrl = '/api/orders';
   
   // Estado del carrito
   private cartItems = new BehaviorSubject<CartItem[]>([]);
