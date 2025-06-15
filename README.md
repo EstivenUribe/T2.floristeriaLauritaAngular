@@ -1,152 +1,204 @@
 # Floristería Laurita - Catálogo Web
 
-Plataforma web completa para la Floristería Laurita en Sabaneta, Colombia. Permite a los usuarios ver productos, realizar compras, dejar comentarios y calificaciones.
+Plataforma web completa para la Floristería Laurita, que permite a los usuarios explorar productos, realizar compras y más. Este proyecto está desarrollado utilizando la pila MEAN.
 
-## Descripción General del Proyecto
+## Tabla de Contenidos
 
-Este proyecto implementa una aplicación web completa para una floristería, con un catálogo de productos, sistema de usuarios, carrito de compras, reseñas y panel de administración. La aplicación está diseñada con una arquitectura de tres capas:
+- [Introducción a la pila MEAN](#introducción-a-la-pila-mean)
+- [Arquitectura del proyecto](#arquitectura-del-proyecto)
+- [Estructura de carpetas y archivos](#estructura-de-carpetas-y-archivos)
+- [Guía de instalación y puesta en marcha](#guía-de-instalación-y-puesta-en-marcha)
+- [Autores y crédito](#autores-y-crédito)
 
-1. **Frontend**: Interfaz de usuario desarrollada con Angular
-2. **Backend**: API RESTful desarrollada con Express
-3. **Base de Datos**: MongoDB para almacenamiento persistente
+## Introducción a la pila MEAN
 
-## Características Principales
+La pila **MEAN** es un acrónimo de **M**ongoDB, **E**xpress.js, **A**ngular y **N**ode.js. Es un conjunto de tecnologías basadas en JavaScript de código abierto que se utilizan para construir aplicaciones web complejas y escalables. Se eligió para este proyecto por su cohesión (JavaScript en todo el stack), su activa comunidad y la eficiencia en el desarrollo de aplicaciones modernas de una sola página (SPA).
 
-- **Catálogo de Productos**: Visualización y búsqueda de flores y arreglos florales
-- **Sistema de Usuarios**: Registro, inicio de sesión y roles (cliente/administrador)
-- **Carrito de Compras**: Añadir productos, gestionar cantidades, procesar pedidos
-- **Reseñas y Calificaciones**: Los usuarios pueden dejar comentarios y valoraciones
-- **Panel de Administración**: Gestión de productos, pedidos y comentarios
-- **Diseño Responsivo**: Adaptable a diferentes dispositivos
-- **Sistema de Caché**: Optimización de rendimiento para archivos estáticos
-- **Manejo de Sesiones**: Autenticación segura con JWT
-- **Gestión de Imágenes**: Carga y optimización de imágenes de productos
+Roles de cada componente:
 
-## Estructura del Proyecto
+-   **MongoDB**: Es una base de datos NoSQL orientada a documentos. Almacena los datos en formato BSON (similar a JSON), lo que facilita la integración con aplicaciones JavaScript. Ideal para datos flexibles y escalabilidad horizontal.
+-   **Express.js**: Es un framework minimalista y flexible para Node.js, diseñado para construir aplicaciones web y APIs RESTful de manera rápida y sencilla. Proporciona una capa robusta de funcionalidades web básicas.
+-   **Angular**: Es un framework de desarrollo frontend mantenido por Google, utilizado para construir aplicaciones web dinámicas y de una sola página (SPA). Emplea TypeScript y ofrece una estructura completa para componentes, routing y gestión de estado.
+-   **Node.js**: Es un entorno de ejecución de JavaScript del lado del servidor, construido sobre el motor V8 de Chrome. Permite ejecutar JavaScript fuera del navegador, siendo la base para el backend de la aplicación y herramientas de desarrollo.
+
+## Arquitectura del proyecto
+
+La aplicación sigue una arquitectura de N-capas, comúnmente vista en aplicaciones MEAN:
+
+```text
++-----------------+      +---------------------+      +-----------------+
+|   Cliente       |----->|    Servidor API     |<---->|  Base de Datos  |
+|  (Angular)      |      | (Node.js/Express)   |      |   (MongoDB)     |
+|  - Interfaz UI  |      | - Lógica Negocio    |      | - Persistencia  |
+|  - Navegador Web|      | - Endpoints RESTful |      | - Colecciones   |
++-----------------+      +---------------------+      +-----------------+
+       ^ (HTTP/S, JSON)           | (JSON)
+       |                          |
++----------------------------------+
+| Usuario                          |
++----------------------------------+
+```
+
+**Comunicación entre capas**:
+-   El frontend (Angular) se comunica con el backend (Express.js) a través de peticiones HTTP/S, siguiendo principios RESTful. Los datos se intercambian principalmente en formato JSON.
+-   El backend interactúa con la base de datos MongoDB mediante un ODM (Object Document Mapper) como Mongoose.
+
+**Patrones y principios clave**:
+-   **RESTful API**: Diseño de la API para una comunicación estándar y predecible.
+-   **MVC (Model-View-Controller)**: Aunque Express es flexible, se sigue una estructura similar en el backend (Modelos, Rutas como Controladores, Vistas gestionadas por Angular).
+-   **Inyección de Dependencias (DI)**: Utilizada extensivamente en Angular para gestionar servicios y componentes.
+-   **Servicios**: En Angular, los servicios encapsulan la lógica de negocio y la comunicación con la API.
+-   **Middleware**: En Express, se utilizan para funciones transversales como autenticación, logging y manejo de errores.
+
+## Estructura de carpetas y archivos
+
+A continuación, se presenta un resumen de la estructura de carpetas más relevantes del proyecto (máximo 2 niveles de profundidad):
 
 ```
 /T2.floristeriaLauritaAngular/
-├── angular-frontend/        # Frontend en Angular
-│   ├── src/                 # Código fuente del frontend
-│   │   ├── app/            
-│   │   │   ├── components/  # Componentes de la interfaz
-│   │   │   ├── services/    # Servicios para comunicación con API
-│   │   │   ├── models/      # Modelos de datos
-│   │   │   ├── guards/      # Guardias de rutas
-│   │   │   └── interceptors/# Interceptores HTTP
-│   │   ├── assets/          # Recursos estáticos
-│   │   └── ...
-│   ├── vite.config.js       # Configuración del servidor de desarrollo
-│   └── ...
-├── backend/
-│   ├── config/              # Configuración (base de datos, etc.)
-│   ├── controllers/         # Controladores para las rutas API
-│   ├── middleware/          # Middleware (auth, uploads, etc.)
-│   ├── models/              # Modelos de datos (MongoDB/Mongoose)
-│   ├── routes/              # Rutas API
-│   └── uploads/             # Directorio para archivos subidos
-├── app.js                   # Configuración de la aplicación Express
-├── server.js                # Inicialización del servidor y BD
-├── index.js                 # Punto de entrada principal
-├── test-db-connection.js    # Script para probar conexiones a BD
-├── .env.example             # Ejemplo de variables de entorno
-├── INSTALACION.md           # Guía detallada de instalación
-└── package.json             # Dependencias y scripts del proyecto
+├── angular-frontend/        # Proyecto Frontend (Angular)
+│   ├── src/                 # Código fuente principal del frontend (componentes, servicios, etc.)
+│   └── ...                  # Otros archivos de configuración de Angular (angular.json, tsconfig.json)
+├── backend/                 # Proyecto Backend (Node.js/Express)
+│   ├── controllers/         # Lógica de negocio y manejo de peticiones API
+│   ├── models/              # Esquemas de datos para MongoDB (usando Mongoose)
+│   ├── routes/              # Definición de las rutas (endpoints) de la API
+│   ├── middleware/          # Funciones middleware (autenticación, validación, errores)
+│   └── config/              # Archivos de configuración (BD, seguridad)
+├── app.js                   # Archivo principal de configuración de la aplicación Express (backend)
+├── server.js                # Script para iniciar el servidor backend y conectar a la BD
+├── .env.example             # Plantilla para las variables de entorno necesarias
+├── package.json             # Dependencias y scripts del proyecto (nivel raíz y backend)
+└── README.md                # Este archivo de documentación
 ```
 
-## Tecnologías Utilizadas
+**Responsabilidades principales**:
+-   `angular-frontend/`: Contiene toda la lógica y componentes de la interfaz de usuario que se ejecuta en el navegador.
+    -   `angular-frontend/src/app/`: Núcleo de la aplicación Angular (módulos, componentes, servicios, modelos).
+-   `backend/`: Alberga el código del servidor que maneja la lógica de negocio, la API y la interacción con la base de datos.
+    -   `backend/controllers/`: Procesan las solicitudes entrantes, interactúan con los modelos y envían respuestas.
+    -   `backend/models/`: Definen la estructura de los datos que se almacenan en MongoDB.
+    -   `backend/routes/`: Asocian los endpoints de la API con sus respectivos controladores.
+-   `app.js`: Configura la instancia de Express, incluyendo middlewares, rutas y manejo de errores.
+-   `server.js`: Inicia el servidor HTTP y establece la conexión con MongoDB.
 
-### Frontend
-- **Angular**: Framework de desarrollo frontend
-- **RxJS**: Biblioteca para programación reactiva
-- **Vite**: Servidor de desarrollo rápido
+## Guía de instalación y puesta en marcha
 
-### Backend
-- **Node.js**: Entorno de ejecución para JavaScript
-- **Express**: Framework para aplicaciones web
-- **Mongoose**: ODM para MongoDB
-- **JSON Web Tokens (JWT)**: Autenticación basada en tokens
-- **Multer**: Manejo de uploads de archivos
+Sigue estos pasos para configurar y ejecutar el proyecto en tu entorno local.
 
-### Seguridad y Optimización
-- **Helmet**: Protección con cabeceras HTTP
-- **CORS**: Control de acceso entre dominios
-- **Compression**: Compresión de respuestas HTTP
-- **Rate Limiting**: Limitación de solicitudes
-- **Content Security Policy**: Protección contra ataques XSS
+### Requisitos Previos
 
-### Base de Datos
-- **MongoDB Atlas**: Servicio de base de datos en la nube
-- **MongoDB Local**: Opción de fallback para desarrollo
+-   **Node.js**: Versión `>=18.x` (incluye npm). Se recomienda la última versión LTS.
+-   **Angular CLI**: Versión `~19.2.9` (según `angular-frontend/package.json`). Instalar globalmente con `npm install -g @angular/cli@~19.2.9`.
+-   **MongoDB**: Versión `>=5.x`. Asegúrate de tener una instancia de MongoDB en ejecución (local o en la nube como MongoDB Atlas).
 
-### Herramientas de Desarrollo
-- **ESLint**: Linting de código
-- **Nodemon**: Reinicio automático del servidor durante desarrollo
+### Pasos de Instalación
 
-## Instalación y Ejecución
+1.  **Clonar el repositorio** (si aún no lo has hecho):
+    ```bash
+    git clone https://github.com/EstivenUribe/T2.floristeriaLauritaAngular.git
+    cd T2.floristeriaLauritaAngular
+    ```
 
-Para detalles completos sobre la instalación y ejecución del proyecto, consulta [INSTALACION.md](./INSTALACION.md).
+2.  **Instalar dependencias**:
+    Este proyecto tiene dependencias separadas para el backend (en la raíz) y el frontend.
+    ```bash
+    # Instalar dependencias del backend y herramientas generales (desde la raíz del proyecto)
+    npm install
 
-### Comandos Principales
+    # Instalar dependencias del frontend
+    cd angular-frontend
+    npm install
+    cd ..
+    ```
+    Alternativamente, el script `npm run install` (desde la raíz) intenta instalar ambas (revisar su correcta implementación en `package.json`).
 
-```bash
-# Instalación de dependencias
-npm install
+3.  **Configurar Variables de Entorno**:
+    Copia el archivo `.env.example` a un nuevo archivo llamado `.env` en la raíz del proyecto:
+    ```bash
+    cp .env.example .env
+    ```
+    Luego, edita `.env` y configura las variables necesarias. Las más importantes son:
 
-# Modo desarrollo (backend y frontend)
-npm run dev
+    | Variable        | Descripción                                  | Ejemplo                                      |
+    |-----------------|----------------------------------------------|----------------------------------------------|
+    | `MONGODB_URI`   | URI de conexión a MongoDB                    | `mongodb://127.0.0.1:27017/floristeriaLaurita` |
+    | `PORT`          | Puerto para el servidor Express              | `3000`                                       |
+    | `NODE_ENV`      | Entorno de ejecución (`development`/`production`) | `development`                                |
+    | `CORS_ORIGIN`   | Origen permitido para CORS (URL frontend)    | `http://localhost:4200`                      |
+    | `JWT_SECRET`    | Secreto para firmar los JSON Web Tokens      | `tu_secreto_muy_seguro_aqui`                 |
+    | `REFRESH_TOKEN_SECRET` | Secreto para los refresh tokens       | `otro_secreto_muy_seguro_aqui_ref`           |
+    *Nota: Revisa `.env.example` para todas las variables disponibles.*
 
-# Solo backend
-npm run dev:backend
+4.  **Scripts Útiles (ejecutar desde la raíz del proyecto)**:
 
-# Producción
-npm run prod
-```
+    -   **Modo desarrollo (backend y frontend simultáneamente)**:
+        ```bash
+        npm run dev:both
+        ```
+        Esto iniciará el servidor backend con `nodemon` y el servidor de desarrollo de Angular. El backend estará en `http://localhost:PORT` (ej. 3000) y el frontend en `http://localhost:4200`.
 
-## Variables de Entorno
+    -   **Solo backend (modo desarrollo)**:
+        ```bash
+        npm run dev 
+        ```
+        (Nota: el script en `package.json` es `dev`, no `dev:backend` como se mencionó antes en el README original. `dev` ejecuta `nodemon server.js`)
 
-La aplicación utiliza las siguientes variables de entorno:
+    -   **Solo frontend (servidor de desarrollo Angular)**:
+        ```bash
+        cd angular-frontend
+        npm start
+        ```
 
-| Variable | Descripción | Valor por defecto |
-|----------|-------------|------------------|
-| `MONGODB_URI` | URI de conexión a MongoDB Atlas | - |
-| `PORT` | Puerto para el servidor Express | 3000 |
-| `NODE_ENV` | Entorno de ejecución | development |
-| `CORS_ORIGIN` | Origen permitido para CORS | http://localhost:4200 |
-| `STANDALONE` | Iniciar Angular automáticamente | false |
+    -   **Compilar frontend para producción**:
+        ```bash
+        npm run build
+        ```
+        Esto genera los archivos compilados en `angular-frontend/dist/angular-frontend/browser/` (la ruta puede variar según la versión de Angular y configuración).
 
-## Características Técnicas Adicionales
+    -   **Ejecutar en modo producción (backend sirviendo frontend compilado)**:
+        ```bash
+        npm run prod
+        ```
+        Este script ejecuta `npm run build && npm start` (el `npm start` de la raíz, que ejecuta `node server.js`).
 
-### Gestión de Conexión a MongoDB
-- Conexión primaria a MongoDB Atlas con fallback a MongoDB local
-- Manejo automático de reconexión
-- Validación de URI de conexión
+### Ejecutar Pruebas y Linters
 
-### Sistema de Proxy
-- Configuración de proxy en modo desarrollo para evitar problemas CORS
-- Forwarding de todas las solicitudes `/api/*` al backend
+-   **Pruebas del Frontend (Angular)**:
+    ```bash
+    cd angular-frontend
+    npm test
+    ```
+-   **Linters**: (Próximamente) Si se configuran linters como ESLint para el backend o TSLint/ESLint para el frontend, aquí se detallarán los comandos.
 
-### Optimización de Rendimiento
-- Compresión de respuestas HTTP
-- Caché inteligente basada en tipo de archivo
-- Configuración de etags para recursos estáticos
+### Despliegue
 
-### Manejo de Errores
-- Errores personalizados para problemas de conexión a la BD
-- Modo de operación limitada cuando la BD no está disponible
-- Logging detallado de errores
+-   **Local**: Utiliza `npm run prod` para simular un entorno de producción local donde Node.js sirve los archivos estáticos de Angular ya compilados.
+-   **Producción (Generalidades)**: Para desplegar en plataformas como Vercel (ideal para frontends Angular), Heroku, AWS (EC2, Elastic Beanstalk), Google Cloud (App Engine, Cloud Run), o usando Docker:
+    1.  Asegúrate que el backend (`app.js` o `server.js`) esté configurado para servir los archivos estáticos del frontend desde la carpeta de compilación (ej. `angular-frontend/dist/...`).
+    2.  Configura las variables de entorno en la plataforma de despliegue.
+    3.  Considera un `Dockerfile` para empaquetar la aplicación si usas contenedores.
+    4.  Utiliza un gestor de procesos como PM2 en servidores VPS/EC2 para mantener la aplicación Node.js corriendo.
 
-## Licencia y Contribuciones
+Para una guía de instalación más detallada que podría existir en el proyecto, consulta [INSTALACION.md](./INSTALACION.md).
 
-Este proyecto está bajo licencia MIT. Si deseas contribuir:
+## Autores y Crédito
 
-1. Haz un fork del repositorio
-2. Crea una rama con tu nueva funcionalidad
-3. Envía un pull request con tus cambios
+Este proyecto fue desarrollado como parte de la asignatura de Taller 2 por:
 
-## Autores
+-   Sebastián González
+-   Juan Camilo Ossa Lujan
+-   Rafael Uribe Álvarez
 
-Proyecto desarrollado para la asignatura de Taller 2 por los estudiantes de Ingeniría informática:
- -Sebastián González
- -Juan Camilo Ossa Lujan
- -Rafael Uribe Álvarez
+*(Se pueden añadir roles y enlaces a perfiles si se desea, por ejemplo:)*
+-   *Sebastián González - Desarrollador Fullstack - [GitHub](https://github.com/SbtnGzlz)*
+-   *Juan Camilo Ossa Lujan - Desarrollador Fullstack - [GitHub](https://github.com/JC4701)*
+-   *Rafael Uribe Álvarez - Líder de despligue e infraestructura / Fullstack - [GitHub](https://github.com/EstivenUribe)*
+
+### Reconocimientos
+
+-   A las comunidades y desarrolladores de Angular, Node.js, Express, MongoDB por sus frameworks, librerías y documentación.
+-  A cualquier librería de terceros crucial para el proyecto (ej. Swiper, Nodemailer, etc.).
+
+---
+*Este README ha sido actualizado y estructurado para cumplir con los requisitos del proyecto.*
