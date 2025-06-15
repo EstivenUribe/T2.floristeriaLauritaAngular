@@ -1,4 +1,5 @@
 export const environment = {
   production: true,
-  apiBaseUrl: '/api' // URL relativa en producción
+  // Usaremos una API de ejemplo para pruebas
+  apiBaseUrl: '/api'
 };

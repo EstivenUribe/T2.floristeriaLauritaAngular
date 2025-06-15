@@ -1,5 +1,5 @@
 [build]
-  publish = "dist/angular-frontend/"
+  publish = "dist/angular-frontend/browser"
   command = "npm run build"
 
 [build.environment]
