@@ -19,11 +19,21 @@ const requestLogger = require('./middleware/requestLogger');
 // Middleware
 const corsOptions = {
   origin: process.env.CORS_ORIGIN || 'http://localhost:4200',
-  credentials: true
 };
+
+// Middleware
 app.use(cors(corsOptions));
 app.use(requestLogger); // Agregar el middleware de logging personalizado
 app.use(express.json());
+
+// Middleware para manejar errores de CORS de forma explícita
+app.use((err, req, res, next) => {
+  if (err.message.includes('CORS policy')) {
+    console.error('Error de CORS detectado:', err.message);
+    return res.status(403).json({ error: 'Error de CORS: ' + err.message });
+  }
+  next(err);
+});
 
 // Configuración de la base de datos
 const dbConfig = require('./config/db');
