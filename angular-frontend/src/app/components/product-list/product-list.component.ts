@@ -31,7 +31,17 @@ export class ProductListComponent implements OnInit, OnDestroy {
   totalPages = 0;
   
   // Filtros
-  filter: ProductFilter = {};
+  filter: ProductFilter = {
+    search: '',
+    categoria: '',
+    minPrice: undefined,
+    maxPrice: undefined,
+    destacado: undefined,
+    rebaja: undefined,
+    disponible: true, // Default to true as it's often a desired default
+    sortBy: 'fechaCreacion',
+    sortDirection: 'desc'
+  };
   categorias: string[] = [];
   
   // Variables para el modal de detalles

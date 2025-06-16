@@ -338,6 +338,88 @@
   visibility: visible;
 }
 
+/* ===== RESPONSIVE HEADER STYLES ===== */
+@media (max-width: 768px) {
+  .header-container {
+    gap: 10px; /* Reduce gap in the main grid */
+  }
+
+  .logo-container {
+    gap: 8px; /* Reduce gap between logo and brand info */
+  }
+
+  .logo {
+    width: 50px;  /* Smaller logo */
+    height: 50px; /* Smaller logo */
+  }
+
+  .brand-info h1 {
+    font-size: 1.4rem; /* Smaller brand name */
+    margin-bottom: 2px;
+  }
+
+  .slogan {
+    font-size: 0.75rem; /* Smaller slogan */
+  }
+
+  .user-actions {
+    gap: 10px; /* Reduce gap for user actions */
+  }
+
+  .auth-cart-container {
+    gap: 8px; /* Reduce gap between auth and cart links */
+  }
+
+  .auth-link, .cart-link {
+    font-size: 0.8rem; /* Smaller text for links */
+  }
+  
+  .auth-link .fas, 
+  .cart-link .fas, 
+  .user-button .fas {
+    font-size: 1rem; /* Adjust icon size */
+  }
+
+  .user-button {
+    padding: 6px 10px; /* Smaller user button */
+    font-size: 0.8rem;
+  }
+
+  .cart-count {
+    width: 16px;
+    height: 16px;
+    font-size: 0.65rem;
+    top: -6px;
+    right: -6px;
+  }
+}
+
+@media (max-width: 480px) {
+  .logo {
+    width: 40px;
+    height: 40px;
+  }
+
+  .brand-info h1 {
+    font-size: 1.2rem;
+  }
+
+  .slogan {
+    display: none; /* Hide slogan on very small screens */
+  }
+
+  /* Optional: Show only icons for auth/cart links on very small screens */
+  /*
+  .auth-link span, .cart-link span { 
+    display: none; 
+  }
+  .auth-link .fas, .cart-link .fas {
+    margin-right: 0;
+    font-size: 1.2rem; 
+  }
+  */
+}
+
 /* ===== FOOTER ===== */
 .main-footer {
   background-color: #5A3A80; /* Darker purple for better contrast */

@@ -47,7 +47,12 @@ app.use(compression({ filter: shouldCompress }));
 const corsOptions = {
   // Permitir tanto localhost:4200 (Angular dev server) como localhost:3000 (backend)
   origin: function(origin, callback) {
-    const allowedOrigins = [process.env.CORS_ORIGIN || 'http://localhost:4200', 'http://localhost:3000'];
+    const allowedOrigins = [
+      process.env.CORS_ORIGIN || 'http://localhost:4200', 
+      'http://localhost:3000',
+      'http://localhost', // Para solicitudes directas o proxied por IIS
+      'http://localhost:80' // Puerto HTTP por defecto
+    ];
     // Permitir solicitudes sin origen (como llamadas de API móviles o Postman)
     if (!origin || allowedOrigins.indexOf(origin) !== -1) {
       callback(null, true);
@@ -65,11 +70,13 @@ const corsOptions = {
 // Aplicar configuración CORS
 app.use(cors(corsOptions));
 
-// Middleware para depurar solicitudes CORS
+// Middleware para depurar solicitudes CORS (comentado para reducir ruido en consola)
+/*
 app.use((req, res, next) => {
   console.log(`${req.method} ${req.path} - Origin: ${req.headers.origin || 'No origin'}, Content-Type: ${req.headers['content-type'] || 'No content-type'}`);
   next();
 });
+*/
 
 // Parser para JSON y cookies
 app.use(express.json());
