@@ -47,14 +47,25 @@ app.use(compression({ filter: shouldCompress }));
 const corsOptions = {
   // Permitir tanto localhost:4200 (Angular dev server) como localhost:3000 (backend)
   origin: function(origin, callback) {
-    const allowedOrigins = [
-      process.env.CORS_ORIGIN || 'http://localhost:4200', 
-      'http://localhost:3000',
-      'http://localhost', // Para solicitudes directas o proxied por IIS
-      'http://localhost:80' // Puerto HTTP por defecto
+    const whitelist = [
+      process.env.CORS_ORIGIN || 'http://localhost:4200', // Fallback para desarrollo local
+      'http://localhost:4200', // Frontend local Angular
+      'http://localhost:3000', // Backend local directo
+      'http://localhost',      // IIS proxy local
+      'http://localhost:80',   // IIS proxy local puerto 80
+      'https://www.floristerialaurita.com' // Dominio de producción
     ];
+
+    // Log para verificar la whitelist y el CORS_ORIGIN al inicio
+    console.log('CORS Whitelist:', whitelist);
+    if (process.env.CORS_ORIGIN) {
+      console.log('process.env.CORS_ORIGIN:', process.env.CORS_ORIGIN);
+    } else {
+      console.log('process.env.CORS_ORIGIN is not set. Using default whitelist entries.');
+    }
+
     // Permitir solicitudes sin origen (como llamadas de API móviles o Postman)
-    if (!origin || allowedOrigins.indexOf(origin) !== -1) {
+    if (!origin || whitelist.indexOf(origin) !== -1) {
       callback(null, true);
     } else {
       console.error(`CORS blocked request from: ${origin}`);
